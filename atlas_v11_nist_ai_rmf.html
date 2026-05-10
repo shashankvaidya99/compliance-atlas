@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume XI: NIST AI RMF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker, .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:14%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){ .wrap{padding:24px 18px 80px} .strap{grid-template-columns:1fr;gap:24px} nav.layers{grid-template-columns:repeat(2,1fr)} nav.layers button{border-bottom:1px solid var(--ink)} .twocol{grid-template-columns:1fr} footer.colophon{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume XI</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume XI · NIST AI RMF · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      NIST AI 100-1 (Jan 2023)<br>
+      NIST AI 600-1 (GenAI · Jul 2024)
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      The capstone volume. NIST's voluntary framework for AI risk management — <em>no certification body, no audit ritual, no enforcement</em>. And yet AI RMF has become the foundational vocabulary that ISO 42001, the EU AI Act, federal procurement, and customer due-diligence questionnaires all use to describe AI governance work. Like CSF for cybersecurity: read by everyone, audited by no one — until you need a frame for what you're already doing.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — AI risk owners</span>
+      <span class="swatch ext">External — assurance pathways</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        Like NIST CSF (Volume IV), AI RMF has no native cert. External validation comes by folding the framework into ISO 42001 audits, EU AI Act conformity assessments, customer due diligence, federal procurement reviews under OMB M-24-10, and SOC 2+ examinations.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">AI risk loop × assurance paths</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Four Functions</span>
+      <span class="sub">GOVERN · MAP · MEASURE · MANAGE</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">GenAI Profile</span>
+      <span class="sub">NIST AI 600-1 · 12 risks</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">AI RMF → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- LAYER 1 -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>The AI risk loop with no native validator</h2>
+      </div>
+      <div class="ref">NIST AI 100-1 · Part 2<br>AI RMF Playbook</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">Internal AI risk lifecycle × external assurance pathways</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">CONTINUOUS AI RISK CYCLE →</text>
+          <text x="120" y="50" text-anchor="middle">GOVERN</text>
+          <text x="320" y="50" text-anchor="middle">MAP</text>
+          <text x="520" y="50" text-anchor="middle">MEASURE</text>
+          <text x="720" y="50" text-anchor="middle">MANAGE</text>
+          <text x="920" y="50" text-anchor="middle">Iterate</text>
+          <text x="1120" y="50" text-anchor="middle">Profile evolves</text>
+          <text x="1290" y="50" text-anchor="middle">Maturity grows</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — AI RISK OWNERS</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — ASSURANCE PATHWAYS</text>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">GOVERN setup</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">policies · roles · culture</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">cross-cutting</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">MAP context</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">categorize · purpose</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">capabilities · impacts</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">MEASURE risks</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">analyze · benchmark</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">test · evaluate</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">MANAGE response</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">prioritize · respond</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">communicate · monitor</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Profile maintained</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">current vs target</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">org-specific tailoring</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Continuous improvement</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">drift · re-evaluation</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">closed-loop iteration</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Org maturity progresses</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">trustworthiness embedded</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">across AI portfolio</text>
+
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">AI RMF Playbook</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">tasks · suggestions</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">informative companion</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">AI system inventory</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">in-scope models</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">often discovered late</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Trustworthy AI characteristics</text>
+          <text x="480" y="235" text-anchor="middle" font-size="9.5">7 properties of trustworthy AI</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">valid · safe · secure · acct.</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Risk treatment options</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">mitigate · transfer · accept</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">avoid · 4 options total</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Profiles — Use-Case + Cross-Sec</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">domain-specific tailoring</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">GenAI · HR · finance · etc</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">Internal audit / review</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">no required cadence</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">organization-defined</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Versioning the framework</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">v1.0 (Jan 2023) baseline</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ profile updates ongoing</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="140" y="544" text-anchor="middle" font-weight="600">ISO 42001 audit</text>
+          <text x="140" y="562" text-anchor="middle" font-size="11">CB tests RMS effectiveness</text>
+          <text x="140" y="578" text-anchor="middle" font-size="11">AI RMF satisfies methodology</text>
+          <text x="140" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">primary external pathway</text>
+
+          <rect x="260" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="360" y="544" text-anchor="middle" font-weight="600">EU AI Act conformity</text>
+          <text x="360" y="562" text-anchor="middle" font-size="11">AI RMF informs Art. 9 RMS</text>
+          <text x="360" y="578" text-anchor="middle" font-size="11">+ Annex IV documentation</text>
+          <text x="360" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">methodological backbone</text>
+
+          <rect x="480" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="580" y="544" text-anchor="middle" font-weight="600">SOC 2+ AI examination</text>
+          <text x="580" y="562" text-anchor="middle" font-size="11">CPA folds AI controls</text>
+          <text x="580" y="578" text-anchor="middle" font-size="11">into report</text>
+          <text x="580" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">emerging path 2025-26</text>
+
+          <rect x="700" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="800" y="544" text-anchor="middle" font-weight="600">Federal procurement</text>
+          <text x="800" y="562" text-anchor="middle" font-size="11">OMB M-24-10 review</text>
+          <text x="800" y="578" text-anchor="middle" font-size="11">AI RMF as baseline</text>
+          <text x="800" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">for vendor sales to USG</text>
+
+          <rect x="920" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="544" text-anchor="middle" font-weight="600">Customer due diligence</text>
+          <text x="1020" y="562" text-anchor="middle" font-size="11">enterprise buyers asking</text>
+          <text x="1020" y="578" text-anchor="middle" font-size="11">"how do you do AI RMF?"</text>
+          <text x="1020" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">most-cited path 2024-25</text>
+
+          <rect x="1140" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="544" text-anchor="middle" font-weight="600">Internal validation</text>
+          <text x="1240" y="562" text-anchor="middle" font-size="11">internal audit / review</text>
+          <text x="1240" y="578" text-anchor="middle" font-size="11">no formal output</text>
+          <text x="1240" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">leads to other paths</text>
+
+          <rect x="40" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="140" y="664" text-anchor="middle" font-weight="600">3-year cert validity</text>
+          <text x="140" y="682" text-anchor="middle" font-size="11">AI RMF baked into</text>
+          <text x="140" y="698" text-anchor="middle" font-size="11">42001 documentation</text>
+          <text x="140" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">no AI RMF cert itself</text>
+
+          <rect x="260" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="360" y="664" text-anchor="middle" font-weight="600">CE marking outcome</text>
+          <text x="360" y="682" text-anchor="middle" font-size="11">conformity declared</text>
+          <text x="360" y="698" text-anchor="middle" font-size="11">via AI RMF-shaped RMS</text>
+          <text x="360" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">indirect validation</text>
+
+          <rect x="480" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="580" y="664" text-anchor="middle" font-weight="600">SOC 2 report outcome</text>
+          <text x="580" y="682" text-anchor="middle" font-size="11">CPA opinion</text>
+          <text x="580" y="698" text-anchor="middle" font-size="11">w/ AI mappings</text>
+          <text x="580" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">marketed as SOC 2 + AI</text>
+
+          <rect x="700" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="800" y="664" text-anchor="middle" font-weight="600">ATO-equivalent (if FedRAMP)</text>
+          <text x="800" y="682" text-anchor="middle" font-size="11">800-53 + AI RMF</text>
+          <text x="800" y="698" text-anchor="middle" font-size="11">control overlay</text>
+          <text x="800" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">M-24-10 for AI uses</text>
+
+          <rect x="920" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="664" text-anchor="middle" font-weight="600">Vendor questionnaires</text>
+          <text x="1020" y="682" text-anchor="middle" font-size="11">"are you AI RMF-aligned?"</text>
+          <text x="1020" y="698" text-anchor="middle" font-size="11">requires evidence</text>
+          <text x="1020" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">de facto requirement</text>
+
+          <rect x="1140" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="664" text-anchor="middle" font-weight="600">Self-attestation</text>
+          <text x="1240" y="682" text-anchor="middle" font-size="11">orgs publish profiles</text>
+          <text x="1240" y="698" text-anchor="middle" font-size="11">no third-party validation</text>
+          <text x="1240" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">low-cost option</text>
+
+          <rect x="540" y="760" width="300" height="50" fill="#13212d"/>
+          <text x="690" y="780" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">NO AI RMF CERTIFICATE</text>
+          <text x="690" y="797" text-anchor="middle" fill="#f3ecdd" font-size="11">Like CSF — read by everyone, audited via other frameworks</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="140" y1="600" x2="140" y2="638"/>
+            <line x1="360" y1="600" x2="360" y2="638"/>
+            <line x1="580" y1="600" x2="580" y2="638"/>
+            <line x1="800" y1="600" x2="800" y2="638"/>
+            <line x1="1020" y1="600" x2="1020" y2="638"/>
+            <line x1="1240" y1="600" x2="1240" y2="638"/>
+          </g>
+        </g>
+
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="120" y1="260" x2="140" y2="518"/>
+          <line x1="480" y1="260" x2="360" y2="518"/>
+          <line x1="660" y1="260" x2="800" y2="518"/>
+          <line x1="1020" y1="260" x2="1020" y2="518"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="126" y="370">GOVERN policies →</text>
+          <text x="126" y="383">42001 mgmt-system shell</text>
+          <text x="486" y="370">MEASURE evals →</text>
+          <text x="486" y="383">EU Art. 9 RMS docs</text>
+          <text x="666" y="370">MANAGE controls →</text>
+          <text x="666" y="383">M-24-10 federal review</text>
+          <text x="1026" y="370">profile maintenance →</text>
+          <text x="1026" y="383">customer questionnaires</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why AI RMF feels like CSF reinvented for a new domain</h3>
+        <p><strong>Voluntary, vocabulary-providing, methodology-shaping.</strong> Like NIST CSF (Volume IV), AI RMF was deliberately designed as a <em>framework</em> rather than a standard or regulation. NIST has no enforcement authority over private industry; AI RMF is an offering — adopt it because the structure is good, not because anyone requires you to. That voluntariness is also what made AI RMF universally adopted: every other AI governance framework, from ISO 42001 to the EU AI Act to the OECD AI Principles, treats AI RMF as foundational vocabulary.</p>
+
+        <p><strong>Released Jan 2023 — early enough to shape everything else.</strong> NIST AI 100-1 published January 26, 2023, eleven months before ISO/IEC 42001 (December 2023) and eighteen months before the EU AI Act entered force (August 2024). When ISO 42001's authors wrote Annex A controls, AI RMF's MAP/MEASURE/MANAGE practices were already establishing the field's vocabulary. When EU AI Act drafters specified Article 9's RMS requirements, AI RMF was the implicit reference. The result: organizations implementing AI RMF satisfy most of the methodology layer for both downstream frameworks before either was finalized.</p>
+
+        <p><strong>The Generative AI Profile (NIST AI 600-1, July 2024) made AI RMF instantly relevant again.</strong> Just as ISO 42001 was being adopted, NIST released a GenAI-specific profile identifying 12 unique GenAI risks (CBRN proliferation, confabulation, dangerous content, data privacy, human-AI configuration, information integrity, information security, intellectual property, obscene/abusive/harmful content, value chain &amp; component integration, harmful bias, environmental impact). The profile maps each risk to suggested actions across all four functions. For organizations using or building on foundation models, NIST AI 600-1 is now as essential as the core AI RMF.</p>
+
+        <div class="pull">
+          AI RMF gave the field its grammar. ISO 42001 gave it a management system. The EU AI Act gave it a regulatory regime. They cooperate; they don't compete.
+        </div>
+
+        <p><strong>The seven trustworthy characteristics anchor everything.</strong> AI RMF specifies that trustworthy AI systems should be valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair (with harmful bias managed). These seven characteristics map to almost every AI governance framework's principles. ISO 42001 Annex C lists similar organizational AI objectives. EU AI Act Articles 13-15 enumerate similar requirements. The trustworthy-AI vocabulary is now lingua franca.</p>
+
+        <p><strong>The external lane has no judge.</strong> Like NIST CSF, AI RMF's external column doesn't include certification body or regulator — it includes the assurance pathways that <em>incorporate</em> AI RMF: ISO 42001 audits use it as methodology, EU AI Act conformity assessments use it as RMS framework, federal procurement under OMB M-24-10 uses it as baseline, customer due diligence questionnaires ask "are you AI RMF-aligned?" The framework gets validated indirectly, by being folded into other validation regimes.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>The seven trustworthy characteristics</h3>
+        <ol>
+          <li>Valid and reliable</li>
+          <li>Safe</li>
+          <li>Secure and resilient</li>
+          <li>Accountable and transparent</li>
+          <li>Explainable and interpretable</li>
+          <li>Privacy-enhanced</li>
+          <li>Fair — with harmful bias managed</li>
+        </ol>
+        <p>From AI RMF Part 1 §3. These shape all four functions and become the default vocabulary for AI governance worldwide.</p>
+        <h3 style="margin-top:24px;">Companion documents</h3>
+        <p><strong>AI RMF Playbook</strong> — practical task suggestions for each subcategory. Living document on NIST web.</p>
+        <p><strong>NIST AI 600-1</strong> — GenAI Profile (July 2024)</p>
+        <p><strong>NIST AI 100-2</strong> — Adversarial ML taxonomy (Jan 2024)</p>
+        <p><strong>NIST IR 8312</strong> — Four principles of explainable AI</p>
+        <h3 style="margin-top:24px;">Adoption signals</h3>
+        <p>OMB M-24-10 (Mar 2024) — federal agencies must use AI RMF for AI risk management.</p>
+        <p>EO 14110 (Oct 2023, since rescinded but referenced) — accelerated NIST guidance.</p>
+        <p>Tech sector — most major AI providers publicly adopt AI RMF as part of their governance disclosures.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 2 -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Functions</div>
+        <h2>GOVERN at the center, MAP/MEASURE/MANAGE around it</h2>
+      </div>
+      <div class="ref">NIST AI 100-1 Part 2<br>+ AI RMF Playbook</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The four functions and their categories</h3>
+      <svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">4 FUNCTIONS · 19 CATEGORIES · 72 SUBCATEGORIES</text>
+
+        <!-- GOVERN at center -->
+        <rect x="440" y="320" width="400" height="160" fill="#13212d"/>
+        <text x="640" y="358" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">CROSS-CUTTING FOUNDATION</text>
+        <text x="640" y="396" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="38" font-style="italic" font-weight="600">GOVERN</text>
+        <text x="640" y="422" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">6 categories · 19 subcategories</text>
+        <text x="640" y="446" text-anchor="middle" fill="#f3ecdd" font-size="10.5" font-style="italic">Policies · accountability · workforce</text>
+        <text x="640" y="464" text-anchor="middle" fill="#f3ecdd" font-size="10.5" font-style="italic">culture · transparency · supply chain</text>
+
+        <!-- MAP top -->
+        <rect x="240" y="80" width="800" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2"/>
+        <text x="260" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">FUNCTION · UNDERSTAND CONTEXT</text>
+        <text x="260" y="138" font-family="Fraunces, serif" font-size="28" font-weight="500">MAP</text>
+        <text x="260" y="162" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">5 categories · 18 subcategories</text>
+        <line x1="260" y1="178" x2="1020" y2="178" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="260" y="202">— MAP 1: Context · purpose · system understood</text>
+          <text x="260" y="220">— MAP 2: Categorization &amp; classification</text>
+          <text x="260" y="238">— MAP 3: Capabilities · benefits · costs analyzed</text>
+          <text x="260" y="256">— MAP 4: Risks &amp; benefits to all impacted parties</text>
+          <text x="600" y="202">— MAP 5: Impacts characterized</text>
+          <text x="600" y="220" font-style="italic" fill="#a37a1f">  (the broad impact landscape)</text>
+          <text x="600" y="240" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Maps to: ISO 42001 Cl. 4 + 6.1.4 (AIIA);</text>
+          <text x="600" y="256" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">EU AI Act Art. 6 + Annex III + Art. 27</text>
+        </g>
+
+        <!-- MEASURE left -->
+        <rect x="40" y="280" width="380" height="280" fill="#f3ecdd" stroke="#3f5337" stroke-width="2"/>
+        <text x="60" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">FUNCTION · ANALYZE</text>
+        <text x="60" y="338" font-family="Fraunces, serif" font-size="28" font-weight="500">MEASURE</text>
+        <text x="60" y="362" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">4 categories · 18 subcategories</text>
+        <line x1="60" y1="378" x2="400" y2="378" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="402">— MEASURE 1: Methods identified · applied</text>
+          <text x="60" y="420">— MEASURE 2: Trustworthy characteristics</text>
+          <text x="60" y="438">  evaluated · benchmarked</text>
+          <text x="60" y="456">— MEASURE 3: Mechanisms for tracking risks</text>
+          <text x="60" y="474">  (drift · ongoing perf · incidents)</text>
+          <text x="60" y="492">— MEASURE 4: Feedback gathered · evaluated</text>
+          <text x="60" y="510">  (impact assessment refresh)</text>
+        </g>
+        <text x="60" y="540" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">Maps to: ISO 42001 Cl. 9.1 + A.6.2.6;</text>
+        <text x="60" y="556" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">EU AI Act Art. 12 + Art. 15 + Art. 72</text>
+
+        <!-- MANAGE right -->
+        <rect x="860" y="280" width="380" height="280" fill="#f3ecdd" stroke="#a37a1f" stroke-width="2"/>
+        <text x="880" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">FUNCTION · RESPOND</text>
+        <text x="880" y="338" font-family="Fraunces, serif" font-size="28" font-weight="500">MANAGE</text>
+        <text x="880" y="362" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">4 categories · 17 subcategories</text>
+        <line x1="880" y1="378" x2="1220" y2="378" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="880" y="402">— MANAGE 1: Risk responses prioritized</text>
+          <text x="880" y="420">— MANAGE 2: Strategies for risk treatment</text>
+          <text x="880" y="438">  (mitigate · transfer · accept · avoid)</text>
+          <text x="880" y="456">— MANAGE 3: AI risks documented</text>
+          <text x="880" y="474">  &amp; communicated</text>
+          <text x="880" y="492">— MANAGE 4: Improvement / response</text>
+          <text x="880" y="510">  to incidents · monitored over time</text>
+        </g>
+        <text x="880" y="540" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">Maps to: ISO 42001 Cl. 8 + 10;</text>
+        <text x="880" y="556" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">EU AI Act Art. 16, 17, 26, 73</text>
+
+        <!-- bottom: GOVERN categories -->
+        <rect x="40" y="600" width="1200" height="140" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="60" y="626" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#13212d" font-weight="600">GOVERN — SIX CATEGORIES UNDERPINNING ALL OTHER FUNCTIONS</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="652"><tspan font-weight="600">GOVERN 1</tspan> Policies, processes, procedures &amp; practices for AI risk management exist and are operational</text>
+          <text x="60" y="670"><tspan font-weight="600">GOVERN 2</tspan> Accountability structures established · roles &amp; responsibilities allocated</text>
+          <text x="60" y="688"><tspan font-weight="600">GOVERN 3</tspan> Workforce diversity, equity, inclusion · accessibility prioritized</text>
+          <text x="60" y="706"><tspan font-weight="600">GOVERN 4</tspan> Culture of risk management cultivated · leadership commitment</text>
+          <text x="60" y="724"><tspan font-weight="600">GOVERN 5</tspan> Engagement &amp; communication processes for AI risk information</text>
+          <text x="780" y="652" font-style="italic" fill="#a37a1f">GOVERN 6 — Supply chain risks</text>
+          <text x="780" y="670" font-style="italic" fill="#a37a1f">  (third-party AI components)</text>
+          <text x="780" y="700" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">GOVERN is cross-cutting — its</text>
+          <text x="780" y="716" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">categories interact with all of</text>
+          <text x="780" y="732" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">MAP, MEASURE, MANAGE.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>How the four functions actually interact</h3>
+        <p><strong>GOVERN is not a phase — it's the foundation.</strong> Unlike a maturity model where you complete one phase and move to the next, GOVERN runs continuously underneath everything else. Its six categories (policies, accountability, workforce, culture, engagement, supply chain) are the conditions that make MAP, MEASURE, and MANAGE possible. Organizations that treat GOVERN as "we'll do that later" find their MAP and MEASURE work has no decision-making structure to feed into.</p>
+
+        <p><strong>MAP is bigger than risk identification.</strong> Five categories cover context establishment (MAP 1), categorization (MAP 2), capabilities/benefits/costs analysis (MAP 3), risks/benefits to all parties (MAP 4), and impact characterization (MAP 5). MAP 5 in particular is where most organizations underspecify — characterizing impacts on direct users, indirect users (people affected by AI decisions), third parties, and society broadly. The EU AI Act's Article 27 FRIA is essentially a regulatory codification of MAP 5.</p>
+
+        <p><strong>MEASURE is where most programs stall.</strong> The four categories — methods, trustworthiness evaluation, ongoing tracking, feedback gathering — require evaluation infrastructure most organizations don't have. Measuring fairness across protected attributes, robustness against adversarial inputs, drift over time, and stakeholder feedback all require dedicated tooling and discipline. MEASURE is where AI red teams, evaluation engineers, and ML observability platforms earn their keep. Programs treat MEASURE as the differentiator between mature AI governance and AI governance theater.</p>
+
+        <div class="pull">
+          GOVERN sets the rules. MAP says what we have. MEASURE says how it's behaving. MANAGE says what we're going to do about it.
+        </div>
+
+        <p><strong>MANAGE is where decisions get made.</strong> Risk treatment options (mitigate, transfer, accept, avoid), prioritization, documentation, and incident response. MANAGE 4 specifically — improvement and response to incidents over time — is the closed loop that distinguishes AI risk management from AI risk theater. Organizations that don't track AI incidents, perform root-cause analysis, and feed lessons back into MAP/MEASURE never improve.</p>
+
+        <p><strong>The four functions are not sequential in practice.</strong> A new AI system goes through MAP-MEASURE-MANAGE roughly in order during initial deployment, but in steady-state operation all four run continuously. Drift detected in MEASURE feeds back to MAP (re-characterize the impact landscape). New regulatory requirements feed GOVERN updates. Customer feedback feeds MEASURE 4. The framework's loop is iterative, not linear.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Counts at a glance</h3>
+        <p><strong>GOVERN:</strong> 6 categories · 19 subcategories</p>
+        <p><strong>MAP:</strong> 5 categories · 18 subcategories</p>
+        <p><strong>MEASURE:</strong> 4 categories · 18 subcategories</p>
+        <p><strong>MANAGE:</strong> 4 categories · 17 subcategories</p>
+        <p><em>Total: 19 categories · 72 subcategories</em></p>
+        <h3 style="margin-top:24px;">Profile architecture</h3>
+        <p><strong>Use-Case Profiles</strong> — for specific applications (e.g., HR hiring AI, healthcare diagnosis AI). Tailor the framework to use case.</p>
+        <p><strong>Cross-Sectoral Profiles</strong> — for cross-cutting concerns (e.g., the GenAI Profile NIST AI 600-1).</p>
+        <p>Profiles document subcategory relevance and risk treatment for the specific context.</p>
+        <h3 style="margin-top:24px;">The Playbook</h3>
+        <p>NIST publishes a Playbook companion that lists practical tasks aligned to each subcategory. The Playbook is informative, not normative — implementing all suggested tasks isn't required.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 3 -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — GenAI Profile</div>
+        <h2>NIST AI 600-1 — twelve risks unique to generative AI</h2>
+      </div>
+      <div class="ref">NIST AI 600-1 (July 2024)<br>Generative AI Profile</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The 12 GenAI risks identified in NIST AI 600-1</h3>
+      <svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#7a1f24"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">12 RISKS UNIQUE TO OR EXACERBATED BY GENERATIVE AI</text>
+
+        <g font-size="11" fill="#13212d">
+          <!-- Row 1 -->
+          <rect x="40" y="80" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 1</text>
+          <text x="60" y="130" font-family="Fraunces, serif" font-size="14" font-weight="500">CBRN proliferation</text>
+          <line x1="60" y1="144" x2="310" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="166">Easier access to chemical,</text>
+            <text x="60" y="184">biological, radiological, nuclear</text>
+            <text x="60" y="202">information / capabilities</text>
+            <text x="60" y="220">via GenAI</text>
+          </g>
+
+          <rect x="345" y="80" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 2</text>
+          <text x="365" y="130" font-family="Fraunces, serif" font-size="14" font-weight="500">Confabulation</text>
+          <line x1="365" y1="144" x2="615" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="166">"Hallucinations" — confidently</text>
+            <text x="365" y="184">stated incorrect or fabricated</text>
+            <text x="365" y="202">outputs presented as facts</text>
+          </g>
+
+          <rect x="650" y="80" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 3</text>
+          <text x="670" y="130" font-family="Fraunces, serif" font-size="14" font-weight="500">Dangerous, violent or</text>
+          <text x="670" y="148" font-family="Fraunces, serif" font-size="14" font-weight="500">hateful content</text>
+          <line x1="670" y1="162" x2="920" y2="162" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="184">Generated content that incites,</text>
+            <text x="670" y="202">facilitates, or threatens harm</text>
+            <text x="670" y="220">to people or groups</text>
+          </g>
+
+          <rect x="955" y="80" width="285" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 4</text>
+          <text x="975" y="130" font-family="Fraunces, serif" font-size="14" font-weight="500">Data privacy</text>
+          <line x1="975" y1="144" x2="1230" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="166">Memorization &amp; leakage of</text>
+            <text x="975" y="184">training data; PII exposure;</text>
+            <text x="975" y="202">unauthorized inference of</text>
+            <text x="975" y="220">private attributes</text>
+          </g>
+
+          <!-- Row 2 -->
+          <rect x="40" y="260" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="286" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 5</text>
+          <text x="60" y="310" font-family="Fraunces, serif" font-size="14" font-weight="500">Environmental impact</text>
+          <line x1="60" y1="324" x2="310" y2="324" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="346">Energy &amp; water consumption</text>
+            <text x="60" y="364">of training and inference;</text>
+            <text x="60" y="382">e-waste from compute</text>
+          </g>
+
+          <rect x="345" y="260" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="286" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 6</text>
+          <text x="365" y="310" font-family="Fraunces, serif" font-size="14" font-weight="500">Harmful bias and</text>
+          <text x="365" y="328" font-family="Fraunces, serif" font-size="14" font-weight="500">homogenization</text>
+          <line x1="365" y1="342" x2="615" y2="342" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="364">Reinforcement &amp; amplification</text>
+            <text x="365" y="382">of bias; convergence of</text>
+            <text x="365" y="400">cultural representations</text>
+          </g>
+
+          <rect x="650" y="260" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="286" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 7</text>
+          <text x="670" y="310" font-family="Fraunces, serif" font-size="14" font-weight="500">Human-AI configuration</text>
+          <line x1="670" y1="324" x2="920" y2="324" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="346">Over-reliance on AI; mis-</text>
+            <text x="670" y="364">calibrated trust; emotional</text>
+            <text x="670" y="382">attachment; anthropomorphization</text>
+          </g>
+
+          <rect x="955" y="260" width="285" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="286" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 8</text>
+          <text x="975" y="310" font-family="Fraunces, serif" font-size="14" font-weight="500">Information integrity</text>
+          <line x1="975" y1="324" x2="1230" y2="324" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="346">Disinformation; deepfakes;</text>
+            <text x="975" y="364">scaled deceptive content;</text>
+            <text x="975" y="382">erosion of trust in info</text>
+          </g>
+
+          <!-- Row 3 -->
+          <rect x="40" y="440" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="466" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 9</text>
+          <text x="60" y="490" font-family="Fraunces, serif" font-size="14" font-weight="500">Information security</text>
+          <line x1="60" y1="504" x2="310" y2="504" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="526">Lower cost of cyber attacks;</text>
+            <text x="60" y="544">code-generation for malware;</text>
+            <text x="60" y="562">phishing scale; prompt injection</text>
+          </g>
+
+          <rect x="345" y="440" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="466" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 10</text>
+          <text x="365" y="490" font-family="Fraunces, serif" font-size="14" font-weight="500">Intellectual property</text>
+          <line x1="365" y1="504" x2="615" y2="504" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="526">Reproduction of copyrighted</text>
+            <text x="365" y="544">material; attribution problems;</text>
+            <text x="365" y="562">licensing of training data</text>
+          </g>
+
+          <rect x="650" y="440" width="290" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="466" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 11</text>
+          <text x="670" y="490" font-family="Fraunces, serif" font-size="14" font-weight="500">Obscene, degrading,</text>
+          <text x="670" y="508" font-family="Fraunces, serif" font-size="14" font-weight="500">abusive content</text>
+          <line x1="670" y1="522" x2="920" y2="522" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="544">Including non-consensual</text>
+            <text x="670" y="562">intimate imagery; CSAM;</text>
+            <text x="670" y="580">harassment</text>
+          </g>
+
+          <rect x="955" y="440" width="285" height="160" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="466" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">RISK 12</text>
+          <text x="975" y="490" font-family="Fraunces, serif" font-size="14" font-weight="500">Value chain &amp;</text>
+          <text x="975" y="508" font-family="Fraunces, serif" font-size="14" font-weight="500">component integration</text>
+          <line x1="975" y1="522" x2="1230" y2="522" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="544">Cascading risks in chains of</text>
+            <text x="975" y="562">third-party models, data, tools;</text>
+            <text x="975" y="580">opacity of upstream choices</text>
+          </g>
+
+          <!-- bottom note -->
+          <rect x="40" y="620" width="1200" height="120" fill="#13212d"/>
+          <text x="60" y="650" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">EACH RISK MAPS TO ALL FOUR FUNCTIONS</text>
+          <g fill="#f3ecdd" font-size="11">
+            <text x="60" y="676">For each of the 12 risks, NIST AI 600-1 lists ~10–25 suggested actions — distributed across GOVERN (policy &amp;</text>
+            <text x="60" y="694">accountability), MAP (context &amp; classification), MEASURE (evaluation &amp; monitoring), and MANAGE (response &amp;</text>
+            <text x="60" y="712">treatment). Total: ~200 specific GenAI-related actions, all optional. Programs select based on which risks apply.</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why the GenAI Profile is the document everyone reads</h3>
+        <p><strong>Released July 2024 — directly responsive to the post-ChatGPT environment.</strong> When AI RMF 1.0 was published in January 2023, ChatGPT was barely two months old; foundation models were a research area, not a deployment category. By mid-2024 GenAI was the dominant AI use case in the enterprise. NIST AI 600-1 closed the gap — providing GenAI-specific risk identification and mitigation suggestions on top of the core AI RMF.</p>
+
+        <p><strong>The 12 risks reflect a maturing field.</strong> Some risks (confabulation, harmful bias, IP) were familiar from pre-GenAI work. Others (CBRN proliferation, value-chain integration, environmental impact) became salient specifically because foundation models scale capability and dependency in unprecedented ways. The "human-AI configuration" risk acknowledges that the human side of human-AI systems can fail too — over-reliance, anthropomorphization, miscalibrated trust.</p>
+
+        <p><strong>Confabulation is the most-relevant risk for most organizations.</strong> If you deploy a GenAI system that can present incorrect information confidently, you have confabulation risk. Mitigations include retrieval-augmented generation, explicit uncertainty signaling, human-in-the-loop review, output validation, and user education. NIST AI 600-1 lists ~20 specific actions across all four functions for confabulation alone.</p>
+
+        <div class="pull">
+          NIST AI 600-1 is now the de-facto reference for GenAI risk programs — even outside organizations that haven't formally adopted AI RMF 1.0.
+        </div>
+
+        <p><strong>Human-AI configuration is the most-overlooked.</strong> Risk 7 covers over-reliance on AI outputs, miscalibrated trust, emotional attachment, and anthropomorphization. These risks are easy to dismiss as "user education" problems but are fundamental to whether AI systems produce good outcomes in practice. UI design choices (does the system signal uncertainty?), workflow integration (do humans review or rubber-stamp?), and organizational culture (is "the AI said so" treated as authoritative?) all sit inside this risk category.</p>
+
+        <p><strong>Value-chain &amp; component integration is structural.</strong> Risk 12 acknowledges that most enterprise GenAI deployments are not built from scratch — they're stacks of foundation models from one provider, embedding models from another, vector databases from a third, retrieval components from a fourth, evaluation tools from a fifth. Each layer adds risk; each layer is opaque to the layers above. Programs that don't map and manage their AI value chain will discover the failure modes through incidents.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>How to use NIST AI 600-1</h3>
+        <ol>
+          <li>For each AI system in scope, identify which of the 12 GenAI risks apply</li>
+          <li>For each applicable risk, review NIST's suggested actions across GOVERN/MAP/MEASURE/MANAGE</li>
+          <li>Select actions appropriate to your risk tolerance + capacity</li>
+          <li>Document selection in your GenAI profile</li>
+          <li>Implement, monitor, refresh</li>
+        </ol>
+        <h3 style="margin-top:24px;">Companion reads for GenAI</h3>
+        <p><strong>NIST AI 100-2</strong> — Adversarial ML taxonomy (Jan 2024)</p>
+        <p><strong>NIST AI 100-4</strong> — Reducing risks posed by synthetic content (April 2024)</p>
+        <p><strong>NIST IR 8367</strong> — Faces, fingerprints, and feet — face recognition vendor test (May 2024)</p>
+        <h3 style="margin-top:24px;">EU AI Act overlap</h3>
+        <p>NIST AI 600-1 risks map closely to EU AI Act considerations:</p>
+        <ul>
+          <li>Information integrity → Art. 50 transparency</li>
+          <li>Confabulation → Art. 13 instructions for use</li>
+          <li>Bias → Art. 10 data governance</li>
+          <li>IP → Art. 53 copyright policies</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 4 -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>AI RMF as the methodology layer everything else inherits</h2>
+      </div>
+      <div class="ref">Mappings to ISO 42001, EU AI Act<br>NIST CSF, federal procurement</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:14%">AI RMF function</th>
+          <th>ISO 42001:2023</th>
+          <th>EU AI Act</th>
+          <th>NIST CSF 2.0</th>
+          <th>ISO 27001:2022</th>
+          <th>SOC 2 (TSC)</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">GOVERN 1 — Policies</td>
+          <td><code>A.2</code> (AI policies)</td>
+          <td><code>Art. 17</code> QMS</td>
+          <td><code>GV.PO</code></td>
+          <td><code>A.5.1</code></td>
+          <td><code>CC5.3</code></td>
+          <td><code>04.a</code></td>
+          <td class="shared">AI policy, supporting standards, communication records</td></tr>
+        <tr><td class="dom">GOVERN 2 — Accountability</td>
+          <td><code>A.3</code> internal org</td>
+          <td><code>Art. 22</code> auth rep</td>
+          <td><code>GV.RR</code></td>
+          <td><code>Cl. 5.3</code></td>
+          <td><code>CC1.3</code></td>
+          <td><code>02.a</code></td>
+          <td class="shared">RACI for AI, role descriptions, accountability matrix</td></tr>
+        <tr><td class="dom">GOVERN 3 — DEI &amp; access</td>
+          <td><code>A.3.2</code> roles</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Workforce composition, DEI training, accessibility audit results</td></tr>
+        <tr><td class="dom">GOVERN 4 — Culture</td>
+          <td><code>Cl. 5.1</code> leadership</td>
+          <td><code>Art. 4</code> AI literacy</td>
+          <td><code>GV.OC</code></td>
+          <td><code>Cl. 5.1</code></td>
+          <td><code>CC1.1</code></td>
+          <td><code>02.e</code></td>
+          <td class="shared">Leadership comms, training records, engagement surveys</td></tr>
+        <tr><td class="dom">GOVERN 5 — Engagement</td>
+          <td><code>A.8</code> info for users</td>
+          <td><code>Art. 13</code> · <code>Art. 50</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>A.5.34</code></td>
+          <td><code>P1</code></td>
+          <td><code>13</code></td>
+          <td class="shared">Stakeholder maps, model cards, public disclosures</td></tr>
+        <tr><td class="dom">GOVERN 6 — Supply chain</td>
+          <td><code>A.10</code> third-party</td>
+          <td><code>Art. 25</code> value chain</td>
+          <td><code>GV.SC</code></td>
+          <td><code>A.5.19</code> – <code>A.5.23</code></td>
+          <td><code>CC9.2</code></td>
+          <td><code>05.k</code></td>
+          <td class="shared">Vendor AI inventory, due-diligence packages, contracts</td></tr>
+        <tr><td class="dom">MAP 1 — Context</td>
+          <td><code>Cl. 4</code></td>
+          <td><code>Art. 6</code> + Annex III</td>
+          <td><code>GV.OC</code></td>
+          <td><code>Cl. 4</code></td>
+          <td><code>CC1.1</code></td>
+          <td><code>00.a</code></td>
+          <td class="shared">AI system inventory, scope statement, classification rationale</td></tr>
+        <tr><td class="dom">MAP 2 — Categorization</td>
+          <td><code>Cl. 6.1.4</code> AIIA</td>
+          <td><code>Art. 6(3)</code> escape</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Risk-tier classification, Annex III mapping, exception docs</td></tr>
+        <tr><td class="dom">MAP 3 — Capabilities · costs</td>
+          <td><code>A.5.3</code> impact</td>
+          <td><code>Art. 9</code> RMS</td>
+          <td><code>ID.RA</code></td>
+          <td><code>Cl. 6.1.2</code></td>
+          <td><code>CC3.2</code></td>
+          <td><code>03.b</code></td>
+          <td class="shared">Cost-benefit memos, performance benchmarks, business cases</td></tr>
+        <tr><td class="dom">MAP 4 — Risks &amp; benefits</td>
+          <td><code>Cl. 6.1.4</code></td>
+          <td><code>Art. 27</code> FRIA</td>
+          <td><code>ID.RA</code></td>
+          <td><code>Cl. 6.1.2</code></td>
+          <td><code>CC3.2</code></td>
+          <td><code>03.a</code></td>
+          <td class="shared">Stakeholder analysis, risk register, AIIA / FRIA outputs</td></tr>
+        <tr><td class="dom">MAP 5 — Impacts</td>
+          <td><code>A.5.4</code> AIIA</td>
+          <td><code>Art. 27</code> · <code>Art. 9</code></td>
+          <td><code>ID.RA</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">AIIA per system, affected-parties analysis, mitigation register</td></tr>
+        <tr><td class="dom">MEASURE 1 — Methods</td>
+          <td><code>A.6.2.6</code> verify</td>
+          <td><code>Art. 11</code> tech docs</td>
+          <td><code>ID.IM</code></td>
+          <td><code>A.8.8</code></td>
+          <td><code>CC4.1</code></td>
+          <td><code>10.k</code></td>
+          <td class="shared">Evaluation methodology, benchmark choice, eval framework</td></tr>
+        <tr><td class="dom">MEASURE 2 — Trustworthy chars</td>
+          <td><code>A.6.2.4</code> · <code>A.6.2.7</code></td>
+          <td><code>Art. 15</code> robustness</td>
+          <td><code>PR.DS-01</code></td>
+          <td><code>A.8.7</code></td>
+          <td><code>CC7.2</code></td>
+          <td><code>09.j</code></td>
+          <td class="shared">Eval reports, fairness metrics, robustness tests, red-team</td></tr>
+        <tr><td class="dom">MEASURE 3 — Tracking</td>
+          <td><code>Cl. 9.1</code></td>
+          <td><code>Art. 12</code> logs · <code>Art. 72</code></td>
+          <td><code>DE.CM</code></td>
+          <td><code>A.8.15</code></td>
+          <td><code>CC7.1</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">Drift monitoring, performance dashboards, log retention</td></tr>
+        <tr><td class="dom">MEASURE 4 — Feedback</td>
+          <td><code>A.5.5</code> review</td>
+          <td><code>Art. 72</code> post-market</td>
+          <td><code>ID.IM</code></td>
+          <td><code>Cl. 9.1</code></td>
+          <td><code>CC4.2</code></td>
+          <td><code>06.h</code></td>
+          <td class="shared">User feedback, issue trackers, AIIA refresh records</td></tr>
+        <tr><td class="dom">MANAGE 1 — Prioritize</td>
+          <td><code>A.9</code> use</td>
+          <td><code>Art. 26</code> deployer</td>
+          <td><code>GV.RM</code></td>
+          <td><code>Cl. 6.1.3</code></td>
+          <td><code>CC3.4</code></td>
+          <td><code>03.b</code></td>
+          <td class="shared">Risk treatment plan, prioritization rationale, decision logs</td></tr>
+        <tr><td class="dom">MANAGE 2 — Treatment</td>
+          <td><code>Cl. 6.1.3</code></td>
+          <td><code>Art. 9</code> mitigation</td>
+          <td><code>ID.RA</code></td>
+          <td><code>Cl. 6.1.3</code></td>
+          <td><code>CC3.4</code></td>
+          <td><code>03.b</code></td>
+          <td class="shared">Treatment options, residual risk, treatment evidence</td></tr>
+        <tr><td class="dom">MANAGE 3 — Communicate</td>
+          <td><code>A.8</code> info for users</td>
+          <td><code>Art. 13</code> · <code>Art. 50</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>A.5.34</code></td>
+          <td><code>P1</code></td>
+          <td><code>13</code></td>
+          <td class="shared">Risk communications, model cards, user disclosures</td></tr>
+        <tr><td class="dom">MANAGE 4 — Improve</td>
+          <td><code>Cl. 10</code></td>
+          <td><code>Art. 73</code> incidents</td>
+          <td><code>RS.MA</code></td>
+          <td><code>A.5.24</code> – <code>A.5.27</code></td>
+          <td><code>CC7.3</code></td>
+          <td><code>11</code></td>
+          <td class="shared">Incident log, RCA, corrective actions, lessons learned</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>Where AI RMF sits in the AI governance stack</h3>
+        <p>The crosswalk above tells the architectural story. <strong>AI RMF is the methodology layer that almost everyone else inherits.</strong> ISO 42001 takes AI RMF's GOVERN/MAP/MEASURE/MANAGE practices and structures them as a management system. The EU AI Act's Article 9 (RMS) and Article 17 (QMS) require what AI RMF describes. NIST CSF 2.0 acknowledges AI RMF as the AI-specific extension of the GOVERN function. Most enterprise AI governance programs use AI RMF as the methodology because it doesn't require certification, doesn't have legal stakes, and provides a vocabulary everyone in the field recognizes.</p>
+
+        <p><strong>The cleanest implementation pattern.</strong> Adopt AI RMF as your methodology. Use ISO 42001 as your management-system shell (which gives you a certification path). Address EU AI Act obligations as a regulatory overlay where applicable. The three frameworks cooperate cleanly — every artifact you create satisfies multiple frameworks. The marginal cost of adding ISO 42001 to an existing AI RMF program is low; the marginal cost of adding EU AI Act conformity is low if you're already 42001-certified.</p>
+
+        <div class="pull">
+          AI RMF gives you the verbs. ISO 42001 gives you the management system. EU AI Act gives you the legal requirements. They're a stack, not alternatives.
+        </div>
+
+        <p><strong>The federal procurement angle is real and growing.</strong> OMB Memo M-24-10 (March 2024) directed federal agencies to use AI RMF for AI risk management. Federal contractors selling AI capabilities to government must demonstrate AI RMF alignment as part of procurement reviews. For CSPs already in FedRAMP (Volume VIII), this layers an AI RMF overlay onto existing 800-53 control implementations. Expect this requirement to expand through 2026-2027 as agencies mature their AI procurement processes.</p>
+
+        <p><strong>The customer-driven path is currently the strongest signal.</strong> Enterprise buyers in 2025-2026 are routinely asking AI vendors "how do you implement NIST AI RMF?" — even when they don't audit the answer. Having a documented AI RMF profile (Use-Case Profile or Cross-Sectoral Profile) becomes a sales asset. Profiles can be summarized in vendor security questionnaires, customer-facing trust portals, or AI-specific addenda to MSAs. The bar is shifting from "do you do AI safely?" to "show me your AI RMF profile."</p>
+
+        <p><strong>This volume closes the Atlas because it returns to first principles.</strong> Eleven volumes in, the pattern is consistent — every framework prescribes practices that map to a small set of governance verbs (govern, map, measure, manage; or in CSF's terms, govern, identify, protect, detect, respond, recover). AI RMF chose its four verbs intentionally to mirror that earlier work. The Atlas as a whole demonstrates that compliance frameworks are not separate kingdoms but variations on shared structural commitments — different vocabulary, different audit mechanics, common architectural moves.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Adoption strategy</h3>
+        <p><strong>Pre-product:</strong> Implement GOVERN. Even one or two policies establish the scaffolding.</p>
+        <p><strong>First AI in production:</strong> Add MAP. Document the system, its purpose, its risks.</p>
+        <p><strong>Multiple AI systems:</strong> Add MEASURE. Build evaluation infrastructure.</p>
+        <p><strong>Mature program:</strong> Full MANAGE loop. Incident response, treatment options, lessons learned.</p>
+        <p><strong>Customer-facing:</strong> Publish a profile. Make it visible.</p>
+        <p><strong>Regulatory exposure:</strong> Layer ISO 42001 + EU AI Act on top.</p>
+        <h3 style="margin-top:24px;">Closing the Atlas</h3>
+        <p>Eleven volumes. Three parts. From SOX 2026.2 to NIST AI RMF Edition 2026.1, the Atlas covers the major frameworks shaping how organizations are audited, certified, attested, authorized, and regulated as of mid-2026.</p>
+        <p>The next year will see AI governance maturity catch up to traditional security and assurance. The Atlas will follow.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume XI · NIST AI RMF<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>NIST AI 100-1 · NIST AI 600-1 · OMB M-24-10</div>
+    <div><strong>Next</strong><br>Atlas complete · 11 volumes shipped<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

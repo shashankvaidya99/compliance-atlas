@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume VII: HIPAA Security Rule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb a:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; transition:background .2s; position:relative; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:var(--shadow); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker{ color:var(--oxblood); font-family:"JetBrains Mono",monospace; }
+  .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:13%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    nav.layers{ grid-template-columns:repeat(2,1fr); }
+    nav.layers button{ border-bottom:1px solid var(--ink); }
+    .twocol{ grid-template-columns:1fr; }
+    footer.colophon{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume VII</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume VII · HIPAA Security Rule · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      45 CFR Part 164 Subparts C, D, E<br>
+      OCR Audit Protocol · HITECH Act
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      HIPAA is the Atlas's first <em>regulatory</em> framework — federal law, enforced by HHS Office for Civil Rights, with no certification body and no annual audit ritual. The Security Rule (Subpart C) is principle-based and short by federal-law standards. Enforcement comes from breaches and complaints, not from scheduled visits. The discipline is in proving you would have passed.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — covered entity / BA</span>
+      <span class="swatch ext">External — OCR &amp; assurance pathways</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        No HIPAA certificate exists. Like CSF, validation comes through SOC 2+ examinations, HITRUST (which absorbs HIPAA wholesale), or third-party HIPAA risk assessments. OCR audits when investigating breaches or complaints — rarely otherwise.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">CE/BA × OCR · BAAs · breach</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Control Mindmap</span>
+      <span class="sub">3 safeguard categories</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Evidence &amp; Risk Analysis</span>
+      <span class="sub">SRA · addressable mechanics</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">HIPAA → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- LAYER 1 -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>Continuous compliance, episodic enforcement</h2>
+      </div>
+      <div class="ref">45 CFR §§164.306, 164.308–316<br>HHS OCR enforcement</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The HIPAA cycle — operating program × OCR / assurance pathways</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">CONTINUOUS COMPLIANCE →</text>
+          <text x="120" y="50" text-anchor="middle">Define entity</text>
+          <text x="320" y="50" text-anchor="middle">Risk Analysis</text>
+          <text x="520" y="50" text-anchor="middle">Implement safeguards</text>
+          <text x="720" y="50" text-anchor="middle">Continuous ops</text>
+          <text x="920" y="50" text-anchor="middle">Monitor &amp; refine</text>
+          <text x="1120" y="50" text-anchor="middle">Triggering event</text>
+          <text x="1290" y="50" text-anchor="middle">Response</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — COVERED ENTITY OR BUSINESS ASSOCIATE</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — OCR · ASSURANCE PATHWAYS · LITIGATION</text>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">CE / BA / Subcontractor</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">determine status</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">§160.103 definitions</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Risk Analysis</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">§164.308(a)(1)(ii)(A)</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">foundational artifact</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Risk Mgmt plan</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">§164.308(a)(1)(ii)(B)</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">treats identified risks</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">Implement safeguards</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">Admin · Phys · Tech</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Required + Addressable</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Workforce training</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">§164.308(a)(5)</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">documented annually+</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Periodic review</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">§164.306(e) · ongoing</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">env / threat changes</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Breach response</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">§164.402 risk assess.</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">4-factor breach test</text>
+
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">BAA execution</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">w/ all BAs</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">§164.308(b) · §164.314</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">PHI inventory</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">where ePHI lives</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">often missing</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Sanction policy</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">§164.308(a)(1)(ii)(C)</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">workforce violations</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Documentation</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">§164.316 · 6-year retention</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">policies + records</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Incident procedures</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">§164.308(a)(6)</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">detect · respond · log</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">BA monitoring</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">satisfactory assurances</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">SOC 2 / HITRUST review</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Notification triggered</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">≥500 affected = imm.</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">§164.404, .406, .408</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="140" y="544" text-anchor="middle" font-weight="600">SOC 2+ examination</text>
+          <text x="140" y="562" text-anchor="middle" font-size="11">CPA folds HIPAA controls</text>
+          <text x="140" y="578" text-anchor="middle" font-size="11">into the SOC 2 report</text>
+          <text x="140" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">most common path</text>
+
+          <rect x="260" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="360" y="544" text-anchor="middle" font-weight="600">HITRUST r2</text>
+          <text x="360" y="562" text-anchor="middle" font-size="11">absorbs HIPAA wholesale</text>
+          <text x="360" y="578" text-anchor="middle" font-size="11">cert maps every spec</text>
+          <text x="360" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">healthcare standard</text>
+
+          <rect x="480" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="580" y="544" text-anchor="middle" font-weight="600">Third-party HIPAA</text>
+          <text x="580" y="562" text-anchor="middle" font-size="11">risk assessment / audit</text>
+          <text x="580" y="578" text-anchor="middle" font-size="11">readiness check</text>
+          <text x="580" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">no formal cert issued</text>
+
+          <rect x="700" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="800" y="544" text-anchor="middle" font-weight="600">OCR investigation</text>
+          <text x="800" y="562" text-anchor="middle" font-size="11">breach- or complaint-driven</text>
+          <text x="800" y="578" text-anchor="middle" font-size="11">document request first</text>
+          <text x="800" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">never happens until it does</text>
+
+          <rect x="920" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="544" text-anchor="middle" font-weight="600">Resolution Agreement</text>
+          <text x="1020" y="562" text-anchor="middle" font-size="11">CMP or CAP w/ monitor</text>
+          <text x="1020" y="578" text-anchor="middle" font-size="11">multi-year obligations</text>
+          <text x="1020" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">public on HHS site</text>
+
+          <rect x="1140" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="544" text-anchor="middle" font-weight="600">State AG / class action</text>
+          <text x="1240" y="562" text-anchor="middle" font-size="11">HITECH gave AGs auth</text>
+          <text x="1240" y="578" text-anchor="middle" font-size="11">+ state breach laws</text>
+          <text x="1240" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">parallel exposure</text>
+
+          <rect x="40" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="140" y="664" text-anchor="middle" font-weight="600">SSAE 18 attestation</text>
+          <text x="140" y="682" text-anchor="middle" font-size="11">CPA opinion w/ HIPAA</text>
+          <text x="140" y="698" text-anchor="middle" font-size="11">criteria mapped in</text>
+          <text x="140" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">marketed as SOC 2 + HIPAA</text>
+
+          <rect x="260" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="360" y="664" text-anchor="middle" font-weight="600">AEA validation</text>
+          <text x="360" y="682" text-anchor="middle" font-size="11">PRISMA scoring</text>
+          <text x="360" y="698" text-anchor="middle" font-size="11">HITRUST QA review</text>
+          <text x="360" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">cert from HITRUST</text>
+
+          <rect x="480" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="580" y="664" text-anchor="middle" font-weight="600">Customer-driven</text>
+          <text x="580" y="682" text-anchor="middle" font-size="11">enterprise health buyers</text>
+          <text x="580" y="698" text-anchor="middle" font-size="11">request HIPAA attestation</text>
+          <text x="580" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">often as gating req</text>
+
+          <rect x="700" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="800" y="664" text-anchor="middle" font-weight="600">Document request</text>
+          <text x="800" y="682" text-anchor="middle" font-size="11">RA, P&amp;P, BAAs, training</text>
+          <text x="800" y="698" text-anchor="middle" font-size="11">technical evidence</text>
+          <text x="800" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">15-day response usual</text>
+
+          <rect x="920" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="664" text-anchor="middle" font-weight="600">Penalty tier</text>
+          <text x="1020" y="682" text-anchor="middle" font-size="11">no knowledge → willful</text>
+          <text x="1020" y="698" text-anchor="middle" font-size="11">HITECH $ caps</text>
+          <text x="1020" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">~$2M/yr per provision</text>
+
+          <rect x="1140" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="664" text-anchor="middle" font-weight="600">Reputational damage</text>
+          <text x="1240" y="682" text-anchor="middle" font-size="11">HHS Wall of Shame</text>
+          <text x="1240" y="698" text-anchor="middle" font-size="11">~500+ entities listed</text>
+          <text x="1240" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">public-facing</text>
+
+          <rect x="540" y="760" width="300" height="50" fill="#13212d" stroke="#13212d"/>
+          <text x="690" y="780" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">NO HIPAA CERTIFICATE</text>
+          <text x="690" y="797" text-anchor="middle" fill="#f3ecdd" font-size="11">"HIPAA-compliant" is a self-claim. Validation is indirect.</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="140" y1="600" x2="140" y2="638"/>
+            <line x1="360" y1="600" x2="360" y2="638"/>
+            <line x1="580" y1="600" x2="580" y2="638"/>
+            <line x1="800" y1="600" x2="800" y2="638"/>
+            <line x1="1020" y1="600" x2="1020" y2="638"/>
+            <line x1="1240" y1="600" x2="1240" y2="638"/>
+          </g>
+        </g>
+
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="300" y1="260" x2="140" y2="518"/>
+          <line x1="660" y1="260" x2="580" y2="518"/>
+          <line x1="1020" y1="260" x2="800" y2="518"/>
+          <line x1="1240" y1="260" x2="1240" y2="518"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="306" y="370">RA evidence →</text>
+          <text x="306" y="383">SOC 2+ scope</text>
+          <text x="666" y="370">implementation →</text>
+          <text x="666" y="383">third-party verifies</text>
+          <text x="1026" y="370">monitoring trail →</text>
+          <text x="1026" y="383">OCR document basis</text>
+          <text x="1246" y="370">breach 4-factor →</text>
+          <text x="1246" y="383">notification trigger</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Required vs Addressable specs -->
+    <div class="diagram">
+      <h3 class="subtitle">Required vs Addressable — the most-misread distinction in HIPAA</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="600" height="380" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">REQUIRED IMPLEMENTATION SPECS</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="28" font-weight="600" fill="#7a1f24">Required</text>
+        <text x="60" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">non-negotiable · must implement as written</text>
+        <line x1="60" y1="148" x2="620" y2="148" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="12" fill="#2a3744">
+          <text x="60" y="174">— Risk Analysis (164.308(a)(1)(ii)(A))</text>
+          <text x="60" y="194">— Risk Management (164.308(a)(1)(ii)(B))</text>
+          <text x="60" y="214">— Sanction Policy (164.308(a)(1)(ii)(C))</text>
+          <text x="60" y="234">— Information System Activity Review</text>
+          <text x="60" y="254">— Assigned Security Responsibility (164.308(a)(2))</text>
+          <text x="60" y="274">— Workforce Clearance (specific subprovisions)</text>
+          <text x="60" y="294">— Response and Reporting (164.308(a)(6)(ii))</text>
+          <text x="60" y="314">— Disposal (164.310(d)(2)(i))</text>
+          <text x="60" y="334">— Media Re-use (164.310(d)(2)(ii))</text>
+          <text x="60" y="354">— Unique User Identification (164.312(a)(2)(i))</text>
+          <text x="60" y="374">— Emergency Access Procedure (164.312(a)(2)(ii))</text>
+        </g>
+        <text x="60" y="408" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24">~13 specs are Required across the rule</text>
+
+        <rect x="660" y="40" width="580" height="380" fill="#f3ecdd" stroke="#a37a1f" stroke-width="2"/>
+        <text x="680" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">ADDRESSABLE IMPLEMENTATION SPECS</text>
+        <text x="680" y="106" font-family="Fraunces, serif" font-size="28" font-weight="600" fill="#a37a1f">Addressable</text>
+        <text x="680" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">conditionally required · documented decision</text>
+        <line x1="680" y1="148" x2="1220" y2="148" stroke="#13212d" stroke-opacity=".25"/>
+        <text x="680" y="180" font-family="JetBrains Mono, monospace" font-size="11" fill="#a37a1f" font-weight="600">FOR EACH ADDRESSABLE SPEC, ENTITY MUST:</text>
+        <g font-size="12" fill="#2a3744">
+          <text x="680" y="206">1. Assess whether the spec is reasonable</text>
+          <text x="680" y="224">    and appropriate in its environment</text>
+          <text x="680" y="252">2a. <tspan font-weight="600">If yes</tspan> — implement the spec as described</text>
+          <text x="680" y="280">2b. <tspan font-weight="600">If no</tspan> — document the reason AND</text>
+          <text x="680" y="298">    implement an equivalent alternative measure</text>
+          <text x="680" y="326">3. Document decision in writing</text>
+          <text x="680" y="344">    (164.316 documentation requirement)</text>
+        </g>
+
+        <rect x="680" y="370" width="540" height="40" fill="#7a1f24"/>
+        <text x="950" y="395" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1">ADDRESSABLE ≠ OPTIONAL</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why HIPAA reads differently than the others</h3>
+        <p><strong>HIPAA is law, not standard.</strong> The Security Rule (45 CFR Part 164 Subpart C) is principles-based and short by federal-law standards — fewer than 25 implementation specifications across all three safeguard categories. Its brevity is intentional: the rule was designed to be technology-neutral and scalable to entities ranging from solo physicians to multinational health insurance carriers. That flexibility is also what makes it confusing to operationalize.</p>
+
+        <p><strong>"Addressable" is the most misread term.</strong> Many entities treat addressable specifications as optional. They are not. Each addressable spec must be assessed; if reasonable and appropriate, it must be implemented. If not, the entity must document why <em>and</em> implement an equivalent alternative. Decisions like "we don't encrypt at rest because it's just addressable" — without documented analysis or equivalent compensating measure — are exactly the pattern that drives OCR enforcement actions.</p>
+
+        <p><strong>Enforcement is episodic, not periodic.</strong> Unlike SOX (annual) or ISO 27001 (3-year cycle), HIPAA has no scheduled audit. OCR investigates after a breach is reported, after a complaint is filed, or — rarely — through a compliance audit program (the 2016–17 Phase 2 audits being the most recent comprehensive round). Most entities operate for years without OCR contact, then face intense scrutiny when a triggering event occurs.</p>
+
+        <div class="pull">
+          HIPAA enforcement is rare until it happens. Then it's existential.
+        </div>
+
+        <p><strong>The chain of liability runs through BAAs.</strong> Pre-Omnibus Rule (2013), only Covered Entities had direct HIPAA obligations; Business Associates were liable only via contract. The Omnibus Rule extended HIPAA's reach to BAs and their subcontractors directly. Today, every BA must comply with the Security Rule, and every CE must have BAAs in place with every BA — and every BA must have BAAs in place with every subcontractor handling ePHI. The chain is documentary; gaps in it are first-line enforcement targets.</p>
+
+        <p><strong>Civil money penalties scale with culpability.</strong> HITECH's tier structure: no knowledge ($137-$68,928 per violation), reasonable cause ($1,379-$68,928), willful neglect-corrected ($13,785-$68,928), willful neglect-not corrected ($68,928-$2,067,813). Annual cap per provision around $2.07M. These ranges are inflation-adjusted yearly; check the current Federal Register notice. The willful neglect tiers are where most multi-million-dollar settlements live.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Entity types</h3>
+        <p><strong>Covered Entity (CE):</strong> health plans, health care clearinghouses, and providers transmitting health info electronically.</p>
+        <p><strong>Business Associate (BA):</strong> entity creating, receiving, maintaining, or transmitting PHI on behalf of a CE.</p>
+        <p><strong>Subcontractor:</strong> a BA's BA. Inherits Security Rule obligations.</p>
+        <h3 style="margin-top:24px;">Breach Notification — 4 factors</h3>
+        <p>A presumption of breach arises whenever there is unauthorized acquisition, access, use, or disclosure of PHI. Entity may rebut by demonstrating low probability of compromise based on:</p>
+        <ol>
+          <li>Nature and extent of PHI involved</li>
+          <li>Person who used PHI or to whom disclosed</li>
+          <li>Whether PHI was actually acquired or viewed</li>
+          <li>Extent of risk mitigation</li>
+        </ol>
+        <h3 style="margin-top:24px;">Notification timing</h3>
+        <p><strong>&lt;500 affected:</strong> annual log to HHS</p>
+        <p><strong>≥500:</strong> within 60 days · HHS · prominent media</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 2 -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Control universe</div>
+        <h2>Three safeguard categories — administrative, physical, technical</h2>
+      </div>
+      <div class="ref">45 CFR §§164.308 / 310 / 312<br>+ §§164.314, 164.316</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The Security Rule's structure — standards × implementation specs</h3>
+      <svg viewBox="0 0 1280 740" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">3 SAFEGUARD CATEGORIES · 18 STANDARDS · ~36 IMPLEMENTATION SPECS</text>
+
+        <!-- Administrative -->
+        <rect x="40" y="80" width="395" height="640" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+        <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">§164.308 · ADMINISTRATIVE</text>
+        <text x="60" y="138" font-family="Fraunces, serif" font-size="26" font-weight="500">Administrative</text>
+        <text x="60" y="160" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">policies and processes that govern the program</text>
+        <text x="60" y="180" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">9 standards · ~22 specs · largest category</text>
+
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="214" font-weight="600">Security Management Process</text>
+          <text x="60" y="232">→ Risk Analysis (R)</text>
+          <text x="60" y="248">→ Risk Management (R)</text>
+          <text x="60" y="264">→ Sanction Policy (R)</text>
+          <text x="60" y="280">→ Info System Activity Review (R)</text>
+
+          <text x="60" y="306" font-weight="600">Assigned Security Responsibility (R)</text>
+
+          <text x="60" y="332" font-weight="600">Workforce Security</text>
+          <text x="60" y="350">→ Authorization/Supervision (A)</text>
+          <text x="60" y="366">→ Workforce Clearance (A)</text>
+          <text x="60" y="382">→ Termination Procedures (A)</text>
+
+          <text x="60" y="408" font-weight="600">Information Access Management</text>
+          <text x="60" y="426">→ Isolation of CH Clearinghouse (R)</text>
+          <text x="60" y="442">→ Access Authorization (A)</text>
+          <text x="60" y="458">→ Access Establishment/Mod (A)</text>
+
+          <text x="60" y="484" font-weight="600">Security Awareness &amp; Training</text>
+          <text x="60" y="502">→ Security Reminders (A)</text>
+          <text x="60" y="518">→ Malicious Software Protection (A)</text>
+          <text x="60" y="534">→ Log-in Monitoring (A)</text>
+          <text x="60" y="550">→ Password Management (A)</text>
+
+          <text x="60" y="576" font-weight="600">Security Incident Procedures</text>
+          <text x="60" y="594">→ Response and Reporting (R)</text>
+
+          <text x="60" y="620" font-weight="600">Contingency Plan</text>
+          <text x="60" y="638">→ Data Backup Plan (R)</text>
+          <text x="60" y="654">→ Disaster Recovery Plan (R)</text>
+          <text x="60" y="670">→ Emergency Mode Operation (R)</text>
+          <text x="60" y="686">→ Testing &amp; Revision (A)</text>
+          <text x="60" y="702">→ Application Data Criticality (A)</text>
+        </g>
+
+        <!-- Physical -->
+        <rect x="445" y="80" width="395" height="640" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.5"/>
+        <text x="465" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">§164.310 · PHYSICAL</text>
+        <text x="465" y="138" font-family="Fraunces, serif" font-size="26" font-weight="500">Physical</text>
+        <text x="465" y="160" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">protections for facilities, equipment, media</text>
+        <text x="465" y="180" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">4 standards · ~10 specs</text>
+
+        <g font-size="11" fill="#2a3744">
+          <text x="465" y="214" font-weight="600">Facility Access Controls</text>
+          <text x="465" y="232">→ Contingency Operations (A)</text>
+          <text x="465" y="248">→ Facility Security Plan (A)</text>
+          <text x="465" y="264">→ Access Control / Validation (A)</text>
+          <text x="465" y="280">→ Maintenance Records (A)</text>
+
+          <text x="465" y="306" font-weight="600">Workstation Use (R)</text>
+          <text x="465" y="324" font-style="italic" fill="#4a5b6c">policies on appropriate use of workstations</text>
+
+          <text x="465" y="358" font-weight="600">Workstation Security (R)</text>
+          <text x="465" y="376" font-style="italic" fill="#4a5b6c">physical safeguards for workstation locations</text>
+
+          <text x="465" y="410" font-weight="600">Device and Media Controls</text>
+          <text x="465" y="428">→ Disposal (R)</text>
+          <text x="465" y="444">→ Media Re-use (R)</text>
+          <text x="465" y="460">→ Accountability (A)</text>
+          <text x="465" y="476">→ Data Backup and Storage (A)</text>
+        </g>
+
+        <text x="465" y="540" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337" font-weight="600">CLOUD/REMOTE-WORK NOTE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="465" y="562">Most cloud-native organizations</text>
+          <text x="465" y="578">scope physical safeguards to:</text>
+          <text x="465" y="600" font-style="italic">— SaaS provider's data centers</text>
+          <text x="465" y="616" font-style="italic">  (inherited from BA &amp; SOC 2)</text>
+          <text x="465" y="632" font-style="italic">— Workforce home offices</text>
+          <text x="465" y="648" font-style="italic">— Office facilities (if any)</text>
+          <text x="465" y="664" font-style="italic">— Mobile/portable device controls</text>
+          <text x="465" y="688" fill="#a37a1f">Workstation Security applies to laptops</text>
+          <text x="465" y="704" fill="#a37a1f">in remote-work environments — overlooked</text>
+        </g>
+
+        <!-- Technical -->
+        <rect x="850" y="80" width="390" height="640" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+        <text x="870" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#2f4858" font-weight="600">§164.312 · TECHNICAL</text>
+        <text x="870" y="138" font-family="Fraunces, serif" font-size="26" font-weight="500">Technical</text>
+        <text x="870" y="160" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">technological controls protecting ePHI</text>
+        <text x="870" y="180" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">5 standards · ~9 specs</text>
+
+        <g font-size="11" fill="#2a3744">
+          <text x="870" y="214" font-weight="600">Access Control</text>
+          <text x="870" y="232">→ Unique User Identification (R)</text>
+          <text x="870" y="248">→ Emergency Access Procedure (R)</text>
+          <text x="870" y="264">→ Automatic Logoff (A)</text>
+          <text x="870" y="280">→ Encryption and Decryption (A)</text>
+
+          <text x="870" y="306" font-weight="600">Audit Controls (R)</text>
+          <text x="870" y="324" font-style="italic" fill="#4a5b6c">record &amp; examine activity in info systems</text>
+
+          <text x="870" y="358" font-weight="600">Integrity</text>
+          <text x="870" y="376">→ Mechanism to authenticate ePHI (A)</text>
+          <text x="870" y="392" font-style="italic" fill="#4a5b6c">verify ePHI not improperly altered/destroyed</text>
+
+          <text x="870" y="426" font-weight="600">Person or Entity Authentication (R)</text>
+          <text x="870" y="444" font-style="italic" fill="#4a5b6c">verify identity before access</text>
+
+          <text x="870" y="478" font-weight="600">Transmission Security</text>
+          <text x="870" y="496">→ Integrity Controls (A)</text>
+          <text x="870" y="512">→ Encryption (A)</text>
+          <text x="870" y="528" font-style="italic" fill="#4a5b6c">guard against unauthorized access during transit</text>
+        </g>
+
+        <text x="870" y="582" font-family="JetBrains Mono, monospace" font-size="10" fill="#2f4858" font-weight="600">PRACTITIONER NOTE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="870" y="604">Encryption is "Addressable" twice over —</text>
+          <text x="870" y="620">at rest (164.312(a)(2)(iv)) and in transit</text>
+          <text x="870" y="636">(164.312(e)(2)(ii)). Many entities skip both.</text>
+          <text x="870" y="660" fill="#7a1f24">Best practice — encrypt always; document</text>
+          <text x="870" y="676" fill="#7a1f24">analysis if you don't. Unencrypted breaches</text>
+          <text x="870" y="692" fill="#7a1f24">trigger notification; encrypted ones may not.</text>
+          <text x="870" y="708" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">"safe harbor" via NIST encryption guidance</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Plus Organizational and Documentation -->
+    <div class="diagram">
+      <h3 class="subtitle">§§164.314 &amp; 164.316 — the cross-cutting requirements</h3>
+      <svg viewBox="0 0 1280 320" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="600" height="240" fill="#f3ecdd" stroke="#a37a1f" stroke-width="1.5"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">§164.314 · ORGANIZATIONAL</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Business Associate Contracts</text>
+        <text x="60" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">the BAA requirements</text>
+        <line x1="60" y1="138" x2="620" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="162">— BA agrees to comply with Security Rule</text>
+          <text x="60" y="180">— Reports breaches and security incidents to CE</text>
+          <text x="60" y="198">— Imposes Security Rule requirements on subcontractors via BAAs</text>
+          <text x="60" y="216">— Required as condition of any PHI disclosure to a BA</text>
+          <text x="60" y="240" font-style="italic" fill="#7a1f24">Failure to have BAAs is one of the most-cited OCR findings</text>
+          <text x="60" y="260" font-style="italic" fill="#7a1f24">— even when underlying security is otherwise adequate</text>
+        </g>
+
+        <rect x="660" y="40" width="580" height="240" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.5"/>
+        <text x="680" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">§164.316 · DOCUMENTATION</text>
+        <text x="680" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Policies, Procedures, Records</text>
+        <text x="680" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">the artifact retention requirement</text>
+        <line x1="680" y1="138" x2="1220" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="680" y="162">— Maintain documentation of P&amp;P implementing the Rule</text>
+          <text x="680" y="180">— Maintain records of actions, activities, assessments</text>
+          <text x="680" y="198">— Retain for <tspan font-weight="600">6 years</tspan> from creation OR last effective date</text>
+          <text x="680" y="216">— Make available to those needing them to operate</text>
+          <text x="680" y="240" font-style="italic" fill="#7a1f24">"If it isn't documented, it didn't happen" applies here</text>
+          <text x="680" y="260" font-style="italic" fill="#7a1f24">in the strongest sense in the Atlas</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>The architecture's hidden weight</h3>
+        <p><strong>The Administrative category is the largest because that's where most enforcement happens.</strong> Failures of Risk Analysis, Risk Management, BAA management, sanction policy enforcement, and security incident response account for the majority of OCR Resolution Agreements. Technical controls failures matter, but administrative process failures are easier for OCR to demonstrate and easier to penalize.</p>
+
+        <p><strong>The Physical category often gets shrunk by cloud architecture.</strong> If your only physical premises are workforce home offices and BA-owned data centers, your Physical safeguards collapse to: workstation use policies, device and media controls (mostly addressable via MDM), and contractual reliance on BA SOC 2 reports for facility controls. That's a defensible posture — but only if you have BAAs and review BA security reports systematically.</p>
+
+        <p><strong>Technical controls map cleanly to other frameworks.</strong> Unique User ID = SOC 2 CC6.1 = ISO A.5.16 = PCI Req 8. Audit Controls = SOC 2 CC7.2 = ISO A.8.15 = PCI Req 10. Encryption = essentially universal. The crosswalk overhead is minimal once your Technical safeguards are in place.</p>
+
+        <div class="pull">
+          The HIPAA Security Rule is short. The work to operationalize it is not — because every entity must translate principles to environment-specific implementation, and document that translation.
+        </div>
+
+        <p><strong>The 6-year documentation retention is unusually long.</strong> Most frameworks require ~3 years. HIPAA requires 6 from the date of creation or the date when last in effect — whichever is later. For policies in continuous use, that means perpetual retention plus 6 years past the policy's eventual retirement. For records of one-time events (training session in 2020), it means retaining the record through 2026 minimum.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>R vs A counts (approximate)</h3>
+        <p>Across the Security Rule:</p>
+        <p>— <strong>Required (R):</strong> 13 specs</p>
+        <p>— <strong>Addressable (A):</strong> 22 specs</p>
+        <p>Plus 6 standards have no specs (the standard itself is the requirement).</p>
+        <h3 style="margin-top:24px;">Most cited deficiencies (OCR enforcement actions)</h3>
+        <ol>
+          <li>Inadequate or absent Risk Analysis</li>
+          <li>Insufficient access controls</li>
+          <li>Failure to encrypt</li>
+          <li>Missing BAAs</li>
+          <li>Inadequate audit controls / log review</li>
+          <li>Lack of workforce training documentation</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 3 -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — Evidence &amp; risk analysis</div>
+        <h2>The Security Risk Analysis is the foundational artifact</h2>
+      </div>
+      <div class="ref">§164.308(a)(1)(ii)(A)<br>NIST SP 800-66r2 guidance</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The HIPAA SRA — what OCR expects to see</h3>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrSRA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#13212d"/>
+          </marker>
+        </defs>
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">SECURITY RISK ANALYSIS · 9 NIST-RECOMMENDED ELEMENTS</text>
+
+        <!-- Step 1 -->
+        <rect x="40" y="80" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 1</text>
+        <text x="60" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Identify ePHI scope</text>
+        <text x="60" y="150" font-size="11" fill="#4a5b6c">where ePHI is created, received,</text>
+        <text x="60" y="166" font-size="11" fill="#4a5b6c">maintained, or transmitted</text>
+
+        <line x1="325" y1="130" x2="365" y2="130" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="365" y="80" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="385" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 2</text>
+        <text x="385" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Identify threats &amp; vulns</text>
+        <text x="385" y="150" font-size="11" fill="#4a5b6c">human, environmental,</text>
+        <text x="385" y="166" font-size="11" fill="#4a5b6c">technical, natural</text>
+
+        <line x1="650" y1="130" x2="690" y2="130" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="690" y="80" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="710" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 3</text>
+        <text x="710" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Assess current controls</text>
+        <text x="710" y="150" font-size="11" fill="#4a5b6c">what's already in place,</text>
+        <text x="710" y="166" font-size="11" fill="#4a5b6c">how effective</text>
+
+        <line x1="975" y1="130" x2="1015" y2="130" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="1015" y="80" width="225" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="1035" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 4</text>
+        <text x="1035" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Likelihood &amp; impact</text>
+        <text x="1035" y="150" font-size="11" fill="#4a5b6c">of each threat exploiting</text>
+        <text x="1035" y="166" font-size="11" fill="#4a5b6c">each vulnerability</text>
+
+        <!-- second row -->
+        <rect x="40" y="220" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="60" y="246" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 5</text>
+        <text x="60" y="270" font-family="Fraunces, serif" font-size="16" font-weight="500">Determine risk level</text>
+        <text x="60" y="290" font-size="11" fill="#4a5b6c">combine likelihood × impact</text>
+        <text x="60" y="306" font-size="11" fill="#4a5b6c">tier each risk</text>
+
+        <line x1="325" y1="270" x2="365" y2="270" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="365" y="220" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="385" y="246" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 6</text>
+        <text x="385" y="270" font-family="Fraunces, serif" font-size="16" font-weight="500">Document findings</text>
+        <text x="385" y="290" font-size="11" fill="#4a5b6c">written record · OCR will</text>
+        <text x="385" y="306" font-size="11" fill="#4a5b6c">demand this first</text>
+
+        <line x1="650" y1="270" x2="690" y2="270" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="690" y="220" width="285" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="710" y="246" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEP 7</text>
+        <text x="710" y="270" font-family="Fraunces, serif" font-size="16" font-weight="500">Risk Mgmt plan</text>
+        <text x="710" y="290" font-size="11" fill="#4a5b6c">treatment for each risk</text>
+        <text x="710" y="306" font-size="11" fill="#4a5b6c">tied to safeguards</text>
+
+        <line x1="975" y1="270" x2="1015" y2="270" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="1015" y="220" width="225" height="100" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="1035" y="246" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">STEPS 8-9</text>
+        <text x="1035" y="270" font-family="Fraunces, serif" font-size="16" font-weight="500">Update &amp; review</text>
+        <text x="1035" y="290" font-size="11" fill="#4a5b6c">env / threat changes,</text>
+        <text x="1035" y="306" font-size="11" fill="#4a5b6c">at least annually</text>
+        <line x1="1140" y1="320" x2="1140" y2="350" stroke="#13212d" stroke-width="1.5"/>
+        <line x1="1140" y1="350" x2="180" y2="350" stroke="#13212d" stroke-width="1.5"/>
+        <line x1="180" y1="350" x2="180" y2="180" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrSRA)"/>
+
+        <rect x="40" y="400" width="1200" height="120" fill="#13212d"/>
+        <text x="60" y="430" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">WHAT MAKES THE SRA OCR-DEFENSIBLE</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="60" y="458">— <strong>Comprehensive</strong>: covers ALL ePHI, not just systems explicitly tagged "PHI"</text>
+          <text x="60" y="478">— <strong>Documented</strong>: written report with findings, not informal verbal "we discussed risks"</text>
+          <text x="60" y="498">— <strong>Periodically updated</strong>: re-performed after major changes; reviewed annually at minimum</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why the SRA is the primary battleground</h3>
+        <p><strong>"Failure to conduct an accurate and thorough Risk Analysis" is OCR's most-cited finding by a significant margin.</strong> Many millions of dollars in CMPs and Resolution Agreements trace back to inadequate or absent SRAs. The pattern is consistent: a breach occurs, OCR opens an investigation, OCR demands the SRA, the entity produces something thin or nonexistent, and the enforcement action follows.</p>
+
+        <p><strong>An SRA is not a checklist completion.</strong> Many small entities use the HHS Security Risk Assessment Tool or vendor-provided templates and treat them as sufficient. They aren't unless customized to the entity's actual environment, ePHI inventory, threats, and controls. Generic SRAs that could apply to any entity of similar size are flagged as inadequate.</p>
+
+        <p><strong>The SRA must drive the Risk Management plan.</strong> SRA without risk management is documentation theater. Each identified risk must be tied to a treatment decision (mitigate, accept, transfer, avoid) and to specific safeguards being implemented. OCR commonly traces from SRA findings to risk management plan to actual implementation — gaps in this trace are evidence of program failure.</p>
+
+        <div class="pull">
+          The Security Risk Analysis is HIPAA's Statement of Applicability. It's the document the regulator reads first.
+        </div>
+
+        <p><strong>Periodic updates matter as much as the initial SRA.</strong> An SRA from 2019 may have been thorough at the time. By 2026, the entity has new systems, new vendors, new threats, possibly a breach. An SRA that hasn't been refreshed is at best stale and at worst evidence that the entity didn't take its program seriously. NIST SP 800-66r2 (Feb 2024) explicitly recommends annual SRAs at minimum, with event-driven updates for major changes.</p>
+
+        <p><strong>The SRA is the foundation for everything else.</strong> Sanction policy ties to the workforce risks identified in the SRA. Encryption decisions tie to the SRA's analysis of threat to ePHI in transit and at rest. BA selection criteria tie to risks identified in the BA category. Without a real SRA, every downstream decision lacks documented analytical basis — and every downstream decision becomes harder to defend in an OCR investigation.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>SRA tools &amp; methodologies</h3>
+        <p><strong>HHS SRA Tool</strong> — free, designed for small/medium providers; useful starting point but rarely sufficient on its own.</p>
+        <p><strong>NIST SP 800-30</strong> — guide for conducting risk assessments; the federal-grade methodology.</p>
+        <p><strong>NIST SP 800-66r2</strong> — HIPAA-specific implementation guidance (Feb 2024).</p>
+        <p><strong>Vendor platforms</strong> — Drata, Vanta, AuditBoard, etc. Useful for tracking, but the analysis itself is the entity's responsibility.</p>
+        <h3 style="margin-top:24px;">Common SRA failures</h3>
+        <p>— Generic / template content not customized</p>
+        <p>— Incomplete ePHI inventory</p>
+        <p>— No likelihood-impact analysis</p>
+        <p>— Risks identified but not treated</p>
+        <p>— Not updated after material changes</p>
+        <p>— Performed once, never repeated</p>
+        <p>— Performed by IT/security alone, no leadership review</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 4 -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>HIPAA in a multi-framework portfolio</h2>
+      </div>
+      <div class="ref">Mapping to SOC 2, ISO, NIST,<br>PCI, HITRUST, CSF</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:14%">HIPAA standard</th>
+          <th>SOX</th>
+          <th>SOC 2 (TSC)</th>
+          <th>ISO 27001:2022</th>
+          <th>NIST CSF 2.0</th>
+          <th>PCI DSS v4.0.1</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">§164.308(a)(1) — Security Mgmt</td>
+          <td><code>ELC</code> · risk memo</td>
+          <td><code>CC3.1</code> – <code>CC3.4</code></td>
+          <td><code>Cl. 6.1</code></td>
+          <td><code>GV.RM</code> · <code>ID.RA</code></td>
+          <td><code>Req 12.3</code></td>
+          <td><code>03.a</code> · <code>03.b</code></td>
+          <td class="shared">Risk analysis report, risk treatment plan, sanction policy</td></tr>
+        <tr><td class="dom">§164.308(a)(2) — Assigned Resp</td>
+          <td><code>ELC</code> · governance</td>
+          <td><code>CC1.3</code></td>
+          <td><code>Cl. 5.3</code></td>
+          <td><code>GV.RR</code></td>
+          <td><code>Req 12.4</code></td>
+          <td><code>02.a</code></td>
+          <td class="shared">Security officer designation, RACI matrix, role descriptions</td></tr>
+        <tr><td class="dom">§164.308(a)(3) — Workforce Sec</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC1.4</code> · <code>CC6.2</code></td>
+          <td><code>A.6.1</code> · <code>A.5.18</code></td>
+          <td><code>PR.AT-01</code></td>
+          <td><code>Req 12.6</code> · <code>Req 7</code></td>
+          <td><code>02.b</code> · <code>02.c</code></td>
+          <td class="shared">Onboarding/termination tickets, workforce clearance records</td></tr>
+        <tr><td class="dom">§164.308(a)(4) — Access Mgmt</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> – <code>CC6.3</code></td>
+          <td><code>A.5.15</code> · <code>A.8.2</code></td>
+          <td><code>PR.AA-05</code></td>
+          <td><code>Req 7</code></td>
+          <td><code>01.b</code> · <code>01.v</code></td>
+          <td class="shared">JML tickets, UAR exports, IAM config</td></tr>
+        <tr><td class="dom">§164.308(a)(5) — Awareness/Train</td>
+          <td><code>ELC</code> · COSO Comp.4</td>
+          <td><code>CC1.4</code></td>
+          <td><code>A.6.3</code></td>
+          <td><code>PR.AT-01</code></td>
+          <td><code>Req 12.6</code></td>
+          <td><code>02.e</code> · <code>02.f</code></td>
+          <td class="shared">Training completion reports, phishing tests, attestations</td></tr>
+        <tr><td class="dom">§164.308(a)(6) — Incident Procs</td>
+          <td><code>BPC</code> · IT ops</td>
+          <td><code>CC7.3</code> – <code>CC7.5</code></td>
+          <td><code>A.5.24</code> – <code>A.5.27</code></td>
+          <td><code>RS.MA</code> · <code>RS.AN</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>11.a</code> – <code>11.c</code></td>
+          <td class="shared">Incident tickets, IR plan, post-incident reports</td></tr>
+        <tr><td class="dom">§164.308(a)(7) — Contingency</td>
+          <td>BPC · resilience</td>
+          <td><code>A1.2</code> · <code>A1.3</code></td>
+          <td><code>A.5.29</code> · <code>A.5.30</code></td>
+          <td><code>RC.RP</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>12.b</code> · <code>12.c</code></td>
+          <td class="shared">DR plan, last-test report, RTO/RPO documentation</td></tr>
+        <tr><td class="dom">§164.308(a)(8) — Evaluation</td>
+          <td>Internal Audit fn</td>
+          <td><code>CC4.1</code> · <code>CC4.2</code></td>
+          <td><code>Cl. 9.2</code></td>
+          <td><code>ID.IM</code></td>
+          <td><code>Req 12.4.1</code></td>
+          <td><code>06.h</code></td>
+          <td class="shared">Internal audit reports, mgmt review minutes</td></tr>
+        <tr><td class="dom">§164.308(b) — BA contracts</td>
+          <td><code>ITGC + BPC</code> · TPRM</td>
+          <td><code>CC9.2</code></td>
+          <td><code>A.5.19</code> – <code>A.5.23</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>Req 12.8</code> · <code>Req 12.9</code></td>
+          <td><code>05.k</code></td>
+          <td class="shared">BAA inventory, vendor due-diligence packages, SOC 2s</td></tr>
+        <tr><td class="dom">§164.310(a) — Facility Access</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.4</code></td>
+          <td><code>A.7.1</code> – <code>A.7.4</code></td>
+          <td><code>PR.AA-06</code></td>
+          <td><code>Req 9.1</code> – <code>9.4</code></td>
+          <td><code>08.b</code></td>
+          <td class="shared">Badge logs, CCTV retention, visitor records, BA SOC 2 §III</td></tr>
+        <tr><td class="dom">§164.310(b)(c) — Workstations</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.7</code></td>
+          <td><code>A.7.7</code> · <code>A.8.1</code></td>
+          <td><code>PR.PS-05</code></td>
+          <td><code>Req 9</code></td>
+          <td><code>08.j</code></td>
+          <td class="shared">Workstation policy, MDM enrollment, screen-lock config</td></tr>
+        <tr><td class="dom">§164.310(d) — Device/Media</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.5</code></td>
+          <td><code>A.7.10</code> · <code>A.7.14</code></td>
+          <td><code>PR.DS-02</code></td>
+          <td><code>Req 9.4</code> · <code>Req 3.2</code></td>
+          <td><code>07.a</code></td>
+          <td class="shared">Asset register, disposal certs, media re-use logs</td></tr>
+        <tr><td class="dom">§164.312(a) — Access Control</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> – <code>CC6.3</code></td>
+          <td><code>A.5.15</code> · <code>A.5.17</code> · <code>A.8.2</code></td>
+          <td><code>PR.AA-01</code> · <code>PR.AA-05</code></td>
+          <td><code>Req 7</code> · <code>Req 8</code></td>
+          <td><code>01.b</code> · <code>01.d</code></td>
+          <td class="shared">IAM config, MFA enforcement, emergency access procedure</td></tr>
+        <tr><td class="dom">§164.312(b) — Audit Controls</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code> · <code>CC7.2</code></td>
+          <td><code>A.8.15</code> · <code>A.8.16</code></td>
+          <td><code>DE.CM-01</code></td>
+          <td><code>Req 10</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">SIEM rules, log retention config, alert tuning</td></tr>
+        <tr><td class="dom">§164.312(c) — Integrity</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>PI1.1</code></td>
+          <td><code>A.8.10</code> · <code>A.8.11</code></td>
+          <td><code>PR.DS-01</code></td>
+          <td><code>Req 11.5</code></td>
+          <td><code>09.bb</code></td>
+          <td class="shared">FIM logs, data validation rules, backup integrity tests</td></tr>
+        <tr><td class="dom">§164.312(d) — Authentication</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code></td>
+          <td><code>A.5.16</code> · <code>A.5.17</code></td>
+          <td><code>PR.AA-01</code></td>
+          <td><code>Req 8</code></td>
+          <td><code>01.b</code> · <code>01.q</code></td>
+          <td class="shared">MFA enforcement, password policy, SSO config</td></tr>
+        <tr><td class="dom">§164.312(e) — Transmission</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.7</code></td>
+          <td><code>A.8.24</code></td>
+          <td><code>PR.DS-02</code></td>
+          <td><code>Req 4</code></td>
+          <td><code>09.s</code></td>
+          <td class="shared">TLS scan, cert inventory, VPN config</td></tr>
+        <tr><td class="dom">§164.314 — BAAs &amp; Group Health</td>
+          <td><code>BPC</code> · TPRM</td>
+          <td><code>CC9.2</code></td>
+          <td><code>A.5.19</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>Req 12.8.2</code></td>
+          <td><code>05.k</code></td>
+          <td class="shared">BAA library, contract review records, BA breach notifications</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>Why HIPAA evidence travels well</h3>
+        <p>HIPAA's Technical safeguards map cleanly to every other framework in the Atlas because they describe outcomes (unique user ID, audit logs, encryption, authentication, transmission security) rather than implementations. SOC 2's CC6.x covers the same ground at a slightly higher level of abstraction. ISO 27001's A.5.15–A.5.18 and A.8.x are essentially identical in intent. PCI DSS's Reqs 7, 8, 10, and 4 are more prescriptive versions of the same controls.</p>
+
+        <p>The Administrative safeguards are where translation work matters more. HIPAA's Security Management Process (164.308(a)(1)) maps to ISO 27001's Clause 6.1, NIST CSF's GV.RM and ID.RA, and SOC 2's CC3.1–CC3.4 — but the artifact required (an SRA report) is uniquely HIPAA-shaped. A SOC 2 risk assessment template will not satisfy HIPAA without customization to the ePHI inventory, threat landscape, and HIPAA-specific risk treatment vocabulary.</p>
+
+        <div class="pull">
+          HIPAA is the framework most commonly added on top of an existing SOC 2 or HITRUST program. Almost everything is reused; the SRA report is what's net new.
+        </div>
+
+        <p><strong>HITRUST swallows HIPAA whole.</strong> A HITRUST r2 certification with HIPAA included as an Authoritative Source produces a single MyCSF assessment that satisfies HIPAA, the HITRUST requirements, and several other frameworks simultaneously. This is why HITRUST has dominant share among healthcare SaaS — the alternative is running parallel HIPAA, SOC 2, and ISO programs.</p>
+
+        <p><strong>The SOC 2+ HIPAA path is the most common compromise.</strong> The CPA performs a SOC 2 examination that explicitly maps to HIPAA Security Rule criteria. The output is a SOC 2 report with HIPAA mapping appendix. Customers asking "are you HIPAA-compliant?" can be shown the report. Cost is ~25% above plain SOC 2; effort is similar. This works well unless customers demand HITRUST specifically.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Strategy by stage</h3>
+        <p><strong>Pre-product:</strong> implement core technical controls + draft SRA + BAAs ready.</p>
+        <p><strong>Early customers:</strong> SOC 2 Type 1 + HIPAA self-attestation + customer BAAs.</p>
+        <p><strong>Mid-market:</strong> SOC 2 Type 2 + HIPAA mapped in (SOC 2+).</p>
+        <p><strong>Enterprise health:</strong> HITRUST i1 or r2 — when customers demand it, the cost is justified.</p>
+        <h3 style="margin-top:24px;">Watch out</h3>
+        <p>"HIPAA-certified" is not a thing. Any vendor advertising HIPAA certification is misrepresenting their attestation.</p>
+        <p>HIPAA Privacy Rule (Subpart E) is a separate set of obligations focused on use/disclosure of PHI — beyond this volume's Security Rule scope but operational important for CEs.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume VII · HIPAA Security Rule<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>45 CFR Part 164 · NIST SP 800-66r2 · OCR enforcement actions</div>
+    <div><strong>Next</strong><br>Volume VIII — FedRAMP<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

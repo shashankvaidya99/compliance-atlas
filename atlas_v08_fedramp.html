@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume VIII: FedRAMP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb a:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; transition:background .2s; position:relative; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:var(--shadow); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker{ color:var(--oxblood); font-family:"JetBrains Mono",monospace; }
+  .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:13%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    nav.layers{ grid-template-columns:repeat(2,1fr); }
+    nav.layers button{ border-bottom:1px solid var(--ink); }
+    .twocol{ grid-template-columns:1fr; }
+    footer.colophon{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume VIII</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume VIII · FedRAMP · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      FedRAMP PMO (GSA) · FedRAMP Rev 5<br>
+      NIST SP 800-53 Rev 5 · OMB M-24-15
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      FedRAMP isn't an audit, certification, or attestation — it's an <em>authorization</em>. A federal Authorizing Official accepts risk on behalf of the government in exchange for the right to use a cloud service. The output isn't a report; it's an <em>ATO</em>. The framework underneath it is NIST 800-53 Rev 5 — the federal control catalog itself.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — CSP</span>
+      <span class="swatch ext">External — 3PAO · FedRAMP PMO · AO</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        Highest cost in the Atlas. Typical Moderate authorization runs 12–18 months, $500K–$1M+; High runs 18–24 months and $1M+. The 2024 OMB Memo M-24-15 and FedRAMP 20x initiatives are modernizing the program toward automation and machine-readable evidence.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">CSP × 3PAO × PMO × AO</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Control Mindmap</span>
+      <span class="sub">800-53 · 20 families · 3 baselines</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Authorization Package</span>
+      <span class="sub">SSP · SAP · SAR · POA&amp;M · ConMon</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">FedRAMP → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- LAYER 1 -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>From Pre-Auth to ATO to Continuous Monitoring</h2>
+      </div>
+      <div class="ref">FedRAMP Authorization Boundary<br>NIST RMF (SP 800-37r2)</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The full FedRAMP path — readiness through authorization through ConMon</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">12–24 MONTH AUTHORIZATION JOURNEY →</text>
+          <text x="120" y="50" text-anchor="middle">Strategy</text>
+          <text x="320" y="50" text-anchor="middle">Readiness</text>
+          <text x="520" y="50" text-anchor="middle">SSP development</text>
+          <text x="720" y="50" text-anchor="middle">3PAO assessment</text>
+          <text x="920" y="50" text-anchor="middle">Authorization</text>
+          <text x="1120" y="50" text-anchor="middle">ConMon</text>
+          <text x="1290" y="50" text-anchor="middle">Reauth · 3yr</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — CLOUD SERVICE PROVIDER (CSP)</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — 3PAO · FedRAMP PMO · JAB / AGENCY AO</text>
+        </g>
+
+        <!-- INTERNAL nodes row 1 -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">Path decision</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">JAB or Agency</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">P-ATO vs Agency ATO</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Impact level</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">High · Mod · Low · LI-SaaS</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">FIPS 199 categorization</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Authorization boundary</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">scope · interconnections</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CSO / data flows</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">Implement controls</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">800-53 Rev 5 baseline</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ FedRAMP parameters</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Submit auth package</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">SSP · SAP · SAR · POA&amp;M</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">to AO via PMO</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Ongoing ConMon</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">monthly + annual</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">vuln scans · POA&amp;M · IR</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Significant Change Req</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">major arch changes</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">SCR review by AO</text>
+
+          <!-- INTERNAL row 2 -->
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">Sponsoring agency</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">if Agency ATO path</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">contract drives sponsor</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">Readiness assessment</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">RAR by 3PAO</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">"FedRAMP Ready" listed</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Inheritance mapping</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">parent IaaS/PaaS controls</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CRM document</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">SSP drafting</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">often 1,000+ pages High</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">implementation per ctrl</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Remediate findings</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">close gaps from SAR</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">High/Mod risks pre-ATO</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">Marketplace listing</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">Ready · In Process · Auth.</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">public-facing status</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Reauthorization</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">~3 yr cycle</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">full re-assessment by 3PAO</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <!-- EXTERNAL nodes row 1 -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="120" y="540" text-anchor="middle" font-weight="600">3PAO selection</text>
+          <text x="120" y="555" text-anchor="middle" font-size="10">FedRAMP-accredited list</text>
+          <text x="120" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">A2LA accredited</text>
+
+          <rect x="220" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="300" y="540" text-anchor="middle" font-weight="600">Readiness Assessment</text>
+          <text x="300" y="555" text-anchor="middle" font-size="10">RAR delivered to PMO</text>
+          <text x="300" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">advisory only</text>
+
+          <rect x="400" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="480" y="540" text-anchor="middle" font-weight="600">SAP submitted</text>
+          <text x="480" y="555" text-anchor="middle" font-size="10">3PAO test plan</text>
+          <text x="480" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">methodology · sample</text>
+
+          <rect x="580" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="660" y="540" text-anchor="middle" font-weight="600">Independent assessment</text>
+          <text x="660" y="555" text-anchor="middle" font-size="10">examine · interview · test</text>
+          <text x="660" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ pen test required</text>
+
+          <rect x="760" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="840" y="540" text-anchor="middle" font-weight="600">SAR delivered</text>
+          <text x="840" y="555" text-anchor="middle" font-size="10">findings · risk ratings</text>
+          <text x="840" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">High/Mod/Low risks</text>
+
+          <rect x="940" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="540" text-anchor="middle" font-weight="600">AO authorization</text>
+          <text x="1020" y="555" text-anchor="middle" font-size="10">JAB or Agency</text>
+          <text x="1020" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">ATO letter issued</text>
+
+          <rect x="1140" y="520" width="200" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="540" text-anchor="middle" font-weight="600">Annual Assessment</text>
+          <text x="1240" y="555" text-anchor="middle" font-size="10">subset retested by 3PAO</text>
+          <text x="1240" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">core controls + change</text>
+
+          <!-- EXTERNAL row 2 -->
+          <rect x="40" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="640" text-anchor="middle" font-weight="600">Independence checks</text>
+          <text x="120" y="655" text-anchor="middle" font-size="10">no consult + assess</text>
+          <text x="120" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">3PAO QMS verified</text>
+
+          <rect x="220" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="640" text-anchor="middle" font-weight="600">PMO review</text>
+          <text x="300" y="655" text-anchor="middle" font-size="10">RAR feedback</text>
+          <text x="300" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">"Ready" decision</text>
+
+          <rect x="400" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="640" text-anchor="middle" font-weight="600">Sample selection</text>
+          <text x="480" y="655" text-anchor="middle" font-size="10">800-53A test methods</text>
+          <text x="480" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">examine · interview · test</text>
+
+          <rect x="580" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="640" text-anchor="middle" font-weight="600">Pen test (CSP-funded)</text>
+          <text x="660" y="655" text-anchor="middle" font-size="10">FedRAMP Pen Test Guide</text>
+          <text x="660" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">unique attack vectors</text>
+
+          <rect x="760" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="640" text-anchor="middle" font-weight="600">Risk assessment</text>
+          <text x="840" y="655" text-anchor="middle" font-size="10">PMO + AO review</text>
+          <text x="840" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">accept · reject · POA&amp;M</text>
+
+          <rect x="940" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="640" text-anchor="middle" font-weight="600">Reciprocity</text>
+          <text x="1020" y="655" text-anchor="middle" font-size="10">other agencies leverage</text>
+          <text x="1020" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">P-ATO is reusable</text>
+
+          <rect x="1140" y="620" width="200" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="640" text-anchor="middle" font-weight="600">ConMon submissions</text>
+          <text x="1240" y="655" text-anchor="middle" font-size="10">monthly to PMO</text>
+          <text x="1240" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">scans + POA&amp;M + sigs</text>
+
+          <rect x="540" y="730" width="300" height="50" fill="#13212d" stroke="#13212d"/>
+          <text x="690" y="750" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">THE AO ACCEPTS THE RISK</text>
+          <text x="690" y="765" text-anchor="middle" fill="#f3ecdd" font-size="11">No certificate. ATO is a federal-officer signed letter.</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="200" y1="550" x2="218" y2="550"/>
+            <line x1="380" y1="550" x2="398" y2="550"/>
+            <line x1="560" y1="550" x2="578" y2="550"/>
+            <line x1="740" y1="550" x2="758" y2="550"/>
+            <line x1="920" y1="550" x2="938" y2="550"/>
+            <line x1="1100" y1="550" x2="1138" y2="550"/>
+            <line x1="120" y1="580" x2="120" y2="618"/>
+            <line x1="300" y1="580" x2="300" y2="618"/>
+            <line x1="480" y1="580" x2="480" y2="618"/>
+            <line x1="660" y1="580" x2="660" y2="618"/>
+            <line x1="840" y1="580" x2="840" y2="618"/>
+            <line x1="1020" y1="580" x2="1020" y2="618"/>
+            <line x1="1240" y1="580" x2="1240" y2="618"/>
+          </g>
+        </g>
+
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="660" y1="260" x2="660" y2="518"/>
+          <line x1="840" y1="260" x2="840" y2="518"/>
+          <line x1="1020" y1="260" x2="1020" y2="518"/>
+          <line x1="300" y1="260" x2="300" y2="618"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="666" y="370">SSP →</text>
+          <text x="666" y="383">3PAO tests against</text>
+          <text x="846" y="370">remediated findings →</text>
+          <text x="846" y="383">SAR finalized</text>
+          <text x="1026" y="370">marketplace status →</text>
+          <text x="1026" y="383">reciprocity unlocked</text>
+          <text x="306" y="450">RAR feedback →</text>
+          <text x="306" y="463">advise CSP fixes</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- JAB vs Agency path comparison -->
+    <div class="diagram">
+      <h3 class="subtitle">JAB P-ATO vs Agency ATO — two paths, very different mechanics</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="600" height="380" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2.5"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">PATH 1 · JAB PROVISIONAL ATO</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="32" font-weight="600" fill="#7a1f24">P-ATO</text>
+        <text x="60" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">DoD · DHS · GSA CIOs jointly authorize</text>
+        <line x1="60" y1="146" x2="620" y2="146" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="12" fill="#2a3744">
+          <text x="60" y="172">Issued by: <tspan font-weight="600">Joint Authorization Board</tspan></text>
+          <text x="60" y="194">Reusability: <tspan font-weight="600">High</tspan> — any agency can leverage</text>
+          <text x="60" y="216">Selection: <tspan font-weight="600">competitive</tspan> · CSP nominates self · JAB picks ~12/yr</text>
+          <text x="60" y="238">Effort: <tspan font-weight="600">12–24 months</tspan> typical</text>
+          <text x="60" y="260">Fit: <tspan font-weight="600">broadly applicable cloud services</tspan></text>
+        </g>
+        <line x1="60" y1="280" x2="620" y2="280" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="60" y="304" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">USE WHEN</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="324">— You target multiple agencies / wide federal market</text>
+          <text x="60" y="342">— Large CSP with established federal customer pipeline</text>
+          <text x="60" y="360">— Willing to wait in JAB queue for prioritization</text>
+          <text x="60" y="378">— Service has clear cross-agency utility</text>
+          <text x="60" y="396">— Note: FedRAMP 20x is reshaping these paths in 2025+</text>
+        </g>
+
+        <rect x="660" y="40" width="580" height="380" fill="#f3ecdd" stroke="#3f5337" stroke-width="2"/>
+        <text x="680" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">PATH 2 · AGENCY AUTHORIZATION</text>
+        <text x="680" y="106" font-family="Fraunces, serif" font-size="32" font-weight="600" fill="#3f5337">Agency ATO</text>
+        <text x="680" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">single sponsoring agency authorizes</text>
+        <line x1="680" y1="146" x2="1220" y2="146" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="12" fill="#2a3744">
+          <text x="680" y="172">Issued by: <tspan font-weight="600">Agency AO</tspan> (CIO or designee)</text>
+          <text x="680" y="194">Reusability: <tspan font-weight="600">Lower</tspan> — others must do additional review</text>
+          <text x="680" y="216">Selection: <tspan font-weight="600">customer-driven</tspan> · agency contract drives sponsorship</text>
+          <text x="680" y="238">Effort: <tspan font-weight="600">9–18 months</tspan> typical</text>
+          <text x="680" y="260">Fit: <tspan font-weight="600">specific agency mission alignment</tspan></text>
+        </g>
+        <line x1="680" y1="280" x2="1220" y2="280" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="680" y="304" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337" font-weight="600">USE WHEN</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="680" y="324">— Existing federal contract drives FedRAMP requirement</text>
+          <text x="680" y="342">— Single agency is anchor customer</text>
+          <text x="680" y="360">— Faster path to first ATO than JAB queue</text>
+          <text x="680" y="378">— Most authorized CSPs use this path</text>
+          <text x="680" y="396">— Can later pursue JAB upgrade for broader market</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why FedRAMP feels like a different animal</h3>
+        <p><strong>The output is a federal authorization, not a private-sector report.</strong> Every other framework in the Atlas produces an opinion (SOC 2), certificate (ISO 27001), assessment (HITRUST), or attestation (HIPAA self-claims). FedRAMP produces an <em>ATO letter</em> — a federal Authorizing Official's signed acceptance of risk on behalf of the U.S. government. This isn't a check-the-box document; it's a personal liability decision by a senior federal official who can be questioned by Congress about why they accepted a particular system.</p>
+
+        <p><strong>The 800-53 Rev 5 control catalog is the engine.</strong> FedRAMP isn't its own control framework — it's a process for authorizing cloud services against NIST 800-53 with FedRAMP-specific parameter values, additional control selections, and prescriptive testing methodologies. Where SOC 2 says "the entity restricts access" and ISO says "implement A.5.15," 800-53 specifies AC-2 with sub-controls AC-2(1) through AC-2(13), parameter values, and assessment objectives traceable to 800-53A. The prescriptiveness exceeds even PCI DSS.</p>
+
+        <p><strong>The cast of players is unusually large.</strong> The CSP (you), the 3PAO (your independent assessor), the FedRAMP PMO at GSA (program operator), the JAB or Agency AO (the decision-maker), the agency CISO and ISSO/ISSM (review the package), and — for JAB authorizations — the JAB Technical Reviewers (technical due-diligence team). Coordinating across all of these takes program management as serious as the technical work.</p>
+
+        <div class="pull">
+          You don't pass FedRAMP. You convince a federal official to sign their name to your risk.
+        </div>
+
+        <p><strong>FedRAMP 20x and OMB M-24-15 are reshaping the program.</strong> The July 2024 OMB Memo M-24-15 directed FedRAMP to modernize — moving toward automated continuous authorization, machine-readable evidence (OSCAL), and faster assessment cycles. FedRAMP 20x (announced 2024) targets 80%+ control evidence automation and significantly compressed authorization timelines. As of 2026, the older heavily-document-driven model coexists with new automation paths. CSPs preparing for authorization should track current PMO guidance closely — the rules are visibly evolving.</p>
+
+        <p><strong>The reciprocity model has trade-offs.</strong> JAB's P-ATO is the most reusable authorization — any federal agency can leverage it without doing fresh work. But fewer than ~50 P-ATOs exist at any time, and the JAB selects only ~12 new sponsorships annually. Agency ATOs are the more common path (~250+ in marketplace) — faster to first authorization, but each subsequent agency must do its own ATO review (often 60-120 days) before they can use the service. Most successful CSPs start with Agency, expand through additional Agency ATOs, and eventually pursue JAB if the federal book of business justifies it.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Marketplace status definitions</h3>
+        <p><strong>FedRAMP Ready</strong> — 3PAO has completed RAR; PMO has reviewed; CSP is "ready" to pursue ATO. No authorization yet.</p>
+        <p><strong>In Process</strong> — actively pursuing authorization with a JAB or Agency sponsor. Timeline visible to government buyers.</p>
+        <p><strong>Authorized</strong> — has ATO. Agency name visible. Other agencies can leverage (with re-review) or accept directly (if JAB).</p>
+        <h3 style="margin-top:24px;">Cost components</h3>
+        <p><strong>Direct:</strong> 3PAO assessment ($150-500K), pen test ($75-200K), tooling ($100K+/yr), PMO submission fees.</p>
+        <p><strong>Indirect:</strong> SSP authoring (often 2,000+ hours), control implementation gap-closure, ongoing ConMon.</p>
+        <p><strong>Total typical:</strong> Moderate $500K-$1M+ initial; High $1M-$2M+. ConMon $200-500K/yr.</p>
+        <h3 style="margin-top:24px;">Watch out</h3>
+        <p>"FedRAMP Equivalent" is a separate concept — DoD-driven path used by some agencies for non-federal cloud services. Not a FedRAMP authorization.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 2 -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Control universe</div>
+        <h2>800-53 Rev 5 — twenty families across three impact baselines</h2>
+      </div>
+      <div class="ref">NIST SP 800-53 Rev 5<br>FedRAMP Rev 5 Baselines</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The control families and their FedRAMP baseline counts</h3>
+      <svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">20 CONTROL FAMILIES · LOW ~156 · MOD ~325 · HIGH ~410</text>
+
+        <!-- Header row -->
+        <g font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" fill="#7a1f24" font-weight="600">
+          <text x="40" y="86">FAMILY</text>
+          <text x="380" y="86">DOMAIN</text>
+          <text x="850" y="86" text-anchor="middle">LOW</text>
+          <text x="950" y="86" text-anchor="middle">MOD</text>
+          <text x="1050" y="86" text-anchor="middle">HIGH</text>
+          <text x="1170" y="86" text-anchor="middle">FAMILY SIZE</text>
+        </g>
+        <line x1="40" y1="94" x2="1240" y2="94" stroke="#13212d"/>
+
+        <g font-size="11" fill="#13212d">
+          <g transform="translate(0,114)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">AC</text>
+            <text x="80">Access Control</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Identification, authorization, account mgmt</text>
+            <text x="850" text-anchor="middle">12</text>
+            <text x="950" text-anchor="middle">22</text>
+            <text x="1050" text-anchor="middle">28</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">25</text>
+          </g>
+          <g transform="translate(0,138)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">AT</text>
+            <text x="80">Awareness &amp; Training</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Workforce training, role-based, retention</text>
+            <text x="850" text-anchor="middle">4</text>
+            <text x="950" text-anchor="middle">5</text>
+            <text x="1050" text-anchor="middle">5</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">6</text>
+          </g>
+          <g transform="translate(0,162)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">AU</text>
+            <text x="80">Audit &amp; Accountability</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Logging, monitoring, retention, integrity</text>
+            <text x="850" text-anchor="middle">10</text>
+            <text x="950" text-anchor="middle">14</text>
+            <text x="1050" text-anchor="middle">20</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">16</text>
+          </g>
+          <g transform="translate(0,186)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">CA</text>
+            <text x="80">Assessment, Auth &amp; Monitoring</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Auth boundary, ConMon, plan-of-action</text>
+            <text x="850" text-anchor="middle">6</text>
+            <text x="950" text-anchor="middle">8</text>
+            <text x="1050" text-anchor="middle">10</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">9</text>
+          </g>
+          <g transform="translate(0,210)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">CM</text>
+            <text x="80">Configuration Management</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Baselines, change control, inventory</text>
+            <text x="850" text-anchor="middle">10</text>
+            <text x="950" text-anchor="middle">21</text>
+            <text x="1050" text-anchor="middle">25</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">14</text>
+          </g>
+          <g transform="translate(0,234)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">CP</text>
+            <text x="80">Contingency Planning</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">DR, backups, alternate sites</text>
+            <text x="850" text-anchor="middle">6</text>
+            <text x="950" text-anchor="middle">19</text>
+            <text x="1050" text-anchor="middle">25</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">13</text>
+          </g>
+          <g transform="translate(0,258)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">IA</text>
+            <text x="80">Identification &amp; Authentication</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">User &amp; device IDs, MFA, credentials</text>
+            <text x="850" text-anchor="middle">11</text>
+            <text x="950" text-anchor="middle">16</text>
+            <text x="1050" text-anchor="middle">18</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">12</text>
+          </g>
+          <g transform="translate(0,282)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">IR</text>
+            <text x="80">Incident Response</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Detection, response, reporting, IR plan</text>
+            <text x="850" text-anchor="middle">7</text>
+            <text x="950" text-anchor="middle">10</text>
+            <text x="1050" text-anchor="middle">14</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">10</text>
+          </g>
+          <g transform="translate(0,306)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">MA</text>
+            <text x="80">Maintenance</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Authorized maintenance, tools, personnel</text>
+            <text x="850" text-anchor="middle">4</text>
+            <text x="950" text-anchor="middle">8</text>
+            <text x="1050" text-anchor="middle">10</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">7</text>
+          </g>
+          <g transform="translate(0,330)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">MP</text>
+            <text x="80">Media Protection</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Sanitization, marking, transport</text>
+            <text x="850" text-anchor="middle">4</text>
+            <text x="950" text-anchor="middle">10</text>
+            <text x="1050" text-anchor="middle">13</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">8</text>
+          </g>
+          <g transform="translate(0,354)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">PE</text>
+            <text x="80">Physical &amp; Environmental Protect.</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Facility access, fire, power, env hazards</text>
+            <text x="850" text-anchor="middle">9</text>
+            <text x="950" text-anchor="middle">17</text>
+            <text x="1050" text-anchor="middle">22</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">23</text>
+          </g>
+          <g transform="translate(0,378)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">PL</text>
+            <text x="80">Planning</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">SSP, PII, baseline tailoring</text>
+            <text x="850" text-anchor="middle">5</text>
+            <text x="950" text-anchor="middle">7</text>
+            <text x="1050" text-anchor="middle">7</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">11</text>
+          </g>
+          <g transform="translate(0,402)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">PM</text>
+            <text x="80">Program Management</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">CSP-wide program (not system-specific)</text>
+            <text x="850" text-anchor="middle">—</text>
+            <text x="950" text-anchor="middle">—</text>
+            <text x="1050" text-anchor="middle">—</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">32</text>
+          </g>
+          <g transform="translate(0,426)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">PS</text>
+            <text x="80">Personnel Security</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Background checks, sanctions, transfer</text>
+            <text x="850" text-anchor="middle">8</text>
+            <text x="950" text-anchor="middle">8</text>
+            <text x="1050" text-anchor="middle">9</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">9</text>
+          </g>
+          <g transform="translate(0,450)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">PT</text>
+            <text x="80">PII Processing &amp; Transparency</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">PII-specific privacy controls (Rev 5 new)</text>
+            <text x="850" text-anchor="middle">2</text>
+            <text x="950" text-anchor="middle">3</text>
+            <text x="1050" text-anchor="middle">3</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">8</text>
+          </g>
+          <g transform="translate(0,474)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">RA</text>
+            <text x="80">Risk Assessment</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Risk analysis, vuln scans, threat models</text>
+            <text x="850" text-anchor="middle">7</text>
+            <text x="950" text-anchor="middle">10</text>
+            <text x="1050" text-anchor="middle">12</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">10</text>
+          </g>
+          <g transform="translate(0,498)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">SA</text>
+            <text x="80">System &amp; Services Acquisition</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">SDLC, supply chain, dev practices</text>
+            <text x="850" text-anchor="middle">8</text>
+            <text x="950" text-anchor="middle">22</text>
+            <text x="1050" text-anchor="middle">28</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">23</text>
+          </g>
+          <g transform="translate(0,522)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">SC</text>
+            <text x="80">System &amp; Communications Protect.</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Boundary protection, crypto, transmission</text>
+            <text x="850" text-anchor="middle">14</text>
+            <text x="950" text-anchor="middle">31</text>
+            <text x="1050" text-anchor="middle">38</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">51</text>
+          </g>
+          <g transform="translate(0,546)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">SI</text>
+            <text x="80">System &amp; Information Integrity</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">Flaw remediation, malware, monitoring</text>
+            <text x="850" text-anchor="middle">11</text>
+            <text x="950" text-anchor="middle">21</text>
+            <text x="1050" text-anchor="middle">28</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">23</text>
+          </g>
+          <g transform="translate(0,570)">
+            <text x="40" font-family="JetBrains Mono, monospace" font-weight="600" fill="#7a1f24">SR</text>
+            <text x="80">Supply Chain Risk Mgmt (Rev 5 new)</text>
+            <text x="380" font-style="italic" fill="#4a5b6c">SCRM strategy, supplier assessment</text>
+            <text x="850" text-anchor="middle">3</text>
+            <text x="950" text-anchor="middle">7</text>
+            <text x="1050" text-anchor="middle">10</text>
+            <text x="1170" text-anchor="middle" fill="#a37a1f">12</text>
+          </g>
+        </g>
+
+        <line x1="40" y1="600" x2="1240" y2="600" stroke="#13212d"/>
+
+        <!-- bottom note -->
+        <rect x="40" y="620" width="1200" height="120" fill="#13212d"/>
+        <text x="60" y="650" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CONTROL COUNTS ARE APPROXIMATE</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="60" y="676">Counts shown are FedRAMP Rev 5 baseline implementations. Numbers vary slightly between FedRAMP releases as new controls are added or</text>
+          <text x="60" y="694">retired. Within each control family, FedRAMP also requires Control Enhancements — sub-controls that strengthen the base. SC and AC are the</text>
+          <text x="60" y="712">two largest families by depth. PM is excluded from baseline counts because Program Management controls apply to the CSP organization,</text>
+          <text x="60" y="730">not specific systems. PT and SR are new families introduced in Rev 5 (vs Rev 4) — both increasing in importance through 2025–2026.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>What 800-53 actually demands</h3>
+        <p><strong>The control catalog is the engine.</strong> 800-53 Rev 5 contains ~1,189 controls plus enhancements across 20 families. FedRAMP doesn't add new controls — it selects subsets via baseline tailoring. Low picks ~156 controls, Moderate ~325, High ~410. Each baseline includes specific enhancements that strengthen the parent control. "We implement AC-2" isn't enough; FedRAMP Moderate requires AC-2(1) account management automation, AC-2(2) automated temporary/emergency accounts, AC-2(3) automated disable, etc.</p>
+
+        <p><strong>Parameter values are FedRAMP-specific.</strong> 800-53 leaves many control parameters open ("[Assignment: organization-defined frequency]"). FedRAMP fills these in with prescribed values. The most-cited example is AC-2(3): "automatically disable accounts" — FedRAMP Moderate requires 35 days; High requires 35 days; not the more flexible "organization-defined." A SAR finding doesn't say "your 90-day disable is reasonable"; it says "your 90-day disable doesn't meet FedRAMP's 35-day parameter." There is no compensating control logic.</p>
+
+        <div class="pull">
+          800-53 tells you what to do. FedRAMP tells you the precise parameters. The 3PAO tells you whether you did it.
+        </div>
+
+        <p><strong>SC and AC dominate effort.</strong> System and Communications Protection (SC) is the largest family at 51 base controls; AC (Access Control) is 25. Together they account for ~30% of authorization effort. Most CSP implementation gaps surface in SC (boundary protection, FIPS-validated crypto, denial-of-service protection, transmission integrity) or AC (least-privilege automation, dynamic separation-of-duties, account monitoring).</p>
+
+        <p><strong>Two new families in Rev 5 reshape the program.</strong> PT (PII Processing &amp; Transparency) brings privacy-by-design into the security catalog — explicit consent, purpose specification, data-minimization controls. SR (Supply Chain Risk Management) makes supply-chain controls first-class citizens, requiring documented SCRM strategies, supplier assessments, and provenance tracking. Both are responses to executive orders (14028 on cybersecurity, 14117 on supply chain) and are increasing in audit emphasis through 2025–2026.</p>
+
+        <p><strong>The Customer Responsibility Matrix (CRM) is critical.</strong> A CSP running on AWS GovCloud, Azure Government, or another FedRAMP-authorized parent inherits dozens of controls. The CRM documents which controls the CSP fully implements, which the parent provider implements, which are shared (both contribute), and which the customer agency must implement on their own deployment. Inheritance is what makes FedRAMP economically feasible for SaaS — without it, every SaaS would re-test every infrastructure control.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>FIPS 199 categorization</h3>
+        <p>The starting point. CSP determines impact for each information type, in three properties:</p>
+        <ul>
+          <li><strong>Confidentiality</strong> — disclosure impact</li>
+          <li><strong>Integrity</strong> — modification impact</li>
+          <li><strong>Availability</strong> — disruption impact</li>
+        </ul>
+        <p>System impact = highest of the three. Drives baseline selection (Low / Moderate / High).</p>
+        <h3 style="margin-top:24px;">LI-SaaS tailored baseline</h3>
+        <p>For Low-Impact SaaS handling no PII / no sensitive data, FedRAMP offers a tailored Low baseline of ~125 controls — fewer than full Low's 156. Faster path for narrow-scope SaaS.</p>
+        <h3 style="margin-top:24px;">800-53 vs 800-53A</h3>
+        <p>800-53 = control catalog (what to do). 800-53A = assessment procedures (how to test what was done). Both are normative for FedRAMP.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 3 -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — Authorization Package</div>
+        <h2>SSP, SAP, SAR, POA&amp;M — and what ConMon expects</h2>
+      </div>
+      <div class="ref">FedRAMP templates · 800-53A<br>OSCAL · ConMon Strategy</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The four core authorization documents</h3>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="290" height="450" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">DOCUMENT 1 · CSP-AUTHORED</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">SSP</text>
+        <text x="60" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">System Security Plan</text>
+        <line x1="60" y1="138" x2="310" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="162">— System description &amp; boundary</text>
+          <text x="60" y="180">— FIPS 199 categorization</text>
+          <text x="60" y="198">— Inventory · users · interconnections</text>
+          <text x="60" y="216">— Per-control implementation</text>
+          <text x="60" y="234">— Inheritance and CRM</text>
+          <text x="60" y="252">— Architecture diagrams</text>
+        </g>
+        <line x1="60" y1="276" x2="310" y2="276" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="60" y="300" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">SCALE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="320">High: 1,000–2,500 pages</text>
+          <text x="60" y="338">Moderate: 600–1,200 pages</text>
+          <text x="60" y="356">Low: 300–600 pages</text>
+        </g>
+        <line x1="60" y1="380" x2="310" y2="380" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="60" y="404" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">FedRAMP TEMPLATE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="424">Mandatory format · DOCX</text>
+          <text x="60" y="442">OSCAL output (Rev 5+)</text>
+          <text x="60" y="460">Living document — updated</text>
+          <text x="60" y="478">on every change</text>
+        </g>
+
+        <rect x="345" y="40" width="290" height="450" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="365" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">DOCUMENT 2 · 3PAO-AUTHORED</text>
+        <text x="365" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">SAP</text>
+        <text x="365" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">Security Assessment Plan</text>
+        <line x1="365" y1="138" x2="615" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="365" y="162">— Assessment scope &amp; objectives</text>
+          <text x="365" y="180">— Test methodology per control</text>
+          <text x="365" y="198">— Sample population &amp; size</text>
+          <text x="365" y="216">— Schedule &amp; team assignments</text>
+          <text x="365" y="234">— Pen test scope &amp; rules</text>
+          <text x="365" y="252">— Independence affirmations</text>
+        </g>
+        <line x1="365" y1="276" x2="615" y2="276" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="365" y="300" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">SCALE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="365" y="320">Typically 200–500 pages</text>
+          <text x="365" y="338">Largely template-driven</text>
+          <text x="365" y="356">Customized to system</text>
+        </g>
+        <line x1="365" y1="380" x2="615" y2="380" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="365" y="404" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">PMO REVIEW</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="365" y="424">PMO + AO review SAP</text>
+          <text x="365" y="442">before testing begins</text>
+          <text x="365" y="460">"Approved to test"</text>
+          <text x="365" y="478">gate decision</text>
+        </g>
+
+        <rect x="650" y="40" width="290" height="450" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="670" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">DOCUMENT 3 · 3PAO-AUTHORED</text>
+        <text x="670" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">SAR</text>
+        <text x="670" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">Security Assessment Report</text>
+        <line x1="670" y1="138" x2="920" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="670" y="162">— Per-control test results</text>
+          <text x="670" y="180">— Findings (Low/Mod/High)</text>
+          <text x="670" y="198">— Risk-adjusted ratings</text>
+          <text x="670" y="216">— Pen test executive summary</text>
+          <text x="670" y="234">— Evidence references</text>
+          <text x="670" y="252">— 3PAO sign-off</text>
+        </g>
+        <line x1="670" y1="276" x2="920" y2="276" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="670" y="300" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">SCALE</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="670" y="320">High: 1,500+ pages</text>
+          <text x="670" y="338">Moderate: 800–1,200 pages</text>
+          <text x="670" y="356">Low: 400–800 pages</text>
+        </g>
+        <line x1="670" y1="380" x2="920" y2="380" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="670" y="404" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">DRIVES THE DECISION</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="670" y="424">SAR is the primary input</text>
+          <text x="670" y="442">to AO authorization. High</text>
+          <text x="670" y="460">findings typically block ATO</text>
+          <text x="670" y="478">until remediated.</text>
+        </g>
+
+        <rect x="955" y="40" width="285" height="450" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="975" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">DOCUMENT 4 · CSP-AUTHORED</text>
+        <text x="975" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">POA&amp;M</text>
+        <text x="975" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">Plan of Action &amp; Milestones</text>
+        <line x1="975" y1="138" x2="1225" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="975" y="162">— Each finding from SAR</text>
+          <text x="975" y="180">— Remediation plan</text>
+          <text x="975" y="198">— Owner · target close date</text>
+          <text x="975" y="216">— Evidence on closure</text>
+          <text x="975" y="234">— Updated monthly</text>
+          <text x="975" y="252">— Living document</text>
+        </g>
+        <line x1="975" y1="276" x2="1225" y2="276" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="975" y="300" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">SLAs</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="975" y="320">High: 30 days to remediate</text>
+          <text x="975" y="338">Moderate: 90 days</text>
+          <text x="975" y="356">Low: 180 days</text>
+        </g>
+        <line x1="975" y1="380" x2="1225" y2="380" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="975" y="404" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">CONMON HEARTBEAT</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="975" y="424">POA&amp;M submitted monthly</text>
+          <text x="975" y="442">to PMO during ConMon</text>
+          <text x="975" y="460">Open Highs are red flags</text>
+          <text x="975" y="478">to AOs reviewing CSP</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ConMon cycle -->
+    <div class="diagram">
+      <h3 class="subtitle">Continuous Monitoring — the ATO is not a one-time event</h3>
+      <svg viewBox="0 0 1280 380" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrCM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#13212d"/></marker>
+        </defs>
+
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">CONMON CADENCE — MONTHLY · QUARTERLY · ANNUAL</text>
+
+        <!-- Monthly -->
+        <rect x="40" y="80" width="385" height="240" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2"/>
+        <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">EVERY MONTH</text>
+        <text x="60" y="138" font-family="Fraunces, serif" font-size="22" font-weight="500">Monthly ConMon</text>
+        <line x1="60" y1="152" x2="405" y2="152" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="178">— Authenticated vuln scans (OS, DB, web)</text>
+          <text x="60" y="198">— Updated POA&amp;M submitted to PMO</text>
+          <text x="60" y="218">— Inventory updates (Integrated Inventory Workbook)</text>
+          <text x="60" y="238">— Significant Change Requests (if any)</text>
+          <text x="60" y="258">— Incident reports (any &gt; Low impact)</text>
+          <text x="60" y="278">— Deviation Request approvals</text>
+        </g>
+        <text x="60" y="306" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#7a1f24" font-style="italic">Skip a month · risk losing ATO</text>
+
+        <!-- Quarterly -->
+        <rect x="445" y="80" width="385" height="240" fill="#f3ecdd" stroke="#a37a1f" stroke-width="2"/>
+        <text x="465" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">EVERY QUARTER</text>
+        <text x="465" y="138" font-family="Fraunces, serif" font-size="22" font-weight="500">Quarterly Assessments</text>
+        <line x1="465" y1="152" x2="810" y2="152" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="465" y="178">— Quarterly summaries to AO + PMO</text>
+          <text x="465" y="198">— Trend analysis (POA&amp;M aging, vuln backlog)</text>
+          <text x="465" y="218">— SSP version control review</text>
+          <text x="465" y="238">— Personnel change reporting</text>
+          <text x="465" y="258">— Subset of controls reassessed</text>
+          <text x="465" y="278">— Customer agency communications</text>
+        </g>
+        <text x="465" y="306" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f" font-style="italic">Pattern detection by AO</text>
+
+        <!-- Annual -->
+        <rect x="850" y="80" width="390" height="240" fill="#f3ecdd" stroke="#3f5337" stroke-width="2"/>
+        <text x="870" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">EVERY YEAR</text>
+        <text x="870" y="138" font-family="Fraunces, serif" font-size="22" font-weight="500">Annual Assessment</text>
+        <line x1="870" y1="152" x2="1220" y2="152" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="870" y="178">— 3PAO returns for full reassessment</text>
+          <text x="870" y="198">— Subset of controls retested (~⅓)</text>
+          <text x="870" y="218">— SSP refresh published</text>
+          <text x="870" y="238">— Pen test redone</text>
+          <text x="870" y="258">— New SAR delivered</text>
+          <text x="870" y="278">— AO re-affirms or revokes ATO</text>
+        </g>
+        <text x="870" y="306" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#3f5337" font-style="italic">3-year cycle culminates in re-auth</text>
+
+        <text x="640" y="360" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4a5b6c">Authorization isn't pass/fail — it's continuous. CSPs that drift see "stop work" letters before formal revocation.</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Where authorization packages go wrong</h3>
+        <p><strong>The SSP is the most-underestimated artifact in compliance.</strong> A FedRAMP Moderate SSP is typically 800-1,500 pages of detailed control implementation narrative — every selected control gets multiple paragraphs describing exactly how the CSP satisfies it, with cross-references to architecture diagrams, configuration documents, and operational procedures. Most first-time CSPs underestimate SSP authoring effort by 3-5x; experienced CSPs hire dedicated SSP authors or specialty firms.</p>
+
+        <p><strong>Inheritance accuracy determines economic viability.</strong> A SaaS running on AWS GovCloud can inherit dozens of controls (physical security, environmental controls, much of network protection) from AWS's existing FedRAMP authorization. Get the inheritance right in the SSP/CRM and your control burden drops by 30-50%. Get it wrong — claim inheritance you don't have, or fail to claim inheritance you do — and the 3PAO will surface every gap in the SAR. The CRM is the most-scrutinized appendix in the package.</p>
+
+        <p><strong>SAR risk ratings are negotiable but bounded.</strong> Findings come out of testing as "the control wasn't fully met." The 3PAO assigns initial Low/Moderate/High ratings, but CSPs can submit Risk Adjustment requests if they believe a finding's severity is overstated relative to the system's risk. The PMO and AO ultimately decide. Common pattern: 3PAO marks something High based on textbook severity; CSP demonstrates compensating controls + low exposure; PMO accepts a Moderate rating. Don't accept initial ratings as final — but be ready to back up adjustments with technical detail.</p>
+
+        <div class="pull">
+          The ATO is the start, not the end. ConMon failures revoke ATOs as surely as initial assessment failures deny them.
+        </div>
+
+        <p><strong>POA&amp;M aging is the early-warning indicator AOs watch.</strong> Newly opened High findings get attention. Aged High findings get scrutiny. High findings older than 30 days get questions. High findings older than 90 days get suspension warnings. The pattern AOs look for isn't "are there findings?" — every system has findings — but "is this CSP closing findings on schedule, and are repeat findings emerging?" Programs that treat POA&amp;M as a paperwork exercise instead of a real remediation tracker eventually have ATOs revoked.</p>
+
+        <p><strong>Significant Change Requests are how you avoid surprise re-assessments.</strong> Major architectural changes (new region, new authentication method, new third-party integration handling federal data, new product capability) require an SCR submitted to the AO before deployment. The AO determines whether the change is "significant" (requires fresh 3PAO testing) or "non-significant" (can be documented in regular ConMon). Skipping SCR review and deploying a major change is a fast path to losing ATO.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Risk rating matrix (FedRAMP guidance)</h3>
+        <p><strong>High</strong> — successful exploit could result in significant impact. 30-day SLA.</p>
+        <p><strong>Moderate</strong> — could result in serious impact. 90-day SLA.</p>
+        <p><strong>Low</strong> — limited impact. 180-day SLA.</p>
+        <h3 style="margin-top:24px;">OSCAL transition</h3>
+        <p>The Open Security Controls Assessment Language (OSCAL) is NIST's machine-readable format for SSPs, SAPs, SARs, and POA&amp;Ms. FedRAMP is transitioning packages to OSCAL through 2025-2026 as part of the 20x modernization. Mature CSPs are authoring directly in OSCAL.</p>
+        <h3 style="margin-top:24px;">Deviation Requests</h3>
+        <p><strong>Deviation Request (DR)</strong> — when a control parameter cannot be met as specified, CSP submits DR with risk analysis. PMO + AO review.</p>
+        <p><strong>Operational Requirement (OR)</strong> — when business need conflicts with control. Approved DRs become accepted operational state.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 4 -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>FedRAMP / 800-53 — the prescriptive engine others borrow from</h2>
+      </div>
+      <div class="ref">800-53 Rev 5 Family Mappings<br>NIST control mapping references</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:13%">800-53 family</th>
+          <th>SOX</th>
+          <th>SOC 2 (TSC)</th>
+          <th>ISO 27001:2022</th>
+          <th>NIST CSF 2.0</th>
+          <th>PCI DSS v4.0.1</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">AC — Access Control</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> – <code>CC6.3</code></td>
+          <td><code>A.5.15</code> · <code>A.5.18</code> · <code>A.8.2</code> · <code>A.8.3</code></td>
+          <td><code>PR.AA-05</code></td>
+          <td><code>Req 7</code> · <code>Req 8</code></td>
+          <td><code>01.b</code> · <code>01.v</code></td>
+          <td class="shared">JML tickets, UAR exports, IAM config, role definitions</td></tr>
+        <tr><td class="dom">AT — Awareness &amp; Training</td>
+          <td><code>ELC</code> · COSO Comp.4</td>
+          <td><code>CC1.4</code></td>
+          <td><code>A.6.3</code></td>
+          <td><code>PR.AT-01</code></td>
+          <td><code>Req 12.6</code></td>
+          <td><code>02.e</code> · <code>02.f</code></td>
+          <td class="shared">Completion reports, phishing tests, role-based training records</td></tr>
+        <tr><td class="dom">AU — Audit &amp; Accountability</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code> · <code>CC7.2</code></td>
+          <td><code>A.8.15</code> · <code>A.8.16</code></td>
+          <td><code>DE.CM-01</code></td>
+          <td><code>Req 10</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">SIEM rules, log retention config, automated review evidence</td></tr>
+        <tr><td class="dom">CA — Assessment, Auth, Monitor</td>
+          <td>Internal Audit fn</td>
+          <td><code>CC4.1</code> · <code>CC4.2</code></td>
+          <td><code>Cl. 9.2</code></td>
+          <td><code>ID.IM</code> · <code>GV.OV</code></td>
+          <td><code>Req 12.4.1</code></td>
+          <td><code>06.h</code></td>
+          <td class="shared">Internal audit reports, ConMon outputs, mgmt review records</td></tr>
+        <tr><td class="dom">CM — Configuration Mgmt</td>
+          <td><code>ITGC — Change</code></td>
+          <td><code>CC6.6</code> · <code>CC8.1</code></td>
+          <td><code>A.8.9</code> · <code>A.8.32</code></td>
+          <td><code>PR.PS-01</code> · <code>PR.PS-06</code></td>
+          <td><code>Req 2</code> · <code>Req 6.5</code></td>
+          <td><code>09.h</code> · <code>10.h</code></td>
+          <td class="shared">CIS benchmarks, change tickets, drift detection, IaC reviews</td></tr>
+        <tr><td class="dom">CP — Contingency Planning</td>
+          <td>BPC · resilience</td>
+          <td><code>A1.2</code> · <code>A1.3</code></td>
+          <td><code>A.5.29</code> · <code>A.5.30</code></td>
+          <td><code>RC.RP</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>12.b</code> · <code>12.c</code></td>
+          <td class="shared">DR plans, last-test reports, RTO/RPO documentation</td></tr>
+        <tr><td class="dom">IA — Identification &amp; Auth</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> · <code>CC6.2</code></td>
+          <td><code>A.5.16</code> · <code>A.5.17</code></td>
+          <td><code>PR.AA-01</code> · <code>PR.AA-03</code></td>
+          <td><code>Req 8</code></td>
+          <td><code>01.b</code> · <code>01.q</code></td>
+          <td class="shared">MFA enforcement, password policy, FIPS-validated crypto modules</td></tr>
+        <tr><td class="dom">IR — Incident Response</td>
+          <td><code>BPC</code> · IT ops</td>
+          <td><code>CC7.3</code> – <code>CC7.5</code></td>
+          <td><code>A.5.24</code> – <code>A.5.27</code></td>
+          <td><code>RS.MA</code> · <code>RS.AN</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>11.a</code> – <code>11.c</code></td>
+          <td class="shared">IR plan, tabletop reports, post-incident reviews, US-CERT reports</td></tr>
+        <tr><td class="dom">MA — Maintenance</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.6</code></td>
+          <td><code>A.7.13</code></td>
+          <td><code>PR.PS-04</code></td>
+          <td><code>Req 9.5</code></td>
+          <td><code>09.r</code></td>
+          <td class="shared">Maintenance schedule, authorized personnel logs, tools inventory</td></tr>
+        <tr><td class="dom">MP — Media Protection</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.5</code></td>
+          <td><code>A.7.10</code> · <code>A.7.14</code></td>
+          <td><code>PR.DS-02</code></td>
+          <td><code>Req 9.4</code> · <code>Req 3.2</code></td>
+          <td><code>07.a</code></td>
+          <td class="shared">Asset register, sanitization records, transport logs</td></tr>
+        <tr><td class="dom">PE — Physical &amp; Env</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.4</code></td>
+          <td><code>A.7.1</code> – <code>A.7.14</code></td>
+          <td><code>PR.AA-06</code> · <code>PR.IR-02</code></td>
+          <td><code>Req 9</code></td>
+          <td><code>08.b</code> · <code>08.j</code></td>
+          <td class="shared">Badge logs, CCTV retention, facility maintenance, env controls</td></tr>
+        <tr><td class="dom">PL — Planning</td>
+          <td><code>ELC</code> · governance</td>
+          <td><code>CC1.1</code> · <code>CC5.3</code></td>
+          <td><code>Cl. 4</code> · <code>Cl. 6</code></td>
+          <td><code>GV.OC</code> · <code>GV.PO</code></td>
+          <td><code>Req 12</code></td>
+          <td><code>00.a</code> · <code>04.a</code></td>
+          <td class="shared">SSP, info security policy, baseline tailoring documentation</td></tr>
+        <tr><td class="dom">PM — Program Mgmt</td>
+          <td><code>ELC</code> · governance</td>
+          <td><code>CC1.1</code> – <code>CC1.3</code></td>
+          <td><code>Cl. 5</code></td>
+          <td><code>GV.RR</code> · <code>GV.RM</code></td>
+          <td><code>Req 12.4</code></td>
+          <td><code>02.a</code></td>
+          <td class="shared">Program charter, leadership communications, risk strategy</td></tr>
+        <tr><td class="dom">PS — Personnel Security</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC1.4</code> · <code>CC6.2</code></td>
+          <td><code>A.6.1</code> · <code>A.6.2</code></td>
+          <td><code>PR.AT-02</code></td>
+          <td><code>Req 12.7</code></td>
+          <td><code>02.b</code> · <code>02.c</code></td>
+          <td class="shared">Background check records, NDAs, transfer/termination logs</td></tr>
+        <tr><td class="dom">PT — PII Processing &amp; Trans.</td>
+          <td>Privacy program</td>
+          <td><code>P1</code> – <code>P8</code></td>
+          <td><code>A.5.34</code></td>
+          <td><code>GV.SC</code> (privacy)</td>
+          <td>—</td>
+          <td><code>13</code> (Privacy)</td>
+          <td class="shared">Privacy policy, consent records, data inventory, DSARs</td></tr>
+        <tr><td class="dom">RA — Risk Assessment</td>
+          <td><code>ELC</code> · risk memo</td>
+          <td><code>CC3.1</code> – <code>CC3.4</code></td>
+          <td><code>Cl. 6.1</code></td>
+          <td><code>GV.RM</code> · <code>ID.RA</code></td>
+          <td><code>Req 12.3</code></td>
+          <td><code>03.a</code> · <code>03.b</code></td>
+          <td class="shared">Risk register, threat models, vuln scan reports, pen tests</td></tr>
+        <tr><td class="dom">SA — System &amp; Services Acq.</td>
+          <td><code>ITGC — SDLC</code></td>
+          <td><code>CC8.1</code></td>
+          <td><code>A.8.25</code> – <code>A.8.32</code></td>
+          <td><code>PR.PS-06</code></td>
+          <td><code>Req 6</code></td>
+          <td><code>10.a</code> · <code>10.b</code></td>
+          <td class="shared">SDLC documentation, code review records, acquisition contracts</td></tr>
+        <tr><td class="dom">SC — System &amp; Comms Protect.</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.6</code> · <code>CC6.7</code></td>
+          <td><code>A.8.20</code> – <code>A.8.24</code></td>
+          <td><code>PR.IR-01</code> · <code>PR.DS-02</code></td>
+          <td><code>Req 1</code> · <code>Req 4</code></td>
+          <td><code>09.m</code> · <code>09.s</code></td>
+          <td class="shared">Network diagram, FIPS crypto config, boundary protection rules</td></tr>
+        <tr><td class="dom">SI — System &amp; Info Integrity</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code></td>
+          <td><code>A.8.7</code> · <code>A.8.8</code></td>
+          <td><code>DE.CM-09</code> · <code>ID.RA-01</code></td>
+          <td><code>Req 5</code> · <code>Req 11</code></td>
+          <td><code>09.j</code> · <code>10.k</code></td>
+          <td class="shared">Vuln scan reports, malware logs, flaw remediation tickets</td></tr>
+        <tr><td class="dom">SR — Supply Chain Risk Mgmt</td>
+          <td><code>ITGC + BPC</code> · TPRM</td>
+          <td><code>CC9.2</code></td>
+          <td><code>A.5.19</code> – <code>A.5.23</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>Req 12.8</code> · <code>Req 12.9</code></td>
+          <td><code>05.k</code></td>
+          <td class="shared">Vendor inventory, due-diligence packages, SBOM, contracts</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>Why the federal control catalog is the baseline for everything else</h3>
+        <p>800-53 isn't just one of many control catalogs — it's the most comprehensive prescriptive control set that exists in commercial use. NIST CSF maps explicitly to it (the Informative References to PR.AA, PR.PS, etc. all cite 800-53 control numbers). HITRUST CSF lists 800-53 as one of its primary Authoritative Sources. SOC 2's CC6.x and other criteria can be expressed as 800-53 subsets. ISO 27001 Annex A and 800-53 have published bidirectional mappings. PCI DSS v4.0.1 includes informational references to 800-53.</p>
+
+        <p>The implication: <strong>if you can pass FedRAMP, you can pass nearly anything else.</strong> The reverse is not true. SOC 2 Type 2 doesn't satisfy FedRAMP because FedRAMP requires specific control parameters, prescribed assessment procedures (800-53A), federally-accredited assessors (3PAOs), and an authorization decision by a federal AO. But evidence collected for FedRAMP — vulnerability scan reports, change tickets, IAM configurations, network diagrams, contingency test results — satisfies the evidence requirements of every other framework in the Atlas, often with no modification.</p>
+
+        <div class="pull">
+          FedRAMP is the most expensive framework to achieve and the most-leveraged once you have it. The control library reused across every other audit you'll ever do.
+        </div>
+
+        <p><strong>The strategy for federal-adjacent CSPs.</strong> If you're targeting federal customers, FedRAMP is non-negotiable. If you're not, FedRAMP is rarely worth the investment — it's the most expensive path. But for CSPs serving heavily-regulated industries (defense contractors, federal contractors, large healthcare systems with federal grants, financial services with federal banking integration), FedRAMP can become a competitive differentiator that opens markets unavailable to less-regulated competitors. Cost: $500K-$2M+. Return: federal contract pipeline.</p>
+
+        <p><strong>The shared-evidence model dominates.</strong> For multi-framework programs, build to FedRAMP / 800-53 first; let everything else inherit. Tagged evidence (a single Splunk log retention configuration document) satisfies AU-2 (FedRAMP), CC7.1 (SOC 2), A.8.15 (ISO 27001), DE.CM-01 (NIST CSF), Req 10 (PCI), and 09.aa (HITRUST) simultaneously. The audit work in the second framework is read-and-cite, not collect-fresh.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>FedRAMP investment ROI signals</h3>
+        <p><strong>Worth it</strong> — federal contracts in pipeline, defense / healthcare / financial verticals, multi-framework portfolio target, established pen-test discipline.</p>
+        <p><strong>Probably not</strong> — startup pre-product-market-fit, B2C only, no federal lead in pipeline.</p>
+        <p><strong>The wait-then-pursue path</strong> — build to 800-53 Moderate as your internal target without authorization; pursue FedRAMP when first qualified federal opportunity emerges.</p>
+        <h3 style="margin-top:24px;">The CMMC parallel</h3>
+        <p>CMMC (Cybersecurity Maturity Model Certification) is the DoD's framework for defense contractors. Built on NIST SP 800-171 (subset of 800-53). Five levels from basic hygiene to advanced. As of 2025, CMMC 2.0 is in rollout with three levels. Different from FedRAMP — CMMC certifies the contractor's environment, FedRAMP authorizes a cloud service. Some overlap; not interchangeable.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume VIII · FedRAMP<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>FedRAMP PMO · NIST 800-53 Rev 5 · OMB M-24-15 · FedRAMP Rev 5 baselines</div>
+    <div><strong>Next</strong><br>Volume IX — ISO/IEC 42001:2023<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

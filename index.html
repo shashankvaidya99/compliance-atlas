@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%);
+  }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:64px 56px 120px; }
+
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:28px 0 18px;
+    display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic;
+    font-size:clamp(48px,6.4vw,92px); line-height:.92; margin:8px 0 0; letter-spacing:-.012em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+
+  .strap{ margin:28px 0 56px; display:grid; grid-template-columns:1.4fr 2fr; gap:64px;
+    padding-bottom:36px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:24px; line-height:1.4; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:14px; line-height:1.65; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 10px; font-weight:500; }
+  .strap .legend p{ margin:0 0 12px; }
+  .strap .legend p strong{ color:var(--ink); font-weight:600; }
+
+  /* Section bar */
+  .section-bar{
+    display:flex; align-items:baseline; gap:18px;
+    margin:48px 0 24px; padding-bottom:8px;
+    border-bottom:1px solid var(--rule);
+  }
+  .section-bar .num{
+    font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.2em;
+    color:var(--slate); text-transform:uppercase;
+  }
+  .section-bar h2{
+    font-family:"Fraunces",serif; font-style:italic; font-weight:400;
+    font-size:36px; margin:0; letter-spacing:-.01em;
+  }
+  .section-bar .count{
+    margin-left:auto;
+    font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate);
+  }
+
+  /* Volume grid */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+  }
+  .vol-card{
+    position:relative;
+    background:var(--paper-2);
+    border:1px solid var(--ink);
+    padding:24px 28px 22px;
+    text-decoration:none;
+    color:var(--ink);
+    box-shadow:var(--shadow);
+    transition:transform .25s ease, box-shadow .25s ease;
+    display:flex; flex-direction:column;
+    min-height:260px;
+  }
+  .vol-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 1px 0 rgba(19,33,45,.1), 0 32px 72px -28px rgba(19,33,45,.35);
+  }
+  .vol-card.unavailable{
+    cursor:not-allowed;
+    opacity:.62;
+  }
+  .vol-card.unavailable:hover{ transform:none; box-shadow:var(--shadow); }
+  .vol-card .roman{
+    font-family:"Fraunces",serif; font-style:italic; font-weight:300;
+    font-size:74px; line-height:.9; color:var(--oxblood);
+    margin:-6px 0 4px;
+  }
+  .vol-card.unavailable .roman{ color:var(--slate); }
+  .vol-card .kicker{
+    font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--slate);
+    margin-bottom:8px;
+  }
+  .vol-card h3{
+    font-family:"Fraunces",serif; font-weight:500;
+    font-size:28px; line-height:1.05; margin:0 0 6px;
+    letter-spacing:-.005em;
+  }
+  .vol-card .ttl-sub{
+    font-family:"Fraunces",serif; font-style:italic; font-size:16px;
+    color:var(--ink-soft); margin-bottom:14px;
+  }
+  .vol-card .desc{
+    font-size:13.5px; line-height:1.55; color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  .vol-card .footer{
+    margin-top:auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; border-top:1px solid rgba(19,33,45,.18);
+    font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    color:var(--slate);
+  }
+  .vol-card .status{
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight:500;
+  }
+  .vol-card .status::before{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background:var(--moss);
+  }
+  .vol-card.unavailable .status::before{
+    background:var(--gold);
+  }
+  .vol-card .status.queued::before{ background:var(--gold); }
+  .vol-card .status.shipped{ color:var(--moss); }
+  .vol-card .arrow{
+    font-family:"Fraunces",serif; font-style:italic; font-size:20px;
+  }
+  .vol-card.unavailable .arrow{ color:var(--slate); }
+
+  /* Section dividers and meta */
+  .meta-block{
+    margin:64px 0 0;
+    padding-top:36px;
+    border-top:6px double var(--ink);
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:48px;
+    font-size:13.5px; line-height:1.65;
+    color:var(--ink-soft);
+  }
+  .meta-block h4{
+    font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 10px;
+    font-weight:500;
+  }
+  .meta-block p{ margin:0 0 12px; }
+  .meta-block strong{ color:var(--ink); font-weight:600; }
+
+  footer.colophon{
+    margin-top:72px; padding-top:24px;
+    border-top:1px solid var(--rule);
+    font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    color:var(--slate); line-height:1.7;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  footer.colophon strong{ color:var(--ink); }
+
+  @media (max-width: 880px){
+    .wrap{ padding:32px 20px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    .grid{ grid-template-columns:1fr; }
+    .meta-block{ grid-template-columns:1fr; gap:24px; }
+    .section-bar{ flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div><div class="vol">A reference for practitioners · 2026 edition</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>9 volumes</strong><br>
+      4 layers per volume<br>
+      one editorial language
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      Audit work as practiced — <em>not</em> recited from a textbook. Each volume walks one framework through a single editorial structure: the lifecycle in two lanes, the control universe, the evidence and testing, and the crosswalk to the rest.
+    </p>
+    <div class="legend">
+      <h4>How to read the Atlas</h4>
+      <p>Each volume is a standalone HTML page. Open one, work through its four layers, and screenshot what's useful. Volumes are siblings — there is no required reading order, but <strong>SOX → SOC 2 → ISO 27001</strong> is the canonical sequence for IT auditors.</p>
+      <p>The <strong>Crosswalk</strong> in each volume maps that framework's controls to the others, so you can read across the Atlas one control domain at a time once you've internalized one volume.</p>
+      <p>Eleven volumes total across three parts. Each is a self-contained, single-file HTML reference returning to this index.</p>
+    </div>
+  </section>
+
+  <!-- ─────────── TRADITIONAL AUDIT ─────────── -->
+  <div class="section-bar">
+    <span class="num">Part one</span>
+    <h2>Financial &amp; assurance frameworks</h2>
+    <span class="count">3 volumes</span>
+  </div>
+  <div class="grid">
+
+    <a class="vol-card" href="atlas_v01_sox.html">
+      <div class="kicker">Volume I · Edition 2026.2</div>
+      <div class="roman">I.</div>
+      <h3>Sarbanes–Oxley</h3>
+      <div class="ttl-sub">An integrated audit, walked side by side</div>
+      <p class="desc">PCAOB AS 2201 top-down approach. ELC, ITGC, ITAC, BPC. Deficiency severity from CD to MW. The 12-month internal × external lifecycle as it actually plays out.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v02_soc2.html">
+      <div class="kicker">Volume II · 2026.1</div>
+      <div class="roman">II.</div>
+      <h3>SOC 2</h3>
+      <div class="ttl-sub">Trust Services Criteria, examined</div>
+      <p class="desc">AICPA TSP-100. Five Trust Services Criteria, 33 Common Criteria. Type 1 vs Type 2 mechanics. CUECs, sub-service organizations, the bridge letter, and how a SOC 2 report actually gets used by your customers' auditors.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v03_iso27001.html">
+      <div class="kicker">Volume III · 2026.1</div>
+      <div class="roman">III.</div>
+      <h3>ISO/IEC 27001:2022</h3>
+      <div class="ttl-sub">An ISMS, certified</div>
+      <p class="desc">Clauses 4–10 + Annex A's 93 controls in 4 themes. Stage 1 + Stage 2 audits, surveillance, recertification. The Statement of Applicability as a living document.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- ─────────── CYBERSECURITY & INDUSTRY ─────────── -->
+  <div class="section-bar">
+    <span class="num">Part two</span>
+    <h2>Cybersecurity &amp; industry-specific frameworks</h2>
+    <span class="count">5 volumes</span>
+  </div>
+  <div class="grid">
+
+    <a class="vol-card" href="atlas_v04_nist.html">
+      <div class="kicker">Volume IV · 2026.1</div>
+      <div class="roman">IV.</div>
+      <h3>NIST CSF 2.0</h3>
+      <div class="ttl-sub">A profile, not a certification</div>
+      <p class="desc">Six functions (GOVERN added in 2024), 22 categories, 106 subcategories. Current Profile vs Target Profile, Tier 1–4 maturity. Why CSF is read by everyone and audited by no one — until you make it part of a SOC 2+ engagement.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+    <a class="vol-card" href="atlas_v05_hitrust.html">
+      <div class="kicker">Volume V · 2026.1</div>
+      <div class="roman">V.</div>
+      <h3>HITRUST CSF v11</h3>
+      <div class="ttl-sub">A unified harmonization</div>
+      <p class="desc">e1, i1, r2 assessment levels. The MyCSF mechanics. Why HITRUST exists where HIPAA, ISO 27001, SOC 2, and NIST already do — and what a HITRUST-certified report actually proves.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v06_pcidss.html">
+      <div class="kicker">Volume VI · 2026.1</div>
+      <div class="roman">VI.</div>
+      <h3>PCI DSS v4.0.1</h3>
+      <div class="ttl-sub">Cardholder data, scoped tightly</div>
+      <p class="desc">12 requirements, 64 sub-requirements. CDE definition and segmentation testing. QSA-led RoC vs SAQ paths. The customized vs defined approach in v4. Why scope is the only thing that matters.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v07_hipaa.html">
+      <div class="kicker">Volume VII · 2026.1</div>
+      <div class="roman">VII.</div>
+      <h3>HIPAA Security Rule</h3>
+      <div class="ttl-sub">A safeguard rule, enforced</div>
+      <p class="desc">45 CFR 164 Subparts C &amp; D. Administrative, physical, technical safeguards. OCR audits and breach notification. Required vs addressable specifications — and why "addressable" is misread by most teams.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v08_fedramp.html">
+      <div class="kicker">Volume VIII · 2026.1</div>
+      <div class="roman">VIII.</div>
+      <h3>FedRAMP</h3>
+      <div class="ttl-sub">An ATO, federal cloud authorized</div>
+      <p class="desc">Built on NIST 800-53 Rev 5. 3PAO-led security assessment, FedRAMP PMO at GSA, JAB or agency authorization paths. High / Moderate / Low baselines (~410 / 325 / 156 controls). The only path to selling cloud services to the federal government.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ─────────── AI GOVERNANCE ─────────── -->
+  <div class="section-bar">
+    <span class="num">Part three</span>
+    <h2>AI governance frameworks</h2>
+    <span class="count">3 volumes</span>
+  </div>
+  <div class="grid">
+
+    <a class="vol-card" href="atlas_v09_iso42001.html">
+      <div class="kicker">Volume IX · 2026.1</div>
+      <div class="roman">IX.</div>
+      <h3>ISO/IEC 42001:2023</h3>
+      <div class="ttl-sub">An AI management system</div>
+      <p class="desc">The first management-system standard for AI. Clauses 4–10 + Annex A controls + Annex B implementation guidance. Internal vs notified-body lanes — the audit profession arriving at AI without a settled playbook.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v10_eu_ai_act.html">
+      <div class="kicker">Volume X · 2026.1</div>
+      <div class="roman">X.</div>
+      <h3>EU AI Act</h3>
+      <div class="ttl-sub">Conformity assessed, market surveilled</div>
+      <p class="desc">Risk tiers — prohibited, high-risk, limited-risk, minimal. Annex III high-risk systems. Conformity assessment procedures (Annex VI / VII), notified bodies, the EU AI Office, and national market surveillance authorities. The first real regulatory regime for AI.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+
+    <a class="vol-card" href="atlas_v11_nist_ai_rmf.html">
+      <div class="kicker">Volume XI · 2026.1</div>
+      <div class="roman">XI.</div>
+      <h3>NIST AI RMF</h3>
+      <div class="ttl-sub">An AI risk profile, voluntary</div>
+      <p class="desc">NIST AI 100-1 (Jan 2023). Four functions — GOVERN, MAP, MEASURE, MANAGE. The 2024 Generative AI Profile (NIST AI 600-1). No native certification, like CSF — but the foundational vocabulary that most AI governance work uses to describe itself.</p>
+      <div class="footer">
+        <span class="status shipped">Shipped</span>
+        <span class="arrow">read →</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- ─────────── META ─────────── -->
+  <div class="meta-block">
+    <div>
+      <h4>What lives in every volume</h4>
+      <p><strong>Layer 01 — Lifecycle Flow.</strong> A two-lane swimlane showing the audit as practiced. For traditional frameworks: internal audit × external audit. For AI frameworks: internal × notified-body / regulator.</p>
+      <p><strong>Layer 02 — Control Mindmap.</strong> The framework's structure, drilled to test approach.</p>
+      <p><strong>Layer 03 — Evidence &amp; Testing.</strong> Sample sizes, IPE, workpapers, the unglamorous work that makes an audit hold up.</p>
+      <p><strong>Layer 04 — Crosswalk.</strong> This volume's domains mapped to the other ten, with shared evidence column.</p>
+    </div>
+    <div>
+      <h4>Editorial conventions</h4>
+      <p><strong>Internal lane</strong> in slate blue. <strong>External lane</strong> in oxblood. <strong>Bridges</strong> in gold dashed. Solid box = primary procedure; dashed = follow-on or parallel.</p>
+      <p>Authoritative paragraph and clause numbers are cited in the small caps margin reference of each layer header.</p>
+      <p>No fictional companies in this edition. The case-study edition is forthcoming and will use this canon as its testbed.</p>
+    </div>
+    <div>
+      <h4>What this is for</h4>
+      <p>For practitioners walking their second or third audit who need a single reference that doesn't lie about how the work actually goes.</p>
+      <p>For senior auditors stress-testing their own program against a clean editorial structure.</p>
+      <p>For junior auditors who want to see the work before they have to do it.</p>
+      <p>For founders, CISOs, and engineers asking why their compliance team keeps asking for the same thing seven different ways.</p>
+    </div>
+  </div>
+
+  <footer class="colophon">
+    <span><strong>The Compliance Atlas</strong> · Edition 2026 · index</span>
+    <span>Method: authoritative sources only. PCAOB · COSO · AICPA · ISO · NIST · PCI SSC · OCR · HITRUST Alliance · CEN-CENELEC</span>
+    <span>Designed for practitioners, by a practitioner.</span>
+  </footer>
+
+</div>
+</body>
+</html>

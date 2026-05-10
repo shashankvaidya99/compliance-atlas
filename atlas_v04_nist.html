@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume IV: NIST CSF 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb a:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; transition:background .2s; position:relative; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:var(--shadow); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker{ color:var(--oxblood); font-family:"JetBrains Mono",monospace; }
+  .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:13%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    nav.layers{ grid-template-columns:repeat(2,1fr); }
+    nav.layers button{ border-bottom:1px solid var(--ink); }
+    .twocol{ grid-template-columns:1fr; }
+    footer.colophon{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume IV</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume IV · NIST CSF 2.0 · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      NIST CSWP 29 (Feb 2024)<br>
+      ISACA CSF 2.0 Audit Program
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      CSF is read by everyone and certified by no one. The 2024 update added the <em>GOVERN</em> function — the single largest implementation lift in the framework's history. Most adopters experience CSF as a self-assessment exercise. Where it gains audit traction, it does so through other frameworks that absorb its subcategories.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — Profile cycle</span>
+      <span class="swatch ext">External — assurance options</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        CSF has no PCAOB, no AICPA opinion, no certification body. The right frame for the external lane is "what assurance pathways exist if you want third-party validation" — and the answer is several, none of them native.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">Profile cycle × assurance paths</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Control Mindmap</span>
+      <span class="sub">6 functions · 22 cat · 106 sub</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Evidence &amp; Maturity</span>
+      <span class="sub">Tiers · Profiles · evidence</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">CSF → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- ═════════ LAYER 1 ═════════ -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>Profile cycle in, assurance pathway out</h2>
+      </div>
+      <div class="ref">NIST CSWP 29 §3<br>Profiles &amp; Tiers</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">Internal — the Profile cycle. External — paths to third-party validation.</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">PROGRAM TIMELINE →</text>
+          <text x="120" y="50" text-anchor="middle">Step 1 — orient</text>
+          <text x="320" y="50" text-anchor="middle">Step 2 — current</text>
+          <text x="520" y="50" text-anchor="middle">Step 3 — target</text>
+          <text x="720" y="50" text-anchor="middle">Step 4 — gap analysis</text>
+          <text x="920" y="50" text-anchor="middle">Step 5 — implement</text>
+          <text x="1120" y="50" text-anchor="middle">Step 6 — reassess</text>
+          <text x="1290" y="50" text-anchor="middle">Cycle continues</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — PROFILE-DRIVEN ASSESSMENT</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — VALIDATION PATHWAYS (NONE NATIVE)</text>
+        </g>
+
+        <!-- INTERNAL nodes -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">Mission &amp; risk priorities</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">Org Profile orient</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CSF §3.2</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Current Profile</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">subcategory-level state</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">honest baseline</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Target Profile</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">desired state · risk-driven</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">not all subcat = aspirational</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">Gap analysis</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">Δ Current vs Target</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">prioritized by impact</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Action plan &amp; budget</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">owner · timeline · cost</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">budget tied to risk</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Implement &amp; track</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">controls + measurement</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CSWP 29 implementation ex.</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Reassess Profile</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">annual or event-driven</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">cycle restarts</text>
+
+          <!-- second internal row -->
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">GOVERN scope</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">strategy · roles · policy</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">the 2024 addition</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">Tier assessment</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">Tier 1 → Tier 4</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">implementation maturity</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Community Profiles</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">sector starting points</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">utilities · finance · health</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Informative References</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">800-53 · ISO · CIS controls</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">cross-mappings provided</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Internal validation</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">CISO · risk committee</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">no external validator native</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">Board reporting</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">trend Tier movement</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Profile heat-maps · ROI</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Continuous improvement</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">tied to incident learnings</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">no certificate to maintain</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <!-- EXTERNAL nodes — assurance pathways, not a single audit -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="140" y="544" text-anchor="middle" font-weight="600">SOC 2+ examination</text>
+          <text x="140" y="562" text-anchor="middle" font-size="11">CPA folds CSF subcategories</text>
+          <text x="140" y="578" text-anchor="middle" font-size="11">into the SOC 2 report</text>
+          <text x="140" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">most common path</text>
+
+          <rect x="260" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="360" y="544" text-anchor="middle" font-weight="600">FedRAMP authorization</text>
+          <text x="360" y="562" text-anchor="middle" font-size="11">via NIST 800-53 baselines</text>
+          <text x="360" y="578" text-anchor="middle" font-size="11">CSF maps; 800-53 controls</text>
+          <text x="360" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">federal cloud only</text>
+
+          <rect x="480" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="580" y="544" text-anchor="middle" font-weight="600">ISACA Audit Program</text>
+          <text x="580" y="562" text-anchor="middle" font-size="11">CSF 2.0 audit/assurance prog</text>
+          <text x="580" y="578" text-anchor="middle" font-size="11">internal audit deploys</text>
+          <text x="580" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">2024 release</text>
+
+          <rect x="700" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="800" y="544" text-anchor="middle" font-weight="600">Regulatory adoption</text>
+          <text x="800" y="562" text-anchor="middle" font-size="11">NYDFS · TX RAMP · CMMC</text>
+          <text x="800" y="578" text-anchor="middle" font-size="11">examiners use CSF as lens</text>
+          <text x="800" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">sector-specific</text>
+
+          <rect x="920" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="544" text-anchor="middle" font-weight="600">Cyber-insurance review</text>
+          <text x="1020" y="562" text-anchor="middle" font-size="11">underwriting questionnaires</text>
+          <text x="1020" y="578" text-anchor="middle" font-size="11">map to CSF subcategories</text>
+          <text x="1020" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">premium/coverage impact</text>
+
+          <rect x="1140" y="520" width="200" height="80" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="544" text-anchor="middle" font-weight="600">Customer due diligence</text>
+          <text x="1240" y="562" text-anchor="middle" font-size="11">enterprise procurement</text>
+          <text x="1240" y="578" text-anchor="middle" font-size="11">RFPs reference CSF tiers</text>
+          <text x="1240" y="594" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">de-facto requirement</text>
+
+          <!-- second external row -->
+          <rect x="40" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="140" y="664" text-anchor="middle" font-weight="600">CPA opinion type</text>
+          <text x="140" y="682" text-anchor="middle" font-size="11">attestation under SSAE 18</text>
+          <text x="140" y="698" text-anchor="middle" font-size="11">opinion on CSF mapping</text>
+          <text x="140" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">marketed as SOC 2 + NIST</text>
+
+          <rect x="260" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="360" y="664" text-anchor="middle" font-weight="600">3PAO assessment</text>
+          <text x="360" y="682" text-anchor="middle" font-size="11">FedRAMP-accredited</text>
+          <text x="360" y="698" text-anchor="middle" font-size="11">authorizing officials issue ATO</text>
+          <text x="360" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">800-53 evidence collected</text>
+
+          <rect x="480" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="580" y="664" text-anchor="middle" font-weight="600">Sample work programs</text>
+          <text x="580" y="682" text-anchor="middle" font-size="11">test steps per subcategory</text>
+          <text x="580" y="698" text-anchor="middle" font-size="11">tier-aligned procedures</text>
+          <text x="580" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">use as IA template</text>
+
+          <rect x="700" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="800" y="664" text-anchor="middle" font-weight="600">Examiner expectations</text>
+          <text x="800" y="682" text-anchor="middle" font-size="11">map controls to CSF</text>
+          <text x="800" y="698" text-anchor="middle" font-size="11">demonstrate trend</text>
+          <text x="800" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">progress over annual exams</text>
+
+          <rect x="920" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="664" text-anchor="middle" font-weight="600">Cyber-coverage outcomes</text>
+          <text x="1020" y="682" text-anchor="middle" font-size="11">renewal · sublimit · retention</text>
+          <text x="1020" y="698" text-anchor="middle" font-size="11">tied to Tier movement</text>
+          <text x="1020" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">documentation matters</text>
+
+          <rect x="1140" y="640" width="200" height="80" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="664" text-anchor="middle" font-weight="600">Vendor scorecards</text>
+          <text x="1240" y="682" text-anchor="middle" font-size="11">SecurityScorecard, BitSight</text>
+          <text x="1240" y="698" text-anchor="middle" font-size="11">map external posture to CSF</text>
+          <text x="1240" y="714" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">no opinion · just signal</text>
+
+          <rect x="540" y="760" width="300" height="50" fill="#13212d" stroke="#13212d"/>
+          <text x="690" y="780" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CSF HAS NO CERTIFICATE</text>
+          <text x="690" y="797" text-anchor="middle" fill="#f3ecdd" font-size="11">Validation comes from frameworks that absorb CSF, not CSF itself</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="140" y1="600" x2="140" y2="638"/>
+            <line x1="360" y1="600" x2="360" y2="638"/>
+            <line x1="580" y1="600" x2="580" y2="638"/>
+            <line x1="800" y1="600" x2="800" y2="638"/>
+            <line x1="1020" y1="600" x2="1020" y2="638"/>
+            <line x1="1240" y1="600" x2="1240" y2="638"/>
+          </g>
+        </g>
+
+        <!-- bridges -->
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="660" y1="260" x2="660" y2="518"/>
+          <line x1="1020" y1="260" x2="1020" y2="518"/>
+          <line x1="300" y1="260" x2="140" y2="518"/>
+          <line x1="840" y1="260" x2="800" y2="518"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="666" y="370">Informative References</text>
+          <text x="666" y="383">enable framework crosswalk</text>
+          <text x="1026" y="370">Profile heat-map →</text>
+          <text x="1026" y="383">scorecard signal</text>
+          <text x="306" y="370">Tier movement →</text>
+          <text x="306" y="383">SOC 2+ language</text>
+          <text x="846" y="370">implementation evidence →</text>
+          <text x="846" y="383">examiner artifacts</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why CSF reads differently than every other framework in the Atlas</h3>
+        <p><strong>CSF was designed as a translator.</strong> It sits above other frameworks rather than alongside them. Its Informative References explicitly map subcategories to NIST 800-53, ISO 27001 Annex A, CIS Controls, and a dozen others. The framework's design assumes you'll implement <em>using</em> something else and document <em>using</em> CSF. This is why CSF feels like meta-architecture rather than a control library.</p>
+
+        <p><strong>The 2024 GOVERN function is the inflection point.</strong> Until 2024, CSF had five functions (Identify, Protect, Detect, Respond, Recover). The 2.0 update added GOVERN — strategy, roles &amp; responsibilities, policy, oversight, and supply chain risk management. This wasn't decoration. It elevated cybersecurity from a controls discipline to an enterprise risk discipline, putting CSF in conversation with COSO ERM and ISO 31000. Most legacy CSF implementations underinvest in GOVERN.</p>
+
+        <p><strong>Profiles are the unit of work, not categories.</strong> Beginners read CSF top-down (Functions → Categories → Subcategories) and try to "implement" all 106 subcategories. Mature programs work bottom-up: start with risk priorities, define a Target Profile that addresses them, identify the subcategories that matter, ignore the rest. A pharmaceutical company's Target Profile prioritizes ID.AM (asset management) and PR.DS (data security). A SaaS startup's prioritizes PR.AA (access) and DE.CM (continuous monitoring). Both are correct.</p>
+
+        <div class="pull">
+          CSF doesn't tell you what to do. It tells you where the conversation about what to do should happen.
+        </div>
+
+        <p><strong>Tiers vs. Profiles is the most-misunderstood distinction.</strong> Tiers (1–4: Partial, Risk Informed, Repeatable, Adaptive) describe the rigor of the cybersecurity risk management <em>process</em>. Profiles describe the <em>state</em> of subcategory implementation. A Tier 4 organization may have a small Target Profile (because their risks don't require breadth). A Tier 2 organization may have an ambitious Target Profile (because they're early in the journey). Both are valid. Tiers are not maturity grades; they're process attributes.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>The 6 functions, in one line each</h3>
+        <p><strong>GOVERN (GV)</strong> — strategy &amp; oversight</p>
+        <p><strong>IDENTIFY (ID)</strong> — assets &amp; risks</p>
+        <p><strong>PROTECT (PR)</strong> — safeguards in place</p>
+        <p><strong>DETECT (DE)</strong> — anomalies &amp; events</p>
+        <p><strong>RESPOND (RS)</strong> — incident handling</p>
+        <p><strong>RECOVER (RC)</strong> — restoration of services</p>
+        <h3 style="margin-top:24px;">CSF assurance trade-offs</h3>
+        <p><strong>SOC 2+</strong> — most flexible, CPA-validated, costs ~25% more than plain SOC 2.</p>
+        <p><strong>FedRAMP</strong> — federal-only, takes 12–18 months, high investment but high yield.</p>
+        <p><strong>ISACA program</strong> — internal audit deploys, cheap, no external opinion.</p>
+        <p><strong>None of the above</strong> — most common; CSF used purely as internal management tool.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 2 — CONTROL MINDMAP ═════════ -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Control universe</div>
+        <h2>Six functions, twenty-two categories, one hundred six subcategories</h2>
+      </div>
+      <div class="ref">NIST CSWP 29 §2<br>The Core</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The six functions — GOVERN at the center, ID/PR/DE/RS/RC around the perimeter</h3>
+      <svg viewBox="0 0 1280 740" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+
+        <!-- center: GOVERN (the 2024 addition) -->
+        <circle cx="640" cy="370" r="105" fill="#13212d"/>
+        <text x="640" y="350" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">2024 ADDITION · CENTRAL</text>
+        <text x="640" y="378" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="28">GOVERN</text>
+        <text x="640" y="402" text-anchor="middle" fill="#f3ecdd" font-size="11">6 categories · 31 subcategories</text>
+
+        <!-- spokes -->
+        <g stroke="#13212d" stroke-width="1.2" fill="none">
+          <line x1="555" y1="305" x2="320" y2="170"/>
+          <line x1="725" y1="305" x2="960" y2="170"/>
+          <line x1="640" y1="265" x2="640" y2="100"/>
+          <line x1="555" y1="435" x2="320" y2="570"/>
+          <line x1="725" y1="435" x2="960" y2="570"/>
+        </g>
+
+        <!-- IDENTIFY (NW) -->
+        <g>
+          <rect x="60" y="80" width="290" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="80" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">ID — IDENTIFY</text>
+          <text x="80" y="132" font-family="Fraunces, serif" font-size="22" font-weight="500">Identify</text>
+          <text x="80" y="156" font-size="11" fill="#2a3744">Asset Management (ID.AM)</text>
+          <text x="80" y="172" font-size="11" fill="#2a3744">Risk Assessment (ID.RA)</text>
+          <text x="80" y="188" font-size="11" fill="#2a3744">Improvement (ID.IM)</text>
+          <line x1="80" y1="200" x2="330" y2="200" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="80" y="220" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">3 categories · 21 subcategories</text>
+          <text x="80" y="236" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">"You can't protect what you don't</text>
+          <text x="80" y="250" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">know exists." — start here.</text>
+        </g>
+
+        <!-- PROTECT (top center, above GOVERN) -->
+        <g>
+          <rect x="490" y="0" width="300" height="90" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="510" y="22" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">PR — PROTECT</text>
+          <text x="510" y="48" font-family="Fraunces, serif" font-size="22" font-weight="500">Protect</text>
+          <text x="510" y="68" font-size="11" fill="#2a3744">5 categories · 22 subcategories</text>
+          <text x="510" y="82" font-size="10" fill="#4a5b6c">PR.AA · PR.AT · PR.DS · PR.PS · PR.IR</text>
+        </g>
+
+        <!-- DETECT (NE) -->
+        <g>
+          <rect x="930" y="80" width="290" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="950" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">DE — DETECT</text>
+          <text x="950" y="132" font-family="Fraunces, serif" font-size="22" font-weight="500">Detect</text>
+          <text x="950" y="156" font-size="11" fill="#2a3744">Continuous Monitoring (DE.CM)</text>
+          <text x="950" y="172" font-size="11" fill="#2a3744">Adverse Event Analysis (DE.AE)</text>
+          <line x1="950" y1="186" x2="1200" y2="186" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="950" y="206" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">2 categories · 11 subcategories</text>
+          <text x="950" y="222" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">SIEM · EDR · NDR · UEBA</text>
+          <text x="950" y="238" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">"What you don't see, you can't stop."</text>
+        </g>
+
+        <!-- RESPOND (SW) -->
+        <g>
+          <rect x="60" y="480" width="290" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="80" y="506" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">RS — RESPOND</text>
+          <text x="80" y="532" font-family="Fraunces, serif" font-size="22" font-weight="500">Respond</text>
+          <text x="80" y="556" font-size="11" fill="#2a3744">Incident Mgmt (RS.MA)</text>
+          <text x="80" y="572" font-size="11" fill="#2a3744">Analysis (RS.AN)</text>
+          <text x="80" y="588" font-size="11" fill="#2a3744">Reporting/Comms (RS.CO)</text>
+          <text x="80" y="604" font-size="11" fill="#2a3744">Mitigation (RS.MI)</text>
+          <line x1="80" y1="616" x2="330" y2="616" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="80" y="636" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">4 categories · 13 subcategories</text>
+          <text x="80" y="652" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Activated by detection. Tabletop matters.</text>
+        </g>
+
+        <!-- RECOVER (SE) -->
+        <g>
+          <rect x="930" y="480" width="290" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="950" y="506" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">RC — RECOVER</text>
+          <text x="950" y="532" font-family="Fraunces, serif" font-size="22" font-weight="500">Recover</text>
+          <text x="950" y="556" font-size="11" fill="#2a3744">Incident Recovery Plan (RC.RP)</text>
+          <text x="950" y="572" font-size="11" fill="#2a3744">Communications (RC.CO)</text>
+          <line x1="950" y1="586" x2="1200" y2="586" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="950" y="606" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">2 categories · 8 subcategories</text>
+          <text x="950" y="622" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Smallest function · biggest miss in real incidents</text>
+          <text x="950" y="638" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Most teams have backups · few have tested restores</text>
+        </g>
+
+        <!-- bottom strip: GOVERN categories -->
+        <rect x="40" y="690" width="1200" height="40" fill="#13212d"/>
+        <text x="60" y="715" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2.5">GOVERN CATEGORIES ↓</text>
+        <g fill="#f3ecdd" font-size="11" font-family="JetBrains Mono, monospace">
+          <text x="200" y="715">GV.OC Org Context · GV.RM Risk Mgmt · GV.RR Roles &amp; Resp · GV.PO Policy · GV.OV Oversight · GV.SC Supply Chain</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Tiers visualization -->
+    <div class="diagram">
+      <h3 class="subtitle">Implementation Tiers — process maturity, not control completeness</h3>
+      <svg viewBox="0 0 1280 360" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- 4 tiers, ascending -->
+        <rect x="40" y="60" width="290" height="240" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+        <text x="60" y="92" font-family="Fraunces, serif" font-size="22" font-weight="600" fill="#7a1f24">Tier 1 · Partial</text>
+        <text x="60" y="116" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">ad hoc, reactive</text>
+        <line x1="60" y1="130" x2="320" y2="130" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="154">— Risk mgmt informal · case-by-case</text>
+          <text x="60" y="174">— Limited awareness of cyber risk</text>
+          <text x="60" y="194">— No sharing of cyber info</text>
+          <text x="60" y="214">— Supply chain risk not considered</text>
+          <text x="60" y="234">— Ad hoc incident response</text>
+        </g>
+        <text x="60" y="280" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-style="italic">"We deal with it when it happens."</text>
+
+        <rect x="350" y="60" width="290" height="240" fill="#f3ecdd" stroke="#a37a1f" stroke-width="1.5"/>
+        <text x="370" y="92" font-family="Fraunces, serif" font-size="22" font-weight="600" fill="#a37a1f">Tier 2 · Risk Informed</text>
+        <text x="370" y="116" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">awareness without enforcement</text>
+        <line x1="370" y1="130" x2="630" y2="130" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="370" y="154">— Mgmt approves risk mgmt practices</text>
+          <text x="370" y="174">— Not org-wide policy</text>
+          <text x="370" y="194">— Cyber prioritized informally</text>
+          <text x="370" y="214">— Some sharing externally</text>
+          <text x="370" y="234">— Awareness of supply-chain risk</text>
+        </g>
+        <text x="370" y="280" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f" font-style="italic">"We know what we should do."</text>
+
+        <rect x="660" y="60" width="290" height="240" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.5"/>
+        <text x="680" y="92" font-family="Fraunces, serif" font-size="22" font-weight="600" fill="#3f5337">Tier 3 · Repeatable</text>
+        <text x="680" y="116" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">documented, consistent</text>
+        <line x1="680" y1="130" x2="940" y2="130" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="680" y="154">— Org-wide cyber risk policy</text>
+          <text x="680" y="174">— Approved &amp; enforced</text>
+          <text x="680" y="194">— Reviewed regularly</text>
+          <text x="680" y="214">— Cyber adapts to threat landscape</text>
+          <text x="680" y="234">— Supply chain risk integrated</text>
+        </g>
+        <text x="680" y="280" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337" font-style="italic">"We do it the same way every time."</text>
+
+        <rect x="970" y="60" width="270" height="240" fill="#f3ecdd" stroke="#2f4858" stroke-width="2"/>
+        <text x="990" y="92" font-family="Fraunces, serif" font-size="22" font-weight="600" fill="#2f4858">Tier 4 · Adaptive</text>
+        <text x="990" y="116" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">continuous improvement</text>
+        <line x1="990" y1="130" x2="1230" y2="130" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="990" y="154">— Cyber adapted from prior events</text>
+          <text x="990" y="174">— Lessons learned drive change</text>
+          <text x="990" y="194">— Real-time threat intelligence</text>
+          <text x="990" y="214">— Sharing as part of culture</text>
+          <text x="990" y="234">— Supply chain risk in every decision</text>
+        </g>
+        <text x="990" y="280" font-family="JetBrains Mono, monospace" font-size="10" fill="#2f4858" font-style="italic">"We learn faster than threats evolve."</text>
+
+        <text x="640" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#4a5b6c">Tiers describe risk-management process maturity. They do NOT correspond to subcategory implementation completeness.</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>The shape of the framework</h3>
+        <p><strong>GOVERN is the gravity well.</strong> The 2024 update added GOVERN at the center because the prior five-function model treated cybersecurity as something that happens "to" an organization rather than something the organization actively manages. GV.SC (Supply Chain) alone has six subcategories that did not exist in CSF 1.1. GV.OV (Oversight) is where Boards now ask CISOs to demonstrate program performance. If a 2026 CSF program has weak GOVERN, it has a weak program.</p>
+
+        <p><strong>The asymmetry is intentional.</strong> PROTECT is large because protective controls are diverse. DETECT is medium because detection is concentrated in a few capability areas. RECOVER is small because recovery is procedural, not technological. Don't assume function size = importance — RC has 8 subcategories but loses the company if it fails. ID.AM has 4 subcategories and is the foundation everything else rests on.</p>
+
+        <div class="pull">
+          A complete subcategory inventory is not a complete program. A complete program is one where the right subcategories operate at the right Tier for the right risks.
+        </div>
+
+        <p><strong>Subcategories are outcome statements, not control requirements.</strong> "ID.AM-01: Inventories of hardware managed by the organization are maintained" doesn't tell you to use ServiceNow CMDB. It tells you what good looks like. The Informative References point to NIST 800-53 CM-8, ISO 27001 A.5.9, CIS Control 1, and others — any of which can satisfy the outcome. This is why CSF is portable across regulated and unregulated industries: the outcomes are framework-agnostic.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>The 22 categories at a glance</h3>
+        <p><strong>GV</strong> — OC, RM, RR, PO, OV, SC (6)</p>
+        <p><strong>ID</strong> — AM, RA, IM (3)</p>
+        <p><strong>PR</strong> — AA, AT, DS, PS, IR (5)</p>
+        <p><strong>DE</strong> — CM, AE (2)</p>
+        <p><strong>RS</strong> — MA, AN, CO, MI (4)</p>
+        <p><strong>RC</strong> — RP, CO (2)</p>
+        <h3 style="margin-top:24px;">Category notation</h3>
+        <p>Functions use 2-letter codes (GV, ID, PR, DE, RS, RC). Categories add 2 more (GV.OC, ID.AM). Subcategories add a number (GV.OC-01, ID.AM-04). Memorize the function/category codes — they appear in every crosswalk and audit work program.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 3 — EVIDENCE & MATURITY ═════════ -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — Evidence &amp; maturity</div>
+        <h2>What "evidence" means when there's no auditor</h2>
+      </div>
+      <div class="ref">CSWP 29 §3 + ISACA<br>CSF 2.0 audit/assurance program</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">Evidence types per Tier — what to actually collect</h3>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+
+        <g font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.6" fill="#7a1f24" font-weight="600">
+          <text x="40" y="36">SUBCATEGORY</text>
+          <text x="290" y="36">TIER 1 EVIDENCE</text>
+          <text x="540" y="36">TIER 2 EVIDENCE</text>
+          <text x="790" y="36">TIER 3 EVIDENCE</text>
+          <text x="1040" y="36">TIER 4 EVIDENCE</text>
+        </g>
+        <line x1="30" y1="46" x2="1250" y2="46" stroke="#13212d"/>
+
+        <g font-size="11.5">
+          <g transform="translate(0,80)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">ID.AM-01</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">HW asset inventory</text>
+            <text x="290" y="0">Spreadsheet · last updated</text>
+            <text x="290" y="14">whenever someone remembers</text>
+            <text x="540" y="0">CMDB exists, owner named,</text>
+            <text x="540" y="14">refresh on incident</text>
+            <text x="790" y="0">CMDB integrated to procurement</text>
+            <text x="790" y="14">+ MDM · monthly reconciliation</text>
+            <text x="1040" y="0">Real-time discovery · auto-class</text>
+            <text x="1040" y="14">+ tier-aware risk scoring</text>
+          </g>
+          <line x1="30" y1="120" x2="1250" y2="120" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,156)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">PR.AA-05</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Access perms managed</text>
+            <text x="290" y="0">Manual ticket request</text>
+            <text x="290" y="14">approver = whoever's free</text>
+            <text x="540" y="0">Workflow tool · standard roles</text>
+            <text x="540" y="14">quarterly UAR (sometimes)</text>
+            <text x="790" y="0">JML automated · UAR enforced</text>
+            <text x="790" y="14">SoD ruleset reviewed</text>
+            <text x="1040" y="0">Continuous access analytics</text>
+            <text x="1040" y="14">drift detection · ML risk scoring</text>
+          </g>
+          <line x1="30" y1="196" x2="1250" y2="196" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,232)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">DE.CM-01</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Network monitored</text>
+            <text x="290" y="0">Logs collected somewhere</text>
+            <text x="290" y="14">no review cadence</text>
+            <text x="540" y="0">SIEM ingests · alerts to inbox</text>
+            <text x="540" y="14">someone usually checks</text>
+            <text x="790" y="0">SOC reviews tier-1 alerts 24/7</text>
+            <text x="790" y="14">runbook for top use cases</text>
+            <text x="1040" y="0">SOAR auto-triages · ML detect</text>
+            <text x="1040" y="14">threat intel feeds enrich alerts</text>
+          </g>
+          <line x1="30" y1="272" x2="1250" y2="272" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,308)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">RS.MA-01</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Incident response plan</text>
+            <text x="290" y="0">Some Confluence page</text>
+            <text x="290" y="14">last updated 2022</text>
+            <text x="540" y="0">IR plan exists · roles named</text>
+            <text x="540" y="14">never tabletoped</text>
+            <text x="790" y="0">Annual tabletop · runbooks</text>
+            <text x="790" y="14">post-incident reviews tracked</text>
+            <text x="1040" y="0">Quarterly red-team exercises</text>
+            <text x="1040" y="14">findings drive control updates</text>
+          </g>
+          <line x1="30" y1="348" x2="1250" y2="348" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,384)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">RC.RP-01</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Recovery plan executed</text>
+            <text x="290" y="0">Backups run somewhere</text>
+            <text x="290" y="14">restores never tested</text>
+            <text x="540" y="0">Annual restore test · 1 system</text>
+            <text x="540" y="14">DR doc exists</text>
+            <text x="790" y="0">Quarterly restore tests · all tier-1</text>
+            <text x="790" y="14">RTO/RPO measured · gap-tracked</text>
+            <text x="1040" y="0">Continuous resilience drills</text>
+            <text x="1040" y="14">chaos engineering · blameless RCAs</text>
+          </g>
+          <line x1="30" y1="424" x2="1250" y2="424" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,460)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">GV.SC-01</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Supply chain risk mgmt</text>
+            <text x="290" y="0">Vendor list exists</text>
+            <text x="290" y="14">no risk classification</text>
+            <text x="540" y="0">Tiered vendors · DDQ for tier-1</text>
+            <text x="540" y="14">contracts have security clauses</text>
+            <text x="790" y="0">Annual reassessment · SOC 2 review</text>
+            <text x="790" y="14">offboarding controls verified</text>
+            <text x="1040" y="0">Continuous monitoring (BitSight,</text>
+            <text x="1040" y="14">SecurityScorecard) · SBOM tracking</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Profile mechanics -->
+    <div class="diagram">
+      <h3 class="subtitle">Current → Target → Action — what a Profile actually contains</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#13212d"/>
+          </marker>
+        </defs>
+
+        <!-- 3-column profile structure -->
+        <rect x="40" y="40" width="380" height="380" fill="#f3ecdd" stroke="#2f4858" stroke-width="2"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#2f4858" font-weight="600">CURRENT PROFILE · WHERE YOU ARE</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Today's posture</text>
+        <line x1="60" y1="120" x2="400" y2="120" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="146">— Subcategory-level inventory</text>
+          <text x="60" y="166">— Honest assessment of state</text>
+          <text x="60" y="186">— Evidence references</text>
+          <text x="60" y="206">— Gaps acknowledged, not hidden</text>
+        </g>
+        <text x="60" y="240" font-family="JetBrains Mono, monospace" font-size="10" fill="#2f4858" font-weight="600">EXAMPLE LINE</text>
+        <g font-size="11" fill="#2a3744" font-style="italic">
+          <text x="60" y="262">PR.AA-01: Identities and credentials</text>
+          <text x="60" y="278">are issued — </text>
+          <text x="60" y="294" fill="#7a1f24">"Manual provisioning via</text>
+          <text x="60" y="310" fill="#7a1f24">ticket. No SSO. No MFA on admin."</text>
+        </g>
+        <text x="60" y="350" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">Status: implemented partially</text>
+        <text x="60" y="368" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">Tier alignment: 1.5</text>
+
+        <line x1="430" y1="220" x2="475" y2="220" stroke="#13212d" stroke-width="2" marker-end="url(#arrP)"/>
+        <text x="452" y="208" text-anchor="middle" font-size="10" font-family="JetBrains Mono, monospace" fill="#13212d">Δ</text>
+
+        <rect x="490" y="40" width="380" height="380" fill="#f3ecdd" stroke="#a37a1f" stroke-width="2"/>
+        <text x="510" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">TARGET PROFILE · WHERE YOU GO</text>
+        <text x="510" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Desired posture</text>
+        <line x1="510" y1="120" x2="850" y2="120" stroke="#13212d" stroke-opacity=".25"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="510" y="146">— Risk-driven, not aspirational</text>
+          <text x="510" y="166">— Subset of subcategories matter</text>
+          <text x="510" y="186">— Time horizon: 12–18 months</text>
+          <text x="510" y="206">— Explicitly omitted = "not now"</text>
+        </g>
+        <text x="510" y="240" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f" font-weight="600">EXAMPLE LINE</text>
+        <g font-size="11" fill="#2a3744" font-style="italic">
+          <text x="510" y="262">PR.AA-01: Identities and credentials</text>
+          <text x="510" y="278">are issued — </text>
+          <text x="510" y="294" fill="#3f5337">"SSO via Okta, MFA enforced</text>
+          <text x="510" y="310" fill="#3f5337">on all admin + customer access"</text>
+        </g>
+        <text x="510" y="350" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337">Status: target — fully implemented</text>
+        <text x="510" y="368" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337">Tier alignment: 3</text>
+
+        <line x1="880" y1="220" x2="925" y2="220" stroke="#13212d" stroke-width="2" marker-end="url(#arrP)"/>
+
+        <rect x="940" y="40" width="300" height="380" fill="#13212d"/>
+        <text x="960" y="74" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">ACTION PLAN · HOW YOU CLOSE</text>
+        <text x="960" y="106" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">The work</text>
+        <line x1="960" y1="120" x2="1220" y2="120" stroke="#f1d77a" stroke-opacity=".3"/>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="960" y="146">— Owner per subcategory</text>
+          <text x="960" y="166">— Deadline · cost · dependencies</text>
+          <text x="960" y="186">— Risk if not closed</text>
+          <text x="960" y="206">— Measurement of progress</text>
+        </g>
+        <text x="960" y="240" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">EXAMPLE TASK</text>
+        <g fill="#f3ecdd" font-size="11" font-style="italic">
+          <text x="960" y="262">PR.AA-01:</text>
+          <text x="960" y="282">Q1 — Okta procurement</text>
+          <text x="960" y="298">Q2 — Pilot on internal apps</text>
+          <text x="960" y="314">Q3 — Customer SSO migration</text>
+          <text x="960" y="330">Q4 — MFA enforcement org-wide</text>
+        </g>
+        <text x="960" y="368" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10">Owner: VP Eng · Budget: $180k</text>
+        <text x="960" y="384" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10">Risk: high · audit pressure rising</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Where CSF programs lose credibility</h3>
+        <p><strong>Self-attestation that nobody validates.</strong> Without an external auditor, Profiles drift toward optimism. A subcategory marked "implemented" because someone wrote a policy six months ago — but the policy isn't followed and there's no monitoring — looks identical on the heat-map to a subcategory that's actually operating. Mature programs solve this by adding a one-line evidence reference per subcategory: where is the artifact that proves it? If the answer is "we'd have to dig," the subcategory isn't really implemented.</p>
+
+        <p><strong>The Tier-vs-Subcategory confusion.</strong> Boards ask "what tier are we?" Programs answer with a single number. Wrong answer. You can be Tier 4 in DETECT and Tier 1 in RESPOND. Tier is best assessed function-by-function, then aggregated narratively. A heat-map that shows tier per function tells the truth; a single-number summary hides it.</p>
+
+        <p><strong>Action plans without budgets are wishes.</strong> A Target Profile with 30 gap items and no budget is a backlog, not a plan. The discipline of CSF — and the part that creates audit-credible evidence — is tying each gap to an owner, a deadline, a cost, and a residual risk. The Board approves the budget; the budget approves the plan; the plan creates evidence.</p>
+
+        <div class="pull">
+          The Profile is the artifact. The implementation evidence is the proof. Without both, CSF is theater.
+        </div>
+
+        <p><strong>The Informative References are the bridge to evidence.</strong> Each subcategory points to NIST 800-53, ISO 27001, and CIS Controls. If you can't produce evidence to a CSF subcategory, work backward through its references — implement the 800-53 control, document the evidence, and you've satisfied the CSF outcome. This is how mature programs get to "evidence-backed Profile" without inventing CSF-specific artifacts.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>The 6 steps of a CSF cycle</h3>
+        <ol>
+          <li><strong>Orient</strong> — mission, priorities, threat landscape</li>
+          <li><strong>Current Profile</strong> — honest baseline</li>
+          <li><strong>Target Profile</strong> — risk-driven future state</li>
+          <li><strong>Gap analysis</strong> — Δ, prioritized by impact</li>
+          <li><strong>Action plan</strong> — owner, budget, deadline</li>
+          <li><strong>Reassess</strong> — annual or event-driven</li>
+        </ol>
+        <h3 style="margin-top:24px;">Heat-map output</h3>
+        <p>Functions on Y-axis, Tiers on X-axis. Subcategory dots cluster by Tier. Gap = distance between Current cluster and Target cluster. Most useful single visual for board reporting.</p>
+        <h3 style="margin-top:24px;">When to reassess</h3>
+        <p>Annual at minimum. Trigger events: major incident, M&amp;A, regulatory change, new product line, significant tech migration.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 4 — CROSSWALK ═════════ -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>NIST CSF — the universal translator</h2>
+      </div>
+      <div class="ref">Informative References<br>maintained by NIST</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:13%">CSF function/subcat</th>
+          <th>SOX</th>
+          <th>SOC 2 (TSC)</th>
+          <th>ISO 27001:2022</th>
+          <th>PCI DSS v4.0.1</th>
+          <th>HIPAA</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">GV.OC — Org Context</td>
+          <td><code>ELC</code> · scoping</td>
+          <td><code>CC1.1</code></td>
+          <td><code>Cl. 4.1</code> · <code>4.2</code></td>
+          <td><code>Req 12.5</code></td>
+          <td><code>§164.306</code></td>
+          <td><code>00.a</code></td>
+          <td class="shared">Org context, mission statement, interested parties</td></tr>
+        <tr><td class="dom">GV.RM — Risk Mgmt Strategy</td>
+          <td><code>ELC</code> · risk memo</td>
+          <td><code>CC3.1</code> – <code>CC3.4</code></td>
+          <td><code>Cl. 6.1</code></td>
+          <td><code>Req 12.3</code></td>
+          <td><code>§164.308(a)(1)</code></td>
+          <td><code>03.a</code></td>
+          <td class="shared">Risk methodology, risk appetite, treatment plan</td></tr>
+        <tr><td class="dom">GV.RR — Roles &amp; Resp</td>
+          <td><code>ELC</code> · governance</td>
+          <td><code>CC1.3</code></td>
+          <td><code>Cl. 5.3</code></td>
+          <td><code>Req 12.4</code></td>
+          <td><code>§164.308(a)(2)</code></td>
+          <td><code>02.a</code></td>
+          <td class="shared">Org chart, RACI, info security policy</td></tr>
+        <tr><td class="dom">GV.PO — Policy</td>
+          <td><code>ELC</code> · policy mgmt</td>
+          <td><code>CC5.3</code></td>
+          <td><code>A.5.1</code></td>
+          <td><code>Req 12.1</code></td>
+          <td><code>§164.316</code></td>
+          <td><code>04.a</code></td>
+          <td class="shared">Policy library, approvals, review evidence</td></tr>
+        <tr><td class="dom">GV.OV — Oversight</td>
+          <td>AC oversight</td>
+          <td><code>CC4.1</code> · <code>CC4.2</code></td>
+          <td><code>Cl. 9.3</code></td>
+          <td><code>Req 12.4.1</code></td>
+          <td><code>§164.308(a)(8)</code></td>
+          <td><code>06.h</code></td>
+          <td class="shared">Mgmt review minutes, board cyber reports</td></tr>
+        <tr><td class="dom">GV.SC — Supply Chain</td>
+          <td><code>ITGC + BPC</code> · TPRM</td>
+          <td><code>CC9.2</code></td>
+          <td><code>A.5.19</code> – <code>A.5.23</code></td>
+          <td><code>Req 12.8</code> · <code>Req 12.9</code></td>
+          <td><code>§164.308(b)</code></td>
+          <td><code>05.k</code></td>
+          <td class="shared">Vendor inventory, due-diligence, contracts, SOC 2s</td></tr>
+        <tr><td class="dom">ID.AM — Asset Mgmt</td>
+          <td><code>ITGC</code> · scoping</td>
+          <td><code>CC6.1</code></td>
+          <td><code>A.5.9</code> – <code>A.5.11</code></td>
+          <td><code>Req 9.5</code> · <code>Req 12.5</code></td>
+          <td><code>§164.310(d)(2)</code></td>
+          <td><code>07.a</code></td>
+          <td class="shared">CMDB exports, asset registers, classification labels</td></tr>
+        <tr><td class="dom">ID.RA — Risk Assessment</td>
+          <td><code>ELC</code> · risk memo</td>
+          <td><code>CC3.2</code></td>
+          <td><code>Cl. 6.1.2</code> · <code>A.5.7</code></td>
+          <td><code>Req 12.3</code></td>
+          <td><code>§164.308(a)(1)(ii)(A)</code></td>
+          <td><code>03.b</code></td>
+          <td class="shared">Threat model, risk register, scoring methodology</td></tr>
+        <tr><td class="dom">PR.AA — Identity &amp; Access</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> – <code>CC6.3</code></td>
+          <td><code>A.5.15</code> – <code>A.5.18</code> · <code>A.8.2</code></td>
+          <td><code>Req 7</code> · <code>Req 8</code></td>
+          <td><code>§164.308(a)(3)</code> · <code>§164.308(a)(4)</code></td>
+          <td><code>01.b</code> · <code>01.c</code> · <code>01.v</code></td>
+          <td class="shared">JML tickets, UAR exports, IAM config, MFA enforcement</td></tr>
+        <tr><td class="dom">PR.AT — Awareness &amp; Training</td>
+          <td><code>ELC</code> · COSO Comp.4</td>
+          <td><code>CC1.4</code></td>
+          <td><code>A.6.3</code></td>
+          <td><code>Req 12.6</code></td>
+          <td><code>§164.308(a)(5)</code></td>
+          <td><code>02.e</code> · <code>02.f</code></td>
+          <td class="shared">Completion reports, phishing test results, attestations</td></tr>
+        <tr><td class="dom">PR.DS — Data Security</td>
+          <td><code>ITGC + BPC</code></td>
+          <td><code>CC6.1</code> · <code>C1.1</code></td>
+          <td><code>A.8.10</code> – <code>A.8.12</code> · <code>A.8.24</code></td>
+          <td><code>Req 3</code> · <code>Req 4</code></td>
+          <td><code>§164.312(a)(2)(iv)</code></td>
+          <td><code>06.c</code> · <code>10.f</code></td>
+          <td class="shared">Encryption inventory, KMS config, classification policy</td></tr>
+        <tr><td class="dom">PR.PS — Platform Security</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.6</code> · <code>CC6.8</code></td>
+          <td><code>A.8.7</code> · <code>A.8.9</code> · <code>A.8.32</code></td>
+          <td><code>Req 2</code> · <code>Req 5</code> · <code>Req 6.5</code></td>
+          <td><code>§164.308(a)(5)(ii)(B)</code></td>
+          <td><code>09.h</code> · <code>09.j</code> · <code>10.h</code></td>
+          <td class="shared">CIS benchmarks, hardening guides, change tickets</td></tr>
+        <tr><td class="dom">PR.IR — Infra Resilience</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.6</code> · <code>A1.2</code></td>
+          <td><code>A.8.20</code> · <code>A.8.22</code></td>
+          <td><code>Req 1</code></td>
+          <td><code>§164.312(e)(1)</code></td>
+          <td><code>09.m</code></td>
+          <td class="shared">Network diagram, segmentation tests, firewall rules</td></tr>
+        <tr><td class="dom">DE.CM — Continuous Monitoring</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code> · <code>CC7.2</code></td>
+          <td><code>A.8.15</code> · <code>A.8.16</code></td>
+          <td><code>Req 10</code></td>
+          <td><code>§164.312(b)</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">SIEM rules, log retention, alert tuning, anomaly detection</td></tr>
+        <tr><td class="dom">DE.AE — Adverse Event Analysis</td>
+          <td><code>BPC</code> · ITGC ops</td>
+          <td><code>CC7.3</code></td>
+          <td><code>A.5.25</code></td>
+          <td><code>Req 10.4</code></td>
+          <td><code>§164.308(a)(1)(ii)(D)</code></td>
+          <td><code>11.a</code></td>
+          <td class="shared">Triage logs, alert categorization, false-positive rates</td></tr>
+        <tr><td class="dom">RS.MA — Incident Mgmt</td>
+          <td><code>BPC</code></td>
+          <td><code>CC7.3</code> – <code>CC7.5</code></td>
+          <td><code>A.5.24</code> – <code>A.5.27</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>§164.308(a)(6)</code></td>
+          <td><code>11.a</code> – <code>11.c</code></td>
+          <td class="shared">Incident tickets, IR plan, tabletop reports</td></tr>
+        <tr><td class="dom">RS.CO — Comms during incident</td>
+          <td><code>ELC</code> · disclosure</td>
+          <td><code>CC2.3</code></td>
+          <td><code>A.5.26</code></td>
+          <td><code>Req 12.10.2</code></td>
+          <td><code>§164.404</code> (breach)</td>
+          <td><code>11.b</code></td>
+          <td class="shared">Stakeholder list, comms templates, regulatory notice records</td></tr>
+        <tr><td class="dom">RC.RP — Recovery Plan</td>
+          <td>BPC · resilience</td>
+          <td><code>A1.3</code></td>
+          <td><code>A.5.29</code> · <code>A.5.30</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>§164.308(a)(7)</code></td>
+          <td><code>12.b</code> · <code>12.c</code></td>
+          <td class="shared">DR plan, last-test report, RTO/RPO documentation</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>Why CSF is the lingua franca</h3>
+        <p>Every framework in the Atlas can be expressed in CSF terms. NIST publishes Informative References mapping CSF subcategories to NIST 800-53 (the most granular control catalog), ISO 27001 Annex A, CIS Critical Controls, COBIT, and others. Vendors of GRC platforms use CSF as the master taxonomy because it sits one level up from the prescriptive frameworks. This is also why CSF gets read by examiners who don't have authority to require it: it gives them a vocabulary.</p>
+
+        <p><strong>Translating CSF into other frameworks is straightforward; translating other frameworks into CSF is messier.</strong> A SOC 2 CC6.1 control may map to PR.AA-01, PR.AA-05, and PR.PS-01 — three subcategories from one criterion. A NIST 800-53 AC-2 control maps cleanly to PR.AA-01 because both were designed in the same NIST family. If you start from CSF and work outward, the crosswalk works. If you start from SOC 2 and try to project into CSF, the mapping is many-to-many and ambiguous.</p>
+
+        <div class="pull">
+          CSF is best used as the meta-framework. Treat it as the shared dictionary, not the implementation library.
+        </div>
+
+        <p><strong>The shared-evidence model is identical to the other frameworks.</strong> JML tickets, UAR exports, change tickets, vendor SOC 2s, IAM configs, encryption inventories — these artifacts satisfy CSF subcategories and the matching SOC 2/ISO/PCI/HIPAA controls simultaneously. CSF doesn't change the evidence; it changes how you organize it for governance reporting.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>How to use CSF in a multi-framework program</h3>
+        <p><strong>Build the master register in CSF subcategories.</strong> Easiest because every other framework maps to it.</p>
+        <p><strong>Per subcategory, list the artifacts.</strong> Tickets, configs, reports, logs.</p>
+        <p><strong>Per artifact, tag every framework it satisfies.</strong> SOC 2 CC6.1 + ISO A.5.15 + PCI Req 7 + HIPAA §164.308(a)(4).</p>
+        <p><strong>When auditors arrive, filter the register by their framework.</strong> Same evidence, different lens.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume IV · NIST CSF 2.0<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>NIST CSWP 29 · ISACA CSF 2.0 audit program</div>
+    <div><strong>Next</strong><br>Volume V — HITRUST CSF v11<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

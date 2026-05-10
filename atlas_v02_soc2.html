@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume II: SOC 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+
+  /* nav back to index */
+  .breadcrumb{
+    font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--slate);
+    margin-bottom:14px;
+  }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb a:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px;
+    display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic;
+    font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px;
+    padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink);
+    background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink);
+    display:flex; flex-direction:column; gap:4px; transition:background .2s; position:relative; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end;
+    border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic;
+    font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0;
+    line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate);
+    text-align:right; line-height:1.55; }
+
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:var(--shadow);
+    overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px;
+    font-size:18px; color:var(--oxblood); }
+
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px;
+    margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker{ color:var(--oxblood); font-family:"JetBrains Mono",monospace; }
+  .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0;
+    font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15);
+    border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace;
+    font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink);
+    background:rgba(163,122,31,.06); width:13%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px;
+    background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink);
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px;
+    font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+
+  @media (max-width: 880px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    nav.layers{ grid-template-columns:repeat(2,1fr); }
+    nav.layers button{ border-bottom:1px solid var(--ink); }
+    .twocol{ grid-template-columns:1fr; }
+    footer.colophon{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume II</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume II · SOC 2 · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      AICPA TSP-100 (2017 + 2022 PoF)<br>
+      SSAE 18 · AT-C 105 · AT-C 205
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      SOC 2 is the audit auditors least understand on first contact. It is not a checklist, not a certification, and not a guarantee. It is an <em>examination engagement</em> in which a CPA firm forms an opinion on whether your controls met the Trust Services Criteria you elected, over a period you defined, applied to a system you described.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — readiness &amp; ops</span>
+      <span class="swatch ext">External — CPA firm</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        SOC 2 has no regulator. The pressure comes from your customers' procurement teams. The discipline comes from your CPA firm under SSAE 18 and the AICPA's attestation standards.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">readiness × examination</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Control Mindmap</span>
+      <span class="sub">5 TSCs · 33 CC · PoF</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Evidence &amp; Testing</span>
+      <span class="sub">period of coverage · sampling</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">SOC 2 → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- ═════════ LAYER 1 — LIFECYCLE ═════════ -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>Readiness &amp; examination, walked side by side</h2>
+      </div>
+      <div class="ref">SSAE 18 · AT-C 105 / 205<br>SOC 2 Guide (AICPA, Nov 2022)</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The full SOC 2 cycle — from readiness to bridge letter</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">PROGRAM TIMELINE →</text>
+          <text x="120" y="50" text-anchor="middle">Year 0 — readiness</text>
+          <text x="320" y="50" text-anchor="middle">Pre-audit</text>
+          <text x="520" y="50" text-anchor="middle">Type 1 (point-in-time)</text>
+          <text x="720" y="50" text-anchor="middle">Period start</text>
+          <text x="920" y="50" text-anchor="middle">During period</text>
+          <text x="1120" y="50" text-anchor="middle">Period end → report</text>
+          <text x="1290" y="50" text-anchor="middle">Bridge / next year</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — OWNS THE CONTROL ENVIRONMENT</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — CPA EXAMINATION ENGAGEMENT</text>
+        </g>
+
+        <!-- INTERNAL nodes -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">Scope &amp; criteria</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">selection</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Sec + ? Avail / PI / Conf / Privacy</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Gap assessment</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">vs. TSC + PoF</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">readiness assessor optional</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Control implementation</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">policies · tools · ev. trail</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">most of the work happens here</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">System Description</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">Section III draft</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">DC §200 disclosure</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Type 1 walkthrough</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">design effectiveness</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">point-in-time</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Operating during period</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">3–12 months</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">evidence accrual continuous</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Mgmt assertion</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">Section II — signed</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CEO/CISO sign-off</text>
+
+          <!-- second internal row -->
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">CUEC inventory</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">customer responsibilities</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">disclosed to user entities</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">Sub-service orgs</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">carve-out vs inclusive</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">vendor SOC 2s collected</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Evidence collection</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">automated where possible</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Vanta · Drata · Secureframe</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Vendor mgmt</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">TPRM cadence</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CC9.2 evidence stream</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Quarterly mini-reviews</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">control health checks</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">catch drift before audit</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">Mgmt response</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">to test exceptions</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Section V if elected</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Bridge letter</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">gap-period attestation</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">customer asks; you provide</text>
+
+          <!-- arrows internal -->
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <!-- EXTERNAL nodes -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="120" y="540" text-anchor="middle" font-weight="600">Firm selection</text>
+          <text x="120" y="555" text-anchor="middle" font-size="10">CPA · independence</text>
+          <text x="120" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 105 ¶15</text>
+
+          <rect x="220" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="300" y="540" text-anchor="middle" font-weight="600">Engagement letter</text>
+          <text x="300" y="555" text-anchor="middle" font-size="10">scope · TSCs · period</text>
+          <text x="300" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶09</text>
+
+          <rect x="400" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="480" y="540" text-anchor="middle" font-weight="600">Planning &amp; risk</text>
+          <text x="480" y="555" text-anchor="middle" font-size="10">understand the system</text>
+          <text x="480" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶17–25</text>
+
+          <rect x="580" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="660" y="540" text-anchor="middle" font-weight="600">Walkthrough</text>
+          <text x="660" y="555" text-anchor="middle" font-size="10">test of design</text>
+          <text x="660" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Type 1: stops here</text>
+
+          <rect x="760" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="840" y="540" text-anchor="middle" font-weight="600">Test of operating</text>
+          <text x="840" y="555" text-anchor="middle" font-size="10">over the period</text>
+          <text x="840" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Type 2 only</text>
+
+          <rect x="940" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="540" text-anchor="middle" font-weight="600">Evaluate exceptions</text>
+          <text x="1020" y="555" text-anchor="middle" font-size="10">qual + quant</text>
+          <text x="1020" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶63</text>
+
+          <rect x="1140" y="520" width="200" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="540" text-anchor="middle" font-weight="600">Opinion + report</text>
+          <text x="1240" y="555" text-anchor="middle" font-size="10">unmod · qual · adverse · disc</text>
+          <text x="1240" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶65–69</text>
+
+          <!-- second external row -->
+          <rect x="40" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="640" text-anchor="middle" font-weight="600">Engagement quality</text>
+          <text x="120" y="655" text-anchor="middle" font-size="10">EQR partner</text>
+          <text x="120" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">internal firm review</text>
+
+          <rect x="220" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="640" text-anchor="middle" font-weight="600">PBC / RFI list</text>
+          <text x="300" y="655" text-anchor="middle" font-size="10">~150–400 items</text>
+          <text x="300" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">via auditor portal</text>
+
+          <rect x="400" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="640" text-anchor="middle" font-weight="600">Sub-service procedures</text>
+          <text x="480" y="655" text-anchor="middle" font-size="10">read sub-org SOC 2s</text>
+          <text x="480" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CSOC procedures</text>
+
+          <rect x="580" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="640" text-anchor="middle" font-weight="600">Sample selection</text>
+          <text x="660" y="655" text-anchor="middle" font-size="10">AICPA AAG-COM</text>
+          <text x="660" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">judgment-based</text>
+
+          <rect x="760" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="640" text-anchor="middle" font-weight="600">Subsequent events</text>
+          <text x="840" y="655" text-anchor="middle" font-size="10">through report date</text>
+          <text x="840" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶57</text>
+
+          <rect x="940" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="640" text-anchor="middle" font-weight="600">Mgmt rep letter</text>
+          <text x="1020" y="655" text-anchor="middle" font-size="10">required</text>
+          <text x="1020" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">AT-C 205 ¶50</text>
+
+          <rect x="1140" y="620" width="200" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="640" text-anchor="middle" font-weight="600">Workpaper retention</text>
+          <text x="1240" y="655" text-anchor="middle" font-size="10">5 yrs (AICPA)</text>
+          <text x="1240" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">vs. 7 yrs PCAOB</text>
+
+          <rect x="540" y="730" width="300" height="50" fill="#13212d" stroke="#13212d"/>
+          <text x="690" y="750" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">REPORT ASSEMBLY · SECTIONS I–V</text>
+          <text x="690" y="765" text-anchor="middle" fill="#f3ecdd" font-size="10.5">opinion · assertion · system desc · tests · mgmt response</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="200" y1="550" x2="218" y2="550"/>
+            <line x1="380" y1="550" x2="398" y2="550"/>
+            <line x1="560" y1="550" x2="578" y2="550"/>
+            <line x1="740" y1="550" x2="758" y2="550"/>
+            <line x1="920" y1="550" x2="938" y2="550"/>
+            <line x1="1100" y1="550" x2="1138" y2="550"/>
+            <line x1="120" y1="580" x2="120" y2="618"/>
+            <line x1="300" y1="580" x2="300" y2="618"/>
+            <line x1="480" y1="580" x2="480" y2="618"/>
+            <line x1="660" y1="580" x2="660" y2="618"/>
+            <line x1="840" y1="580" x2="840" y2="618"/>
+            <line x1="1020" y1="580" x2="1020" y2="618"/>
+            <line x1="1240" y1="580" x2="1240" y2="618"/>
+            <line x1="660" y1="680" x2="660" y2="728"/>
+            <line x1="840" y1="680" x2="720" y2="728"/>
+          </g>
+        </g>
+
+        <!-- bridges -->
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="660" y1="260" x2="660" y2="518"/>
+          <line x1="1020" y1="260" x2="1020" y2="518"/>
+          <line x1="480" y1="260" x2="480" y2="618"/>
+          <line x1="1240" y1="260" x2="1240" y2="518"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="666" y="370">System Description</text>
+          <text x="666" y="383">→ auditor's foundation</text>
+          <text x="1026" y="370">period evidence →</text>
+          <text x="1026" y="383">auditor sampling</text>
+          <text x="490" y="450">vendor SOC 2s →</text>
+          <text x="490" y="463">CSOC procedures</text>
+          <text x="1246" y="370">mgmt assertion →</text>
+          <text x="1246" y="383">opinion paragraph</text>
+        </g>
+
+        <g transform="translate(1130,8)" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">
+          <rect x="0" y="0" width="10" height="10" fill="#f3ecdd" stroke="#13212d"/>
+          <text x="16" y="9">solid · primary procedure</text>
+          <rect x="0" y="16" width="10" height="10" fill="#fff8e8" stroke="#13212d" stroke-dasharray="2 2"/>
+          <text x="16" y="25">dashed · follow-on / parallel</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Type 1 vs Type 2 visual -->
+    <div class="diagram">
+      <h3 class="subtitle">Type 1 vs Type 2 — what your customer is really asking for</h3>
+      <svg viewBox="0 0 1280 380" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- Type 1 -->
+        <rect x="40" y="40" width="580" height="280" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+        <text x="60" y="74" font-family="Fraunces, serif" font-size="28" font-weight="600">Type 1</text>
+        <text x="60" y="98" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#4a5b6c">design effectiveness — point-in-time</text>
+
+        <line x1="60" y1="155" x2="600" y2="155" stroke="#2f4858" stroke-width="2"/>
+        <circle cx="320" cy="155" r="7" fill="#2f4858"/>
+        <text x="320" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#13212d" font-weight="600">REPORT DATE</text>
+        <text x="320" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">controls "suitably designed" as of this single moment</text>
+
+        <g font-size="12" fill="#2a3744">
+          <text x="60" y="220" font-weight="600">When to use it</text>
+          <text x="60" y="240" font-size="11">— First SOC 2 ever; initial gate; you're &lt;6 months into the program</text>
+          <text x="60" y="258" font-size="11">— Customer is a low-stakes prospect who'll accept a Type 1 to unblock a deal</text>
+          <text x="60" y="276" font-size="11">— You need a stake in the ground before pursuing Type 2</text>
+          <text x="60" y="298" font-size="11" fill="#7a1f24" font-style="italic">Limitation: says nothing about whether controls actually run.</text>
+        </g>
+
+        <!-- Type 2 -->
+        <rect x="660" y="40" width="580" height="280" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2"/>
+        <text x="680" y="74" font-family="Fraunces, serif" font-size="28" font-weight="600">Type 2</text>
+        <text x="680" y="98" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#4a5b6c">operating effectiveness — over a period</text>
+
+        <line x1="700" y1="155" x2="1220" y2="155" stroke="#7a1f24" stroke-width="2"/>
+        <circle cx="700" cy="155" r="6" fill="#7a1f24"/>
+        <circle cx="1220" cy="155" r="6" fill="#7a1f24"/>
+        <text x="700" y="142" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#13212d" font-weight="600">PERIOD START</text>
+        <text x="1220" y="142" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#13212d" font-weight="600">PERIOD END</text>
+        <text x="960" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">controls operated effectively across this entire window</text>
+
+        <g font-size="12" fill="#2a3744">
+          <text x="680" y="220" font-weight="600">When to use it</text>
+          <text x="680" y="240" font-size="11">— Mature program; what your customers' procurement teams will actually require</text>
+          <text x="680" y="258" font-size="11">— First Type 2: usually 3-month period. Subsequent: 6 or 12 months</text>
+          <text x="680" y="276" font-size="11">— Bridge letter covers gap from prior period end to current report date</text>
+          <text x="680" y="298" font-size="11" fill="#7a1f24" font-style="italic">Reality: this is the report that closes deals.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>The reality of a SOC 2 program</h3>
+        <p><strong>SOC 2 is not certified — it is opined upon.</strong> There is no "passing" a SOC 2 the way you pass an ISO 27001 certification audit. The CPA firm forms an opinion on whether your controls met the criteria. That opinion can be unqualified (clean), qualified (one or more exceptions), adverse (controls did not meet the criteria), or disclaimed (auditor couldn't gather enough evidence). Most reports are unqualified, but many ship with documented exceptions in Section IV.</p>
+
+        <p><strong>Scope is yours to define.</strong> You pick the Trust Services Criteria. Security is always required. Availability, Processing Integrity, Confidentiality, and Privacy are elected based on what you commit to your customers. Two SOC 2s for two companies in the same industry can therefore be entirely different reports. This flexibility is a feature for the practitioner and a confusion for the buyer.</p>
+
+        <p><strong>The system description is the underrated artifact.</strong> Section III of the report describes the system being audited — its boundaries, its components, its data flows, its control environment, the CUECs your customers must implement, and the sub-service organizations you depend on. The auditor's opinion is <em>about</em> the system as you described it. Get the description wrong and the opinion is misleading even if every control passes.</p>
+
+        <div class="pull">
+          The auditor opines on what you said. Most SOC 2 surprises trace back to a system description that was written aspirationally rather than accurately.
+        </div>
+
+        <p><strong>The bridge letter is real and important.</strong> Your Type 2 report covers a period that ended (say) Sept 30. It's now January and your customer asks if controls are still operating. The bridge letter — issued by management, not the auditor — attests that no material changes have occurred between Sept 30 and the date of the letter. It is not an audit product, but it is an evidence product. Build the muscle to issue them quickly.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Five sections of the report</h3>
+        <ol>
+          <li><strong>Section I</strong> — Independent service auditor's report (the opinion)</li>
+          <li><strong>Section II</strong> — Management's assertion (signed by you)</li>
+          <li><strong>Section III</strong> — System description (the boundary of the audit)</li>
+          <li><strong>Section IV</strong> — Tests of controls + results (Type 2 only)</li>
+          <li><strong>Section V</strong> — Other information by management (optional, e.g., responses to exceptions)</li>
+        </ol>
+        <h3 style="margin-top:24px;">Sub-service org methods</h3>
+        <p><strong>Carve-out</strong> — exclude sub-service org's controls from your description; rely on their SOC 2 separately.</p>
+        <p><strong>Inclusive</strong> — include them in your description and audit. Rare; requires the sub-service org's cooperation and assertion.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 2 — CONTROL MINDMAP ═════════ -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Control universe</div>
+        <h2>Five categories, thirty-three Common Criteria</h2>
+      </div>
+      <div class="ref">AICPA TSP Section 100<br>(2017 + 2022 Revised Points of Focus)</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The five Trust Services Criteria — Security is mandatory; the rest are elected</h3>
+      <svg viewBox="0 0 1280 740" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- center: SECURITY -->
+        <circle cx="640" cy="370" r="115" fill="#13212d"/>
+        <text x="640" y="350" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2.5">CATEGORY · MANDATORY</text>
+        <text x="640" y="378" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="32">Security</text>
+        <text x="640" y="402" text-anchor="middle" fill="#f3ecdd" font-size="11">CC1 — CC9 · 33 criteria</text>
+        <text x="640" y="420" text-anchor="middle" fill="#f3ecdd" font-size="11">required for every SOC 2</text>
+
+        <!-- spokes -->
+        <g stroke="#13212d" stroke-width="1.2" fill="none">
+          <line x1="555" y1="305" x2="320" y2="170"/>
+          <line x1="725" y1="305" x2="960" y2="170"/>
+          <line x1="555" y1="435" x2="320" y2="570"/>
+          <line x1="725" y1="435" x2="960" y2="570"/>
+        </g>
+
+        <!-- Availability NW -->
+        <g>
+          <rect x="60" y="80" width="320" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="80" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">CATEGORY · ELECTED</text>
+          <text x="80" y="132" font-family="Fraunces, serif" font-size="22" font-weight="500">Availability</text>
+          <text x="80" y="156" font-size="11" fill="#2a3744">A1.1 capacity · A1.2 monitoring</text>
+          <text x="80" y="172" font-size="11" fill="#2a3744">A1.3 recovery procedures</text>
+          <line x1="80" y1="184" x2="360" y2="184" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="80" y="204" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">3 criteria · BCDR · uptime SLA</text>
+          <text x="80" y="220" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Test: DR test evidence · capacity</text>
+          <text x="80" y="236" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">reports · monitoring dashboards</text>
+          <text x="80" y="252" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Elect when: SaaS w/ uptime SLA</text>
+        </g>
+
+        <!-- Confidentiality NE -->
+        <g>
+          <rect x="900" y="80" width="320" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="920" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">CATEGORY · ELECTED</text>
+          <text x="920" y="132" font-family="Fraunces, serif" font-size="22" font-weight="500">Confidentiality</text>
+          <text x="920" y="156" font-size="11" fill="#2a3744">C1.1 identification &amp; protection</text>
+          <text x="920" y="172" font-size="11" fill="#2a3744">C1.2 disposal of confidential info</text>
+          <line x1="920" y1="184" x2="1200" y2="184" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="920" y="204" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">2 criteria · classification · disposal</text>
+          <text x="920" y="220" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Test: data classification policy ·</text>
+          <text x="920" y="236" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">access controls · destruction logs</text>
+          <text x="920" y="252" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Elect when: customer data is "confidential"</text>
+        </g>
+
+        <!-- Processing Integrity SW -->
+        <g>
+          <rect x="60" y="480" width="320" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="80" y="506" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">CATEGORY · ELECTED</text>
+          <text x="80" y="532" font-family="Fraunces, serif" font-size="22" font-weight="500">Processing Integrity</text>
+          <text x="80" y="556" font-size="11" fill="#2a3744">PI1.1 specifications · PI1.2 inputs</text>
+          <text x="80" y="572" font-size="11" fill="#2a3744">PI1.3 processing · PI1.4 outputs</text>
+          <text x="80" y="588" font-size="11" fill="#2a3744">PI1.5 stored data integrity</text>
+          <line x1="80" y1="600" x2="360" y2="600" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="80" y="620" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">5 criteria · most rarely elected</text>
+          <text x="80" y="636" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Test: input validation · output recon</text>
+          <text x="80" y="652" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Elect when: financial / transaction processing</text>
+        </g>
+
+        <!-- Privacy SE -->
+        <g>
+          <rect x="900" y="480" width="320" height="180" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="920" y="506" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24">CATEGORY · ELECTED</text>
+          <text x="920" y="532" font-family="Fraunces, serif" font-size="22" font-weight="500">Privacy</text>
+          <text x="920" y="556" font-size="11" fill="#2a3744">P1 notice · P2 choice · P3 collection</text>
+          <text x="920" y="572" font-size="11" fill="#2a3744">P4 use · P5 access · P6 disclosure</text>
+          <text x="920" y="588" font-size="11" fill="#2a3744">P7 quality · P8 monitoring</text>
+          <line x1="920" y1="600" x2="1200" y2="600" stroke="#13212d" stroke-opacity=".25"/>
+          <text x="920" y="620" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">8 criteria · GAPP-aligned</text>
+          <text x="920" y="636" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c">Test: privacy notices · consent records</text>
+          <text x="920" y="652" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Elect when: PII collected from individuals</text>
+        </g>
+
+        <!-- bottom note -->
+        <rect x="40" y="690" width="1200" height="30" fill="#13212d"/>
+        <text x="640" y="710" text-anchor="middle" fill="#f3ecdd" font-size="11.5">Each elected category brings additional criteria layered on top of the 33 Common Criteria. They share evidence, but the auditor tests each separately.</text>
+      </svg>
+    </div>
+
+    <!-- CC1-CC9 deep dive -->
+    <div class="diagram">
+      <h3 class="subtitle">The 33 Common Criteria — Security's nine families</h3>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- 9 columns -->
+        <g>
+          <!-- CC1 -->
+          <rect x="20" y="20" width="135" height="40" fill="#7a1f24"/>
+          <text x="87" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC1</text>
+          <text x="87" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Control Env.</text>
+          <text x="87" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">5 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="30" y="130">CC1.1 integrity &amp;</text>
+            <text x="30" y="143">ethical values</text>
+            <text x="30" y="163">CC1.2 BoD oversight</text>
+            <text x="30" y="183">CC1.3 reporting</text>
+            <text x="30" y="196">structure</text>
+            <text x="30" y="216">CC1.4 competence</text>
+            <text x="30" y="236">CC1.5 accountability</text>
+          </g>
+
+          <!-- CC2 -->
+          <rect x="160" y="20" width="135" height="40" fill="#3f5337"/>
+          <text x="227" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC2</text>
+          <text x="227" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Communication</text>
+          <text x="227" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">3 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="170" y="130">CC2.1 quality info</text>
+            <text x="170" y="150">CC2.2 internal</text>
+            <text x="170" y="163">communication</text>
+            <text x="170" y="183">CC2.3 external</text>
+            <text x="170" y="196">communication</text>
+          </g>
+
+          <!-- CC3 -->
+          <rect x="300" y="20" width="135" height="40" fill="#a37a1f"/>
+          <text x="367" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC3</text>
+          <text x="367" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Risk Assessment</text>
+          <text x="367" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">4 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="310" y="130">CC3.1 specify obj.</text>
+            <text x="310" y="150">CC3.2 identify risks</text>
+            <text x="310" y="170">CC3.3 fraud risks</text>
+            <text x="310" y="190">CC3.4 changes</text>
+            <text x="310" y="203">assessed</text>
+          </g>
+
+          <!-- CC4 -->
+          <rect x="440" y="20" width="135" height="40" fill="#2f4858"/>
+          <text x="507" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC4</text>
+          <text x="507" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Monitoring</text>
+          <text x="507" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">2 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="450" y="130">CC4.1 ongoing &amp;</text>
+            <text x="450" y="143">separate eval</text>
+            <text x="450" y="163">CC4.2 deficiencies</text>
+            <text x="450" y="176">communicated</text>
+          </g>
+
+          <!-- CC5 -->
+          <rect x="580" y="20" width="135" height="40" fill="#7a1f24"/>
+          <text x="647" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC5</text>
+          <text x="647" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Control Activity</text>
+          <text x="647" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">3 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="590" y="130">CC5.1 select &amp;</text>
+            <text x="590" y="143">develop activities</text>
+            <text x="590" y="163">CC5.2 technology</text>
+            <text x="590" y="176">controls</text>
+            <text x="590" y="196">CC5.3 policies &amp;</text>
+            <text x="590" y="209">procedures</text>
+          </g>
+
+          <!-- CC6 -->
+          <rect x="720" y="20" width="135" height="40" fill="#3f5337"/>
+          <text x="787" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC6</text>
+          <text x="787" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Logical &amp; Physical</text>
+          <text x="787" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">8 criteria — largest</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="730" y="130">CC6.1 access mgmt</text>
+            <text x="730" y="150">CC6.2 registration</text>
+            <text x="730" y="170">CC6.3 modification</text>
+            <text x="730" y="190">CC6.4 physical</text>
+            <text x="730" y="210">CC6.5 disposal</text>
+            <text x="730" y="230">CC6.6 boundary</text>
+            <text x="730" y="250">CC6.7 transmission</text>
+            <text x="730" y="270">CC6.8 prevent malware</text>
+          </g>
+
+          <!-- CC7 -->
+          <rect x="860" y="20" width="135" height="40" fill="#a37a1f"/>
+          <text x="927" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC7</text>
+          <text x="927" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">System Operations</text>
+          <text x="927" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">5 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="870" y="130">CC7.1 detect changes</text>
+            <text x="870" y="150">CC7.2 monitor anom</text>
+            <text x="870" y="170">CC7.3 evaluate sec</text>
+            <text x="870" y="183">events</text>
+            <text x="870" y="203">CC7.4 incident resp</text>
+            <text x="870" y="223">CC7.5 recover</text>
+          </g>
+
+          <!-- CC8 -->
+          <rect x="1000" y="20" width="135" height="40" fill="#2f4858"/>
+          <text x="1067" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC8</text>
+          <text x="1067" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Change Mgmt</text>
+          <text x="1067" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">1 criterion</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="1010" y="130">CC8.1 authorize,</text>
+            <text x="1010" y="143">design, develop,</text>
+            <text x="1010" y="156">configure, document,</text>
+            <text x="1010" y="169">test, approve,</text>
+            <text x="1010" y="182">deploy infra and</text>
+            <text x="1010" y="195">software changes</text>
+          </g>
+
+          <!-- CC9 -->
+          <rect x="1140" y="20" width="120" height="40" fill="#7a1f24"/>
+          <text x="1200" y="46" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="18" font-weight="600">CC9</text>
+          <text x="1200" y="86" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="13" font-weight="500">Risk Mitigation</text>
+          <text x="1200" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">2 criteria</text>
+          <g font-size="10" fill="#2a3744">
+            <text x="1150" y="130">CC9.1 BCM identify</text>
+            <text x="1150" y="143">disruptions</text>
+            <text x="1150" y="163">CC9.2 vendor mgmt</text>
+            <text x="1150" y="176">— TPRM</text>
+          </g>
+        </g>
+
+        <line x1="20" y1="370" x2="1260" y2="370" stroke="#13212d" stroke-opacity=".3"/>
+
+        <!-- key insight panel -->
+        <rect x="20" y="390" width="1240" height="130" fill="#13212d"/>
+        <text x="40" y="420" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">PRACTITIONER NOTE · WHERE THE WORK ACTUALLY LIVES</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="40" y="448">CC6 (Logical &amp; Physical) holds 24% of all Common Criteria — and roughly 50% of audit time. Access management, change to access, MFA, encryption, and boundary protection</text>
+          <text x="40" y="464">are where the auditor will spend their walkthrough hours. CC1 (Control Environment) is where the program either has tone or doesn't — entity-level controls cascade.</text>
+          <text x="40" y="488">CC8 has only one criterion but tests all of change management. CC9.2 (vendor management) has become the single largest area of new work as customers push down TPRM</text>
+          <text x="40" y="504">requirements onto their service providers. The 2022 Revised Points of Focus added significant detail to CC2.3 (external comms) and CC3.4 (change risk).</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why SOC 2 looks easy and is not</h3>
+
+        <p><strong>SOC 2 is principles-based, which means flexible — and which means traps.</strong> The TSC tells you that "the entity restricts logical access" (CC6.1). It does not tell you how. You design the controls; the auditor evaluates whether they meet the criterion. Two startups can satisfy CC6.1 entirely differently — one with strict role-based access, another with attribute-based. Both can pass. Both can also fail when their evidence doesn't match what the description claims.</p>
+
+        <p><strong>Points of Focus are the hidden teeth.</strong> Each Common Criterion is accompanied by Points of Focus — illustrative considerations the auditor uses to evaluate whether you've actually met the criterion. The 2022 Revised Points of Focus expanded these meaningfully. They aren't requirements, but if your control doesn't address the relevant Points of Focus, the auditor will ask why. If you can't answer, that's a gap.</p>
+
+        <p><strong>The Common Criteria are the floor; the elected categories raise it.</strong> Most companies start Security-only. Adding Availability requires real BCM evidence. Adding Confidentiality requires data classification you may not have. Adding Privacy requires privacy notices and consent records that triggers an entirely different program. Add categories deliberately, not aspirationally.</p>
+
+        <div class="pull">
+          The hardest SOC 2 questions aren't "do you have a control?" They are "does this evidence convince me you ran it the way the description says you ran it?"
+        </div>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Anti-patterns auditors see</h3>
+        <p><strong>Description drift.</strong> System Description says one thing; controls actually run another. Update the description quarterly.</p>
+        <p><strong>Policy without practice.</strong> Policy says "access reviewed quarterly." No reviews happened. Auto-fail.</p>
+        <p><strong>Control owner ambiguity.</strong> Five people listed; nobody actually owns it. Auto-exception.</p>
+        <p><strong>CUEC absent.</strong> Customers are supposed to do something; you didn't tell them. Auditor flags as inadequate description.</p>
+        <p><strong>Vendor SOC 2 not reviewed.</strong> CC9.2 fails when you can't show evidence the vendor's report was actually read.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 3 — EVIDENCE & TESTING ═════════ -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — Evidence</div>
+        <h2>Period of coverage, sampling, and the description</h2>
+      </div>
+      <div class="ref">AICPA AAG-COM (Audit Sampling)<br>AT-C 205 ¶33–46</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">SOC 2 sampling — judgment-based, period-aware</h3>
+      <svg viewBox="0 0 1280 580" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <g font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.6" fill="#7a1f24" font-weight="600">
+          <text x="40" y="36">CONTROL TYPE</text>
+          <text x="290" y="36">FREQUENCY</text>
+          <text x="450" y="36">3-MO PERIOD</text>
+          <text x="600" y="36">6-MO PERIOD</text>
+          <text x="750" y="36">12-MO PERIOD</text>
+          <text x="900" y="36">PRIMARY EVIDENCE</text>
+          <text x="1140" y="36">TECHNIQUE</text>
+        </g>
+        <line x1="30" y1="46" x2="1250" y2="46" stroke="#13212d"/>
+
+        <g font-size="12">
+          <g transform="translate(0,80)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Automated</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">configuration · system</text>
+            <text x="290" y="0">Continuous</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="450" y="20" font-size="9.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ change history over period</text>
+            <text x="900" y="0">Configuration export, change-history report</text>
+            <text x="1140" y="0">Inspection +</text>
+            <text x="1140" y="14">Reperformance</text>
+          </g>
+          <line x1="30" y1="124" x2="1250" y2="124" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,160)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Daily manual</text>
+            <text x="290" y="0">Daily</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">15</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">25</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">25</text>
+            <text x="900" y="0">Recon, reviewer sign-off</text>
+            <text x="1140" y="0">Inspection</text>
+          </g>
+          <line x1="30" y1="206" x2="1250" y2="206" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,242)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Weekly</text>
+            <text x="290" y="0">Weekly</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">5</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">10</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">15</text>
+            <text x="900" y="0">Patch reports, vuln scan reviews</text>
+            <text x="1140" y="0">Inspection</text>
+          </g>
+          <line x1="30" y1="278" x2="1250" y2="278" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,314)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Monthly</text>
+            <text x="290" y="0">Monthly</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">2</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">3</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">4–5</text>
+            <text x="900" y="0">Backup logs, vendor reviews</text>
+            <text x="1140" y="0">Inspection +</text>
+            <text x="1140" y="14">Inquiry</text>
+          </g>
+          <line x1="30" y1="360" x2="1250" y2="360" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,396)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Quarterly</text>
+            <text x="290" y="0">4/yr</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">2</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">2</text>
+            <text x="900" y="0">UAR, access reviews</text>
+            <text x="1140" y="0">Inspection</text>
+          </g>
+          <line x1="30" y1="432" x2="1250" y2="432" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,468)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Annual</text>
+            <text x="290" y="0">1/yr</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">0–1</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="20" fill="#7a1f24">1</text>
+            <text x="450" y="18" font-size="9.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">if it occurred in period</text>
+            <text x="900" y="0">Risk assessment, policy review, DR test</text>
+            <text x="1140" y="0">Inspection</text>
+          </g>
+          <line x1="30" y1="504" x2="1250" y2="504" stroke="#13212d" stroke-opacity=".15"/>
+
+          <g transform="translate(0,540)">
+            <text x="40" y="0" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#13212d">Event-driven</text>
+            <text x="40" y="16" font-size="10.5" fill="#4a5b6c" font-family="JetBrains Mono, monospace">JML · changes · incidents</text>
+            <text x="290" y="0">Per occurrence</text>
+            <text x="450" y="0" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#7a1f24">25 / 10%</text>
+            <text x="600" y="0" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#7a1f24">25 / 10%</text>
+            <text x="750" y="0" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#7a1f24">25 / 15%</text>
+            <text x="900" y="0">Tickets, approvals, term/onboard logs</text>
+            <text x="1140" y="0">Insp + Reperform</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- System description testing -->
+    <div class="diagram">
+      <h3 class="subtitle">The System Description — what the auditor actually evaluates</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#13212d"/>
+          </marker>
+        </defs>
+
+        <!-- 5 components -->
+        <g>
+          <rect x="40" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="150" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="600">1 · Services / system</text>
+          <text x="150" y="84" text-anchor="middle" font-size="11" fill="#4a5b6c">what the system is</text>
+          <text x="150" y="100" text-anchor="middle" font-size="11" fill="#4a5b6c">and what it does</text>
+
+          <rect x="280" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="390" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="600">2 · Components</text>
+          <text x="390" y="84" text-anchor="middle" font-size="11" fill="#4a5b6c">infra · software · people ·</text>
+          <text x="390" y="100" text-anchor="middle" font-size="11" fill="#4a5b6c">procedures · data</text>
+
+          <rect x="520" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="630" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="600">3 · Boundaries</text>
+          <text x="630" y="84" text-anchor="middle" font-size="11" fill="#4a5b6c">what's IN and OUT</text>
+          <text x="630" y="100" text-anchor="middle" font-size="11" fill="#4a5b6c">of scope</text>
+
+          <rect x="760" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="870" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="600">4 · Sub-service orgs</text>
+          <text x="870" y="84" text-anchor="middle" font-size="11" fill="#4a5b6c">carve-out vs inclusive ·</text>
+          <text x="870" y="100" text-anchor="middle" font-size="11" fill="#4a5b6c">named here</text>
+
+          <rect x="1000" y="40" width="240" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+          <text x="1120" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="16" font-weight="600">5 · CUECs</text>
+          <text x="1120" y="84" text-anchor="middle" font-size="11" fill="#4a5b6c">customer responsibilities ·</text>
+          <text x="1120" y="100" text-anchor="middle" font-size="11" fill="#4a5b6c">explicit and tested</text>
+        </g>
+
+        <line x1="640" y1="140" x2="640" y2="170" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrS)"/>
+
+        <!-- Auditor's two questions -->
+        <rect x="60" y="180" width="560" height="200" fill="#13212d"/>
+        <text x="340" y="210" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">DESCRIPTION CRITERION 1 (DC §200)</text>
+        <text x="340" y="234" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">Is the description fair?</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="80" y="266">— Does it describe boundaries accurately?</text>
+          <text x="80" y="286">— Are sub-service organizations identified?</text>
+          <text x="80" y="306">— Are CUECs explicit and complete?</text>
+          <text x="80" y="326">— Are control activities described, not just policies?</text>
+          <text x="80" y="356" font-style="italic" fill="#f1d77a">A material misstatement here = qualified opinion</text>
+        </g>
+
+        <rect x="660" y="180" width="560" height="200" fill="#7a1f24"/>
+        <text x="940" y="210" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CRITERIA 2 &amp; 3 (DC §200)</text>
+        <text x="940" y="234" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">Are controls suitably designed &amp; operating?</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="680" y="266">— Did the controls described actually exist (Type 1)?</text>
+          <text x="680" y="286">— Did they operate effectively over the period (Type 2)?</text>
+          <text x="680" y="306">— Were exceptions evaluated and remediated?</text>
+          <text x="680" y="326">— Do CUECs assumed by the design actually get done?</text>
+          <text x="680" y="356" font-style="italic" fill="#f1d77a">Failures here = qualified or adverse opinion</text>
+        </g>
+
+        <text x="640" y="430" text-anchor="middle" font-size="11" fill="#4a5b6c">The auditor's opinion paragraph addresses all three criteria. Most practitioners obsess over criterion 3 and forget criterion 1.</text>
+      </svg>
+    </div>
+
+    <!-- CUEC chain of trust -->
+    <div class="diagram">
+      <h3 class="subtitle">CUECs &amp; the chain of trust — the half of SOC 2 nobody draws</h3>
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#13212d"/>
+          </marker>
+          <marker id="arrCue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/>
+          </marker>
+        </defs>
+
+        <!-- Title strip -->
+        <rect x="0" y="0" width="1280" height="36" fill="#13212d"/>
+        <text x="20" y="24" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CUECs · COMPLEMENTARY USER ENTITY CONTROLS · DC §200 ¶DC.6</text>
+
+        <!-- LEFT: Service org -->
+        <rect x="40" y="80" width="340" height="200" fill="#f3ecdd" stroke="#2f4858" stroke-width="2"/>
+        <text x="60" y="108" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#2f4858" font-weight="600">YOU · SERVICE ORGANIZATION</text>
+        <text x="60" y="138" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">"We provide the capability."</text>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="172">— Build the system</text>
+          <text x="60" y="192">— Operate controls within your boundary</text>
+          <text x="60" y="212">— Disclose what customers must do</text>
+          <text x="60" y="232">— Test those disclosures aren't fictional</text>
+        </g>
+        <text x="60" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-style="italic">e.g., "We support MFA"</text>
+
+        <!-- arrow over -->
+        <line x1="380" y1="180" x2="490" y2="180" stroke="#a37a1f" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrCue)"/>
+        <text x="435" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">CUEC published</text>
+        <text x="435" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">in Section III</text>
+
+        <!-- MIDDLE: SOC 2 Report (Section III) -->
+        <rect x="500" y="80" width="280" height="200" fill="#13212d"/>
+        <text x="640" y="108" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">SECTION III · SYSTEM DESCRIPTION</text>
+        <text x="640" y="138" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">"To rely on this system,</text>
+        <text x="640" y="162" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">user entities must..."</text>
+        <g fill="#f3ecdd" font-size="11">
+          <text x="520" y="200">— enforce MFA on their accounts</text>
+          <text x="520" y="218">— review their own user list quarterly</text>
+          <text x="520" y="236">— restrict admin role assignments</text>
+          <text x="520" y="254">— maintain their own incident process</text>
+        </g>
+        <text x="640" y="274" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9" font-style="italic">explicit, testable, complete</text>
+
+        <line x1="780" y1="180" x2="890" y2="180" stroke="#a37a1f" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrCue)"/>
+        <text x="835" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">customer reads</text>
+        <text x="835" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f">the SOC 2</text>
+
+        <!-- RIGHT: User entity -->
+        <rect x="900" y="80" width="340" height="200" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2"/>
+        <text x="920" y="108" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">YOUR CUSTOMER · USER ENTITY</text>
+        <text x="920" y="138" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">"We must do our part."</text>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="920" y="172">— Implements each CUEC as own control</text>
+          <text x="920" y="192">— Maps your CUECs to their SOX/SOC 2/ISO</text>
+          <text x="920" y="212">— Their auditor tests CUEC implementation</text>
+          <text x="920" y="232">— Without CUEC compliance, your controls</text>
+          <text x="920" y="246">  don't transfer protection to them</text>
+        </g>
+
+        <!-- middle row: what auditors do -->
+        <rect x="40" y="320" width="1200" height="50" fill="#13212d"/>
+        <text x="640" y="342" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">THE TWO-AUDITOR PROBLEM</text>
+        <text x="640" y="360" text-anchor="middle" fill="#f3ecdd" font-size="11.5">YOUR auditor reads the CUECs to evaluate whether the description is fair. THEIR auditor reads the same CUECs to test their controls. One sentence in your report becomes a control test in someone else's audit.</text>
+
+        <!-- bottom: what a good CUEC looks like vs anti-patterns -->
+        <rect x="40" y="400" width="585" height="290" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.5"/>
+        <text x="60" y="430" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">A WELL-FORMED CUEC ↓</text>
+        <g font-size="12" fill="#2a3744">
+          <text x="60" y="458" font-family="Fraunces, serif" font-style="italic" font-size="15" fill="#13212d">"User entities are responsible for"</text>
+          <text x="60" y="484" font-weight="600">→ implementing</text>
+          <text x="180" y="484">multi-factor authentication</text>
+          <text x="60" y="504" font-weight="600">→ for</text>
+          <text x="180" y="504">all administrative accounts</text>
+          <text x="60" y="524" font-weight="600">→ on</text>
+          <text x="180" y="524">the customer-controlled portal</text>
+          <text x="60" y="544" font-weight="600">→ within</text>
+          <text x="180" y="544">14 days of account creation</text>
+
+          <text x="60" y="582" font-style="italic" fill="#3f5337">Specific control. Specific scope. Testable.</text>
+          <text x="60" y="600" font-style="italic" fill="#3f5337">A user entity auditor can read this and</text>
+          <text x="60" y="618" font-style="italic" fill="#3f5337">design a control test in 30 seconds.</text>
+        </g>
+
+        <!-- anti-patterns -->
+        <rect x="655" y="400" width="585" height="290" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+        <text x="675" y="430" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">CUEC ANTI-PATTERNS ↓</text>
+        <g font-size="12" fill="#2a3744">
+          <text x="675" y="458" font-style="italic" fill="#7a1f24">"User entities are responsible</text>
+          <text x="675" y="478" font-style="italic" fill="#7a1f24">for protecting their accounts."</text>
+          <text x="675" y="500">— vague: protect from what? how? when?</text>
+
+          <text x="675" y="528" font-style="italic" fill="#7a1f24">"Maintain appropriate security</text>
+          <text x="675" y="548" font-style="italic" fill="#7a1f24">for their environment."</text>
+          <text x="675" y="570">— unscoped: covers everything, controls nothing</text>
+
+          <text x="675" y="598" font-style="italic" fill="#7a1f24">CUEC list copied verbatim from a template</text>
+          <text x="675" y="618">— mentions controls your system doesn't actually require</text>
+
+          <text x="675" y="650" font-style="italic" fill="#7a1f24">No CUECs at all</text>
+          <text x="675" y="670">— description claims customers contribute nothing. Implausible.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Where SOC 2 evidence work breaks down</h3>
+        <p><strong>The judgment problem.</strong> Unlike SOX's prescribed sample sizes from PCAOB AS 2315, SOC 2 sampling under AICPA AAG-COM is judgment-based. Auditors negotiate. A startup with weak history and lots of exceptions will see larger samples than a mature program with three years of clean Type 2s. Don't take a single firm's "industry standard" as gospel — sample-size discussions are part of every engagement.</p>
+
+        <p><strong>CUECs are the chain of trust.</strong> The diagram above shows what most SOC 2 teams underestimate: every CUEC you publish becomes a control test in <em>your customer's</em> audit. A vague CUEC ("maintain appropriate security") leaves your customer's auditor with nothing to test, which means your customer cannot rely on your SOC 2 to support <em>their</em> control story. A specific CUEC ("enforce MFA on all admin accounts within 14 days of provisioning") gives them a testable control. The discipline is to write CUECs the way <em>you</em> would want to receive them from a vendor.</p>
+
+        <p><strong>Period thinking is foreign to most teams.</strong> SOX is point-in-time at year-end. SOC 2 is over a period. A control that operated three months out of six is a Type 2 exception even if it works today. The corollary: if a control was added mid-period, the auditor will only test from its implementation date — and your description must say so explicitly.</p>
+
+        <p><strong>The IPE problem applies here too.</strong> Reports used as evidence (UAR exports, vulnerability scan results, employee rosters) must be tested for completeness and accuracy. SOC 2 firms vary in how rigorously they test IPE — some are lax, some are PCAOB-strict. Either way, document the source, parameters, and reconciliation for every report.</p>
+
+        <p><strong>Automation is a double-edged sword.</strong> Vanta, Drata, Secureframe automate evidence collection — wonderful. But auditors increasingly want to see how the automation works (the "control over the control"). If your continuous-monitoring tool flags a deviation and someone clicks "approve" without investigating, that's worse than no automation. The platform doesn't replace the discipline; it surfaces it.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Period-of-coverage rules of thumb</h3>
+        <p><strong>First Type 2:</strong> 3-month period to issue something quickly.</p>
+        <p><strong>Steady-state:</strong> 12-month period, anniversary-to-anniversary.</p>
+        <p><strong>Bridge letter:</strong> covers gap between period end and customer's date of need. Issued by management.</p>
+        <p><strong>Scope changes mid-period:</strong> describe what changed, when, and why. Auditor tests both states.</p>
+        <h3 style="margin-top:24px;">Exception severity</h3>
+        <p>Unlike SOX's CD/SD/MW, SOC 2 has no fixed taxonomy. Auditor evaluates qualitatively (intent, frequency, control design). One exception can support an unqualified opinion if it's isolated, low-impact, and remediated. Repeated exceptions in the same control = qualified.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 4 — CROSSWALK ═════════ -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>SOC 2 as the bridge between frameworks</h2>
+      </div>
+      <div class="ref">SOC 2 evidence reused widely;<br>scope nuances persist</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:13%">SOC 2 domain</th>
+          <th>SOX</th>
+          <th>ISO 27001:2022</th>
+          <th>NIST CSF 2.0</th>
+          <th>PCI DSS v4.0.1</th>
+          <th>HIPAA</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">CC1 — Control Environment</td>
+          <td><code>ELC</code> · COSO Comp. 1</td>
+          <td><code>Cl. 5</code> · <code>A.5.1–A.5.4</code></td>
+          <td><code>GV.RR</code> · <code>GV.PO</code></td>
+          <td><code>Req 12.4</code></td>
+          <td><code>§164.308(a)(2)</code></td>
+          <td><code>00.a</code> · <code>02.a</code></td>
+          <td class="shared">Org chart, code of conduct, board minutes, tone-at-top attestations</td></tr>
+        <tr><td class="dom">CC2 — Communication &amp; Info</td>
+          <td><code>ELC</code> · COSO Comp. 4</td>
+          <td><code>A.5.14</code> · <code>A.6.3</code></td>
+          <td><code>GV.OC</code> · <code>PR.AT</code></td>
+          <td><code>Req 12.6</code></td>
+          <td><code>§164.308(a)(5)</code></td>
+          <td><code>02.e</code> · <code>02.f</code></td>
+          <td class="shared">Training records, intranet posts, customer notifications</td></tr>
+        <tr><td class="dom">CC3 — Risk Assessment</td>
+          <td><code>ELC</code> · risk assessment memo</td>
+          <td><code>Cl. 6.1</code> · <code>A.5.7</code></td>
+          <td><code>ID.RA</code> · <code>GV.RM</code></td>
+          <td><code>Req 12.3</code></td>
+          <td><code>§164.308(a)(1)(ii)(A)</code></td>
+          <td><code>03.a</code> · <code>03.b</code></td>
+          <td class="shared">Risk register, threat model, RCSA, fraud-risk assessment</td></tr>
+        <tr><td class="dom">CC4 — Monitoring</td>
+          <td><code>ELC</code> · COSO Comp. 5</td>
+          <td><code>Cl. 9.1</code> · <code>A.8.16</code></td>
+          <td><code>DE.CM</code> · <code>ID.IM</code></td>
+          <td><code>Req 10</code> · <code>Req 12.10</code></td>
+          <td><code>§164.308(a)(1)(ii)(D)</code></td>
+          <td><code>09.aa</code> · <code>06.h</code></td>
+          <td class="shared">Internal audit reports, mgmt reviews, KRI dashboards</td></tr>
+        <tr><td class="dom">CC5 — Control Activities</td>
+          <td><code>BPC</code> · ITGCs at large</td>
+          <td><code>A.5.36</code></td>
+          <td>scattered</td>
+          <td><code>Req 1</code> – <code>Req 12</code> mapped</td>
+          <td><code>§164.306</code></td>
+          <td><code>10.b</code> · <code>09.h</code></td>
+          <td class="shared">Policies, procedures, control-activity matrix</td></tr>
+        <tr><td class="dom">CC6.1–6.3 — Logical access</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>A.5.15</code> · <code>A.5.16</code> · <code>A.5.18</code> · <code>A.8.2</code></td>
+          <td><code>PR.AA-01</code> · <code>PR.AA-05</code></td>
+          <td><code>Req 7</code> · <code>Req 8</code></td>
+          <td><code>§164.308(a)(3)</code> · <code>§164.308(a)(4)</code></td>
+          <td><code>01.b</code> · <code>01.c</code> · <code>01.v</code></td>
+          <td class="shared">JML tickets, UAR exports, IAM config, MFA enforcement</td></tr>
+        <tr><td class="dom">CC6.4–6.5 — Physical access</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.7.1–A.7.14</code></td>
+          <td><code>PR.AA-06</code> · <code>PR.IR-02</code></td>
+          <td><code>Req 9</code></td>
+          <td><code>§164.310</code></td>
+          <td><code>08.b</code> · <code>08.j</code></td>
+          <td class="shared">Badge logs, CCTV retention, visitor records, asset disposal</td></tr>
+        <tr><td class="dom">CC6.6 — Boundary protection</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.8.20</code> · <code>A.8.22</code></td>
+          <td><code>PR.IR-01</code></td>
+          <td><code>Req 1</code></td>
+          <td><code>§164.312(e)(1)</code></td>
+          <td><code>09.m</code></td>
+          <td class="shared">Firewall config, network diagram, segmentation tests</td></tr>
+        <tr><td class="dom">CC6.7 — Transmission protection</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.8.24</code></td>
+          <td><code>PR.DS-02</code></td>
+          <td><code>Req 4</code></td>
+          <td><code>§164.312(e)(2)(ii)</code></td>
+          <td><code>09.s</code></td>
+          <td class="shared">TLS scan, cert inventory, VPN config</td></tr>
+        <tr><td class="dom">CC6.8 — Malware protection</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.8.7</code></td>
+          <td><code>PR.PS-05</code></td>
+          <td><code>Req 5</code></td>
+          <td><code>§164.308(a)(5)(ii)(B)</code></td>
+          <td><code>09.j</code></td>
+          <td class="shared">EDR/AV deployment reports, scan logs, IOC alerts</td></tr>
+        <tr><td class="dom">CC7 — System operations</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.8.15</code> · <code>A.8.16</code> · <code>A.5.24–28</code></td>
+          <td><code>DE.CM</code> · <code>RS.MA</code></td>
+          <td><code>Req 10</code> · <code>Req 12.10</code></td>
+          <td><code>§164.308(a)(6)</code></td>
+          <td><code>09.aa</code> · <code>11.a–c</code></td>
+          <td class="shared">SIEM rules, incident tickets, post-incident reviews</td></tr>
+        <tr><td class="dom">CC8.1 — Change management</td>
+          <td><code>ITGC — Change</code></td>
+          <td><code>A.8.32</code></td>
+          <td><code>PR.PS-06</code></td>
+          <td><code>Req 6.5</code></td>
+          <td><code>§164.308(a)(8)</code></td>
+          <td><code>10.h</code> · <code>09.b</code></td>
+          <td class="shared">Change tickets, CAB minutes, PR approvals, deploy logs</td></tr>
+        <tr><td class="dom">CC9.1 — BCM</td>
+          <td><code>BPC</code> · resilience</td>
+          <td><code>A.5.29</code> · <code>A.5.30</code></td>
+          <td><code>RC.RP</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>§164.308(a)(7)</code></td>
+          <td><code>12.b</code> · <code>12.c</code></td>
+          <td class="shared">BIA, BCP/DR plans, last-test report, RTO/RPO documentation</td></tr>
+        <tr><td class="dom">CC9.2 — Vendor management</td>
+          <td><code>ITGC + BPC</code> · TPRM</td>
+          <td><code>A.5.19–A.5.23</code></td>
+          <td><code>GV.SC</code></td>
+          <td><code>Req 12.8</code> · <code>Req 12.9</code></td>
+          <td><code>§164.308(b)</code> · BAAs</td>
+          <td><code>05.k</code></td>
+          <td class="shared">Vendor inventory, due diligence pkg, contracts, vendor SOC 2s</td></tr>
+        <tr><td class="dom">A1 — Availability (elected)</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>A.8.6</code> · <code>A.8.13</code> · <code>A.8.14</code></td>
+          <td><code>RC.RP</code> · <code>PR.IR-04</code></td>
+          <td><code>Req 12.10</code></td>
+          <td><code>§164.308(a)(7)</code></td>
+          <td><code>12.b</code></td>
+          <td class="shared">Capacity reports, uptime SLAs, DR test evidence</td></tr>
+        <tr><td class="dom">C1 — Confidentiality (elected)</td>
+          <td><code>ITGC + BPC</code></td>
+          <td><code>A.5.12</code> · <code>A.5.13</code> · <code>A.8.10</code></td>
+          <td><code>PR.DS-01</code> · <code>PR.DS-02</code></td>
+          <td><code>Req 3</code></td>
+          <td><code>§164.514</code></td>
+          <td><code>06.c</code> · <code>10.f</code></td>
+          <td class="shared">Data classification policy, encryption inventory, disposal cert</td></tr>
+        <tr><td class="dom">PI1 — Processing Integrity (elected)</td>
+          <td><code>ITAC</code> · directly</td>
+          <td><code>A.8.26</code></td>
+          <td><code>PR.PS-06</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td><code>10.b</code></td>
+          <td class="shared">Input validation, output recon, error log review</td></tr>
+        <tr><td class="dom">P1–P8 — Privacy (elected)</td>
+          <td>scope-dependent</td>
+          <td><code>A.5.34</code> · ISO 27701</td>
+          <td><code>PR.DS-01</code> · <code>GV.PO</code></td>
+          <td><code>Req 3</code></td>
+          <td>HIPAA Privacy Rule</td>
+          <td><code>06.c</code> · <code>06.f</code></td>
+          <td class="shared">Privacy notice, consent records, DSAR log, retention schedule</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>SOC 2 is the bridge — and the trap</h3>
+        <p>SOC 2 has become the GRC industry's lingua franca. Buyers demand it; vendors deliver it; everyone has a vague sense of what it covers. The crosswalk above shows why: SOC 2's Common Criteria map cleanly to almost every other framework's control families. <strong>Build SOC 2 right, and you're 60–80% of the way to ISO 27001 and HITRUST.</strong></p>
+
+        <p>The trap: SOC 2 is the <em>flexibility champion</em>. The same Common Criterion can be satisfied by very different controls in different programs. ISO 27001's Annex A is more prescriptive; HIPAA Security Rule is more prescriptive; PCI DSS is highly prescriptive. Reusing SOC 2 evidence for ISO 27001 audit works only when your SOC 2 controls happen to address ISO's specific Annex A requirements — which is partially overlapping, never identical.</p>
+
+        <div class="pull">
+          SOC 2 evidence is reusable. SOC 2 conclusions are not.
+        </div>
+
+        <p><strong>The shared-evidence column is the unit of work.</strong> JML tickets, UAR exports, change tickets, vendor SOC 2s, IAM configs — these artifacts satisfy the access-control control across all seven frameworks simultaneously. The opportunity for GRC engineering is to build the evidence pipeline once and run framework-specific test conclusions against the same data.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>How SOC 2 plays with other audits</h3>
+        <p><strong>SOC 1 vs SOC 2.</strong> SOC 1 is for ICFR-relevant services (e.g., payroll providers, claims processors). SOC 2 is for security/availability commitments. Different criteria, different audience.</p>
+        <p><strong>SOC 2+.</strong> A SOC 2 examination that maps to additional frameworks (HITRUST, NIST CSF, ISO 27001) in a single report. Increasingly common.</p>
+        <p><strong>SOC 3.</strong> A general-use version of SOC 2 — same scope, less detail, public-facing. Marketing-friendly but limited.</p>
+        <p><strong>ISO 27001 and SOC 2 together.</strong> ~70% control overlap. Plan jointly; collect evidence once; audit each separately.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume II · SOC 2<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>AICPA · SSAE 18 · TSP-100 (2017+2022 PoF)</div>
+    <div><strong>Next</strong><br>Volume III — ISO/IEC 27001:2022.<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

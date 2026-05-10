@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume X: EU AI Act</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker, .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:14%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){ .wrap{padding:24px 18px 80px} .strap{grid-template-columns:1fr;gap:24px} nav.layers{grid-template-columns:repeat(2,1fr)} nav.layers button{border-bottom:1px solid var(--ink)} .twocol{grid-template-columns:1fr} footer.colophon{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume X</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume X · EU AI Act · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      Regulation (EU) 2024/1689<br>
+      EU AI Office · NCAs
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      The world's first comprehensive AI regulation. <em>Risk-based</em> rather than control-based: prohibitions for unacceptable risks, strict obligations for high-risk systems, transparency for limited-risk, freedom for minimal-risk. Prohibitions and AI literacy obligations are already in force; high-risk obligations enter application <em>August 2, 2026</em> — three months from now.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — provider / deployer</span>
+      <span class="swatch ext">External — notified body · authority</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        Enforced through CE marking + market surveillance. Most high-risk AI uses internal conformity assessment (Annex VI); biometric ID requires notified-body assessment (Annex VII). Penalties scale with culpability — up to €35M / 7% global turnover for prohibited practices.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">Provider × NB × authority</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Risk Tiers</span>
+      <span class="sub">Prohibited · High · Limited · Min.</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">High-Risk Obligations</span>
+      <span class="sub">Articles 8–17 · Annex IV docs</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">EU AI Act → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- LAYER 1 -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>Conformity assessment, CE marking, post-market surveillance</h2>
+      </div>
+      <div class="ref">Articles 6, 16, 43, 49, 72<br>Annex VI · Annex VII</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">From classification through CE marking through ongoing surveillance</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">PROVIDER LIFECYCLE →</text>
+          <text x="120" y="50" text-anchor="middle">Classify</text>
+          <text x="320" y="50" text-anchor="middle">RMS &amp; QMS</text>
+          <text x="520" y="50" text-anchor="middle">Tech docs</text>
+          <text x="720" y="50" text-anchor="middle">Conformity</text>
+          <text x="920" y="50" text-anchor="middle">CE marking</text>
+          <text x="1120" y="50" text-anchor="middle">Post-market</text>
+          <text x="1290" y="50" text-anchor="middle">Incidents</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — PROVIDER OR DEPLOYER</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — NOTIFIED BODY · AI OFFICE · MARKET SURVEILLANCE</text>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">Classify AI system</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">prohibited / high / lo</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Art. 5–6 + Annex III</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Risk Mgmt System</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">Art. 9 · iterative</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">across lifecycle</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Technical documentation</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">Annex IV</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">authority on request</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">Conformity assessment</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">Annex VI or VII</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">internal vs notified body</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">EU declaration</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">Art. 47 · Annex V</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ EU database registry</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">CE marking affixed</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">Art. 48</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">enables EU market access</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">Post-market monitoring</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">Art. 72 · Annex IV</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">data analysis · trend detection</text>
+
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">FRIA (deployer)</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">Art. 27 · public sector +</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">essential services</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">QMS</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">Art. 17 · documented</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">~ISO 9001 / 42001 fits</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">Data governance</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">Art. 10</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">training/test data quality</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Human oversight</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">Art. 14</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">design + measures</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Transparency</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">Art. 13 · Art. 50</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">user info + AI labels</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">Authorized rep</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">non-EU providers</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Art. 22 · in-EU contact</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Serious incident report</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">Art. 73 · 15 days</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">to MSA · 2-72hr critical</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="120" y="540" text-anchor="middle" font-weight="600">Annex III check</text>
+          <text x="120" y="555" text-anchor="middle" font-size="10">8 high-risk areas</text>
+          <text x="120" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ Annex I products</text>
+
+          <rect x="220" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="300" y="540" text-anchor="middle" font-weight="600">Notified Body sel.</text>
+          <text x="300" y="555" text-anchor="middle" font-size="10">if Annex VII required</text>
+          <text x="300" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">designated by NCA</text>
+
+          <rect x="400" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="480" y="540" text-anchor="middle" font-weight="600">Tech doc review</text>
+          <text x="480" y="555" text-anchor="middle" font-size="10">Annex IV against Art. 8–15</text>
+          <text x="480" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">conformity check</text>
+
+          <rect x="580" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="660" y="540" text-anchor="middle" font-weight="600">QMS audit</text>
+          <text x="660" y="555" text-anchor="middle" font-size="10">if Annex VII</text>
+          <text x="660" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">on-site / remote</text>
+
+          <rect x="760" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="840" y="540" text-anchor="middle" font-weight="600">Certificate issued</text>
+          <text x="840" y="555" text-anchor="middle" font-size="10">5-year validity</text>
+          <text x="840" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">if Annex VII path</text>
+
+          <rect x="940" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="540" text-anchor="middle" font-weight="600">EU database entry</text>
+          <text x="1020" y="555" text-anchor="middle" font-size="10">public register</text>
+          <text x="1020" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Art. 71 · provider info</text>
+
+          <rect x="1140" y="520" width="200" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="540" text-anchor="middle" font-weight="600">Market surveillance</text>
+          <text x="1240" y="555" text-anchor="middle" font-size="10">national MSA + AI Office</text>
+          <text x="1240" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">access to docs</text>
+
+          <rect x="40" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="640" text-anchor="middle" font-weight="600">EU AI Office (EC)</text>
+          <text x="120" y="655" text-anchor="middle" font-size="10">central oversight</text>
+          <text x="120" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">GPAI direct supervision</text>
+
+          <rect x="220" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="640" text-anchor="middle" font-weight="600">National Comp. Authorities</text>
+          <text x="300" y="655" text-anchor="middle" font-size="10">notifying + market surv.</text>
+          <text x="300" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">designated by member states</text>
+
+          <rect x="400" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="640" text-anchor="middle" font-weight="600">Harmonized standards</text>
+          <text x="480" y="655" text-anchor="middle" font-size="10">CEN/CENELEC dev</text>
+          <text x="480" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">presumption of conformity</text>
+
+          <rect x="580" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="640" text-anchor="middle" font-weight="600">AI Board</text>
+          <text x="660" y="655" text-anchor="middle" font-size="10">EU coordination</text>
+          <text x="660" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">advisory + harmonization</text>
+
+          <rect x="760" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="640" text-anchor="middle" font-weight="600">Sandboxes</text>
+          <text x="840" y="655" text-anchor="middle" font-size="10">Art. 57</text>
+          <text x="840" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">≥1 per Member State</text>
+
+          <rect x="940" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="640" text-anchor="middle" font-weight="600">Penalty enforcement</text>
+          <text x="1020" y="655" text-anchor="middle" font-size="10">Art. 99 · MS-defined</text>
+          <text x="1020" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">€7.5M-€35M / % turnover</text>
+
+          <rect x="1140" y="620" width="200" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="640" text-anchor="middle" font-weight="600">Cross-border coord</text>
+          <text x="1240" y="655" text-anchor="middle" font-size="10">EU-wide investigations</text>
+          <text x="1240" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">via AI Board + Office</text>
+
+          <rect x="540" y="730" width="300" height="50" fill="#13212d"/>
+          <text x="690" y="750" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CE MARKING IS THE OUTPUT</text>
+          <text x="690" y="765" text-anchor="middle" fill="#f3ecdd" font-size="10.5">No CE = no market access in EU</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="200" y1="550" x2="218" y2="550"/>
+            <line x1="380" y1="550" x2="398" y2="550"/>
+            <line x1="560" y1="550" x2="578" y2="550"/>
+            <line x1="740" y1="550" x2="758" y2="550"/>
+            <line x1="920" y1="550" x2="938" y2="550"/>
+            <line x1="1100" y1="550" x2="1138" y2="550"/>
+          </g>
+        </g>
+
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="120" y1="260" x2="120" y2="518"/>
+          <line x1="660" y1="260" x2="660" y2="518"/>
+          <line x1="1240" y1="260" x2="1240" y2="518"/>
+          <line x1="1020" y1="160" x2="1020" y2="618"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="126" y="370">classification →</text>
+          <text x="126" y="383">Annex III check</text>
+          <text x="666" y="370">QMS docs →</text>
+          <text x="666" y="383">NB audits</text>
+          <text x="1246" y="370">incident →</text>
+          <text x="1246" y="383">MSA review</text>
+          <text x="1026" y="370">CE +</text>
+          <text x="1026" y="383">EU DB</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Phased timeline -->
+    <div class="diagram">
+      <h3 class="subtitle">Phased timeline — what's already in force, what comes August 2, 2026</h3>
+      <svg viewBox="0 0 1280 380" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="290" height="280" fill="#f3ecdd" stroke="#3f5337" stroke-width="2"/>
+        <text x="60" y="70" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">PHASE 1 · ALREADY IN FORCE</text>
+        <text x="60" y="100" font-family="Fraunces, serif" font-size="20" font-weight="600" fill="#3f5337">Feb 2, 2025 →</text>
+        <text x="60" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">prohibitions + AI literacy</text>
+        <line x1="60" y1="138" x2="310" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="162">— Article 5 prohibitions enforced</text>
+          <text x="60" y="180">— Subliminal manipulation</text>
+          <text x="60" y="198">— Exploitation of vulnerabilities</text>
+          <text x="60" y="216">— Social scoring by public auth.</text>
+          <text x="60" y="234">— Real-time biometric ID (LE)</text>
+          <text x="60" y="252">— Workplace/edu emotion AI</text>
+          <text x="60" y="270">— Article 4 AI literacy duty</text>
+          <text x="60" y="288" fill="#7a1f24">€35M / 7% turnover penalty</text>
+        </g>
+
+        <rect x="345" y="40" width="290" height="280" fill="#f3ecdd" stroke="#a37a1f" stroke-width="2"/>
+        <text x="365" y="70" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#a37a1f" font-weight="600">PHASE 2 · IN FORCE</text>
+        <text x="365" y="100" font-family="Fraunces, serif" font-size="20" font-weight="600" fill="#a37a1f">Aug 2, 2025 →</text>
+        <text x="365" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">GPAI obligations + governance</text>
+        <line x1="365" y1="138" x2="615" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="365" y="162">— Articles 53–55 GPAI duties</text>
+          <text x="365" y="180">— Tech docs for foundation models</text>
+          <text x="365" y="198">— Copyright compliance policies</text>
+          <text x="365" y="216">— Training data summaries</text>
+          <text x="365" y="234">— Systemic-risk evaluations</text>
+          <text x="365" y="252">— EU AI Office operational</text>
+          <text x="365" y="270">— National authorities designated</text>
+          <text x="365" y="288" fill="#a37a1f">GPAI Code of Practice live</text>
+        </g>
+
+        <rect x="650" y="40" width="290" height="280" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2.5"/>
+        <text x="670" y="70" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">PHASE 3 · IMMINENT</text>
+        <text x="670" y="100" font-family="Fraunces, serif" font-size="20" font-weight="600" fill="#7a1f24">Aug 2, 2026</text>
+        <text x="670" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">general application begins</text>
+        <line x1="670" y1="138" x2="920" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="670" y="162">— Annex III high-risk apply</text>
+          <text x="670" y="180">— Articles 8–17 obligations</text>
+          <text x="670" y="198">— Article 50 transparency</text>
+          <text x="670" y="216">— Penalty regime fully active</text>
+          <text x="670" y="234">— National sandboxes mandatory</text>
+          <text x="670" y="252">— Conformity assessments due</text>
+          <text x="670" y="270">— EU database registration</text>
+          <text x="670" y="288" fill="#7a1f24" font-weight="600">~3 months from today</text>
+        </g>
+
+        <rect x="955" y="40" width="285" height="280" fill="#f3ecdd" stroke="#2f4858" stroke-width="2"/>
+        <text x="975" y="70" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#2f4858" font-weight="600">PHASE 4 · LATER</text>
+        <text x="975" y="100" font-family="Fraunces, serif" font-size="20" font-weight="600" fill="#2f4858">Aug 2, 2027</text>
+        <text x="975" y="124" font-family="Fraunces, serif" font-style="italic" font-size="13" fill="#4a5b6c">Annex I product AI applies</text>
+        <line x1="975" y1="138" x2="1230" y2="138" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11" fill="#2a3744">
+          <text x="975" y="162">— Article 6(1) high-risk</text>
+          <text x="975" y="180">  AI as safety components</text>
+          <text x="975" y="198">  in regulated products</text>
+          <text x="975" y="216">— Medical devices</text>
+          <text x="975" y="234">— Toys, machinery, vehicles</text>
+          <text x="975" y="252">— Pre-existing GPAI compliance</text>
+          <text x="975" y="270" fill="#a37a1f">Digital AI Omnibus may shift</text>
+          <text x="975" y="288" fill="#a37a1f">these dates if adopted</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why the Act reads differently from everything else in the Atlas</h3>
+        <p><strong>It's a regulation, not a standard.</strong> Unlike SOC 2 (criteria), ISO 27001 (standard), HITRUST (framework) or even FedRAMP (federal program), the EU AI Act is binding EU law applicable to anyone placing AI on the EU market or operating it in the EU — regardless of where the provider is based. The closest comparison in the Atlas is HIPAA (also law, also enforced by regulators rather than auditors), but HIPAA's scope is industry-specific while the AI Act applies to <em>any</em> AI system in EU markets.</p>
+
+        <p><strong>The risk-tier model is the Act's defining architecture.</strong> Rather than a single control catalog applied uniformly, the Act assigns obligations based on the AI system's risk to fundamental rights, health, and safety. A spam filter has near-zero obligations. A CV-screening AI used for hiring sits in Annex III as high-risk and triggers the full Articles 8–17 obligation set. An AI system designed to manipulate behaviour subliminally is prohibited outright. Same regulation; radically different obligations.</p>
+
+        <p><strong>Conformity assessment looks like product safety law for a reason.</strong> The Act borrows mechanics from EU product safety regulation — CE marking, technical documentation, conformity assessment procedures (Annex VI internal vs Annex VII notified body), market surveillance authorities, EU declarations of conformity. If you've worked with CE-marked medical devices or machinery, the procedural shape is familiar. The novelty is applying it to AI rather than physical products.</p>
+
+        <div class="pull">
+          The Act enforces through market access. Without CE marking and EU declaration, you cannot sell or operate a high-risk AI system in the EU. That's the lever.
+        </div>
+
+        <p><strong>The Digital AI Omnibus complicates planning.</strong> The European Commission proposed in late 2025 to amend the Act — postponing some high-risk obligations and simplifying procedures — citing implementation delays around national authority designation, harmonized standards, and compliance tooling. As of this Atlas's authoring (May 2026), the second political trilogue (April 28, 2026) ended without agreement; a further trilogue is scheduled. <strong>If the Omnibus is not adopted before August 2, 2026, the original Act timeline applies.</strong> Most legal practitioners are advising clients to prepare against the original deadlines while monitoring the Omnibus closely.</p>
+
+        <p><strong>Penalties are GDPR-scale.</strong> Article 99 sets penalty ceilings: €35M or 7% of global turnover for prohibited practices; €15M or 3% for most other violations including high-risk obligations; €7.5M or 1% for incorrect, incomplete, or misleading information to authorities. The "or" is "whichever is higher" — for a large multinational, percentage of turnover dominates. Member States set the actual penalty levels within these ceilings. Like GDPR, regulator discretion will define how these ceilings translate to practice.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Who the Act applies to</h3>
+        <p><strong>Provider</strong> — develops or has AI developed and places on EU market under own name/trademark.</p>
+        <p><strong>Deployer</strong> — uses an AI system under its authority (formerly "user" in drafts).</p>
+        <p><strong>Importer</strong> — places non-EU-developed AI on EU market.</p>
+        <p><strong>Distributor</strong> — makes available on EU market in the supply chain.</p>
+        <p><strong>Authorized representative</strong> — non-EU providers must appoint one in the EU.</p>
+        <h3 style="margin-top:24px;">Extraterritorial reach</h3>
+        <p>The Act applies to non-EU providers whose AI is used in the EU, and to deployers where the output is used in the EU — even if both are based outside. Like GDPR, the territorial scope is determined by where the AI is placed or its output used, not by provider location.</p>
+        <h3 style="margin-top:24px;">Penalty tiers</h3>
+        <p><strong>€35M / 7%</strong> — prohibited practices</p>
+        <p><strong>€15M / 3%</strong> — most other violations</p>
+        <p><strong>€7.5M / 1%</strong> — incorrect info to authorities</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 2 -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Risk tiers</div>
+        <h2>Four tiers of risk, four worlds of obligation</h2>
+      </div>
+      <div class="ref">Articles 5, 6, 50, 51, 95<br>Annex III</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The pyramid — prohibited at top, minimal-risk at base</h3>
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- Pyramid -->
+        <polygon points="540,40 740,40 800,160 480,160" fill="#13212d"/>
+        <polygon points="480,160 800,160 880,320 400,320" fill="#7a1f24"/>
+        <polygon points="400,320 880,320 960,500 320,500" fill="#a37a1f"/>
+        <polygon points="320,500 960,500 1040,680 240,680" fill="#3f5337"/>
+
+        <!-- Labels on pyramid -->
+        <text x="640" y="105" text-anchor="middle" fill="#f1d77a" font-family="Fraunces, serif" font-size="22" font-style="italic" font-weight="600">Prohibited</text>
+        <text x="640" y="128" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">Article 5</text>
+
+        <text x="640" y="230" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="26" font-weight="600">High-risk</text>
+        <text x="640" y="258" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11">Articles 6–7 + Annex III</text>
+
+        <text x="640" y="395" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="600">Limited-risk</text>
+        <text x="640" y="421" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11">Article 50 — transparency</text>
+
+        <text x="640" y="595" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-size="20" font-weight="600">Minimal-risk</text>
+        <text x="640" y="618" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">no specific obligations</text>
+
+        <!-- Side annotations: left = examples; right = obligations -->
+        <g font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#13212d">
+          <!-- Prohibited -->
+          <line x1="480" y1="100" x2="350" y2="100" stroke="#13212d" stroke-width="0.5"/>
+          <text x="40" y="78" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">EXAMPLES</text>
+          <text x="40" y="98">Subliminal manipulation</text>
+          <text x="40" y="114">Exploiting vulnerable groups</text>
+          <text x="40" y="130">Social scoring (public)</text>
+          <text x="40" y="146">Real-time biometric ID (LE,</text>
+          <text x="40" y="160">  except narrow exceptions)</text>
+
+          <line x1="800" y1="100" x2="930" y2="100" stroke="#13212d" stroke-width="0.5"/>
+          <text x="950" y="78" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">OBLIGATION</text>
+          <text x="950" y="98">Cannot place on market</text>
+          <text x="950" y="114">Cannot put into service</text>
+          <text x="950" y="130">Cannot use</text>
+          <text x="950" y="148" font-style="italic" fill="#7a1f24">Penalty: €35M / 7%</text>
+
+          <!-- High-risk -->
+          <line x1="425" y1="240" x2="290" y2="240" stroke="#13212d" stroke-width="0.5"/>
+          <text x="40" y="218" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">EXAMPLES — Annex III</text>
+          <text x="40" y="238">Biometric categorization</text>
+          <text x="40" y="254">Critical infrastructure</text>
+          <text x="40" y="270">Education access decisions</text>
+          <text x="40" y="286">Employment selection</text>
+          <text x="40" y="302">Essential services access</text>
+
+          <line x1="855" y1="240" x2="990" y2="240" stroke="#13212d" stroke-width="0.5"/>
+          <text x="1010" y="218" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">FULL OBLIGATIONS</text>
+          <text x="1010" y="238">RMS · QMS · tech docs</text>
+          <text x="1010" y="254">Data governance</text>
+          <text x="1010" y="270">Human oversight</text>
+          <text x="1010" y="286">Conformity assessment</text>
+          <text x="1010" y="302">CE marking · post-market</text>
+
+          <!-- Limited-risk -->
+          <line x1="350" y1="410" x2="220" y2="410" stroke="#13212d" stroke-width="0.5"/>
+          <text x="40" y="388" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">EXAMPLES</text>
+          <text x="40" y="408">Chatbots</text>
+          <text x="40" y="424">Emotion-recognition systems</text>
+          <text x="40" y="440">Biometric categorization (allowed)</text>
+          <text x="40" y="456">Generative AI content</text>
+          <text x="40" y="472">Deepfakes</text>
+
+          <line x1="930" y1="410" x2="1060" y2="410" stroke="#13212d" stroke-width="0.5"/>
+          <text x="1080" y="388" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">TRANSPARENCY</text>
+          <text x="1080" y="408">Inform user it's AI</text>
+          <text x="1080" y="424">Label AI-generated content</text>
+          <text x="1080" y="440">Label deepfakes</text>
+          <text x="1080" y="456">Disclose emotion AI use</text>
+
+          <!-- Minimal-risk -->
+          <line x1="270" y1="600" x2="140" y2="600" stroke="#13212d" stroke-width="0.5"/>
+          <text x="40" y="578" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">EXAMPLES</text>
+          <text x="40" y="598">Spam filters</text>
+          <text x="40" y="614">AI in video games</text>
+          <text x="40" y="630">Inventory management</text>
+          <text x="40" y="646">Recommendation engines</text>
+          <text x="40" y="662" font-style="italic" fill="#3f5337">vast majority of AI today</text>
+
+          <line x1="1010" y1="600" x2="1140" y2="600" stroke="#13212d" stroke-width="0.5"/>
+          <text x="1160" y="578" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">NO OBLIGATIONS</text>
+          <text x="1160" y="598">Voluntary codes encouraged</text>
+          <text x="1160" y="614">Article 95 codes of conduct</text>
+          <text x="1160" y="630">Internal best practices</text>
+          <text x="1160" y="646">Free to develop &amp; deploy</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Annex III categories -->
+    <div class="diagram">
+      <h3 class="subtitle">Annex III — eight categories of high-risk AI systems</h3>
+      <svg viewBox="0 0 1280 480" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">ANNEX III · 8 HIGH-RISK CATEGORIES (UPDATABLE BY EC)</text>
+
+        <g font-size="11" fill="#13212d">
+          <rect x="40" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">1 — BIOMETRICS</text>
+          <text x="60" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Biometric ID &amp; categorization</text>
+          <line x1="60" y1="144" x2="310" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="166">— Remote biometric ID (allowed)</text>
+            <text x="60" y="184">— Sensitive-attribute categorization</text>
+            <text x="60" y="202">— Emotion recognition (workplace</text>
+            <text x="60" y="218">  &amp; education = prohibited;</text>
+            <text x="60" y="234">  other contexts = high-risk)</text>
+          </g>
+
+          <rect x="345" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">2 — CRITICAL INFRA</text>
+          <text x="365" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Critical infrastructure mgmt</text>
+          <line x1="365" y1="144" x2="615" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="166">— Road traffic safety</text>
+            <text x="365" y="184">— Water, gas, heating, electricity</text>
+            <text x="365" y="202">— Digital infrastructure</text>
+            <text x="365" y="220">  (intersection with NIS2)</text>
+          </g>
+
+          <rect x="650" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">3 — EDUCATION</text>
+          <text x="670" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Education &amp; vocational training</text>
+          <line x1="670" y1="144" x2="920" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="166">— Admissions / placement decisions</text>
+            <text x="670" y="184">— Evaluation of learning outcomes</text>
+            <text x="670" y="202">— Detection of prohibited behavior</text>
+            <text x="670" y="220">  in tests &amp; exams</text>
+          </g>
+
+          <rect x="955" y="80" width="285" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="106" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">4 — EMPLOYMENT</text>
+          <text x="975" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Employment &amp; workforce</text>
+          <line x1="975" y1="144" x2="1230" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="166">— Recruitment / selection</text>
+            <text x="975" y="184">— Promotion / termination</text>
+            <text x="975" y="202">— Task allocation</text>
+            <text x="975" y="220">— Performance monitoring</text>
+            <text x="975" y="238" font-style="italic" fill="#a37a1f">most-used Annex III category</text>
+          </g>
+
+          <rect x="40" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">5 — ESSENTIAL SERVICES</text>
+          <text x="60" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Access to essential services</text>
+          <line x1="60" y1="344" x2="310" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="366">— Public benefits eligibility</text>
+            <text x="60" y="384">— Creditworthiness scoring</text>
+            <text x="60" y="402">— Insurance pricing (life, health)</text>
+            <text x="60" y="420">— Emergency call dispatch</text>
+          </g>
+
+          <rect x="345" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">6 — LAW ENFORCEMENT</text>
+          <text x="365" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Law enforcement</text>
+          <line x1="365" y1="344" x2="615" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="366">— Risk assessment of individuals</text>
+            <text x="365" y="384">— Polygraph-equivalent tools</text>
+            <text x="365" y="402">— Reliability of evidence</text>
+            <text x="365" y="420">— Profiling for criminal investig.</text>
+          </g>
+
+          <rect x="650" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">7 — MIGRATION</text>
+          <text x="670" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Migration, asylum, border</text>
+          <line x1="670" y1="344" x2="920" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="366">— Risk profiling at borders</text>
+            <text x="670" y="384">— Visa application assessment</text>
+            <text x="670" y="402">— Eligibility for asylum / status</text>
+            <text x="670" y="420">— Identity verification at borders</text>
+          </g>
+
+          <rect x="955" y="280" width="285" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="306" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">8 — JUSTICE &amp; DEMOCRACY</text>
+          <text x="975" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Justice &amp; democratic processes</text>
+          <line x1="975" y1="344" x2="1230" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="366">— Judicial decision support</text>
+            <text x="975" y="384">— Alternative dispute resolution</text>
+            <text x="975" y="402">— Election / referendum influence</text>
+            <text x="975" y="420">  on voting behavior</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why classification is the entire game</h3>
+        <p><strong>Annex III is updatable by the European Commission.</strong> The Act includes mechanisms for adding new categories and removing categories that no longer warrant high-risk status. Expect Annex III to grow over time as new use cases reveal risks. Programs that classify once and never revisit will fall behind. Mature programs revisit classification at least annually and trigger reclassification reviews when a system's purpose changes meaningfully.</p>
+
+        <p><strong>The Article 6(3) escape hatch matters.</strong> Even when an AI system fits an Annex III category, providers can exempt it from high-risk classification if the system "does not pose a significant risk of harm" — for instance, when it performs a narrow procedural task, only improves the outcome of a previously completed human activity, or detects decision-making patterns without replacing human assessment. This requires documented assessment by the provider, registered in the EU database. It's a real escape hatch but heavily scrutinized; misuse triggers reclassification by authorities and penalties.</p>
+
+        <p><strong>Most organizations have at least one Annex III system without realizing it.</strong> Common surprises: HR using AI for resume screening (Annex III §4 — employment), customer service chatbots that decide service tier or eligibility (potentially §5 — essential services), security tools that rank users by risk score (potentially §1 — biometrics if biometric data involved). The classification exercise is not a quick checkbox; it's a workshop with legal, product, and engineering.</p>
+
+        <div class="pull">
+          The risk classification step takes longer than most teams expect — and it's the foundation everything else rests on. Get it wrong and your entire compliance program addresses the wrong system.
+        </div>
+
+        <p><strong>Limited-risk transparency obligations are easy to underestimate.</strong> Article 50 covers chatbots ("inform users they're talking to AI"), AI-generated content (label as artificial), deepfakes (label as artificially generated/manipulated), emotion recognition (inform subjects), and biometric categorization in non-prohibited contexts (inform subjects). These obligations apply to Limited-risk and high-risk systems alike. The mechanism is usually simple — a notice, label, or disclosure — but the audit trail and consistency-of-application can become substantial.</p>
+
+        <p><strong>Minimal-risk freedom is real.</strong> The vast majority of AI systems in use today — recommendation engines, spam filters, fraud detection, inventory optimization, in-game NPCs — fall in minimal-risk and have no specific Act obligations. Article 95 encourages voluntary codes of conduct, and many providers will adopt them as differentiators or for parent-company alignment, but they're not required. The Act explicitly preserves freedom to develop and deploy minimal-risk AI.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>GPAI — separate track</h3>
+        <p>General-Purpose AI models (foundation models) face their own obligation track under Articles 51–55:</p>
+        <ul>
+          <li>Tech docs (Annex XI)</li>
+          <li>Information for downstream providers</li>
+          <li>Copyright compliance policy</li>
+          <li>Training-data summary</li>
+        </ul>
+        <p>If model has <strong>systemic risk</strong> (computed cumulative compute &gt;10²⁵ FLOPs, or designated by EC):</p>
+        <ul>
+          <li>Model evaluations</li>
+          <li>Adversarial testing / red-teaming</li>
+          <li>Systemic risk assessment + mitigation</li>
+          <li>Cybersecurity protections</li>
+          <li>Serious incident reporting</li>
+        </ul>
+        <p>EU AI Office supervises GPAI obligations directly (not member states).</p>
+        <h3 style="margin-top:24px;">Code of Practice for GPAI</h3>
+        <p>Voluntary code published 2025. Signing ≠ exemption from obligations, but creates presumption of conformity for relevant requirements. Most major model providers (OpenAI, Anthropic, Google, Microsoft, Meta with caveats, Mistral) have engaged with the process.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 3 -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — High-risk obligations</div>
+        <h2>Articles 8–17 — what high-risk providers must build</h2>
+      </div>
+      <div class="ref">Articles 8–17 + Annex IV<br>Article 26–27 (deployers)</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The ten cardinal obligations for high-risk AI providers</h3>
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">ARTICLES 8–17 · BUILDING THE COMPLIANCE STACK</text>
+
+        <g font-size="11" fill="#13212d">
+          <!-- Row 1 -->
+          <rect x="40" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 8</text>
+          <text x="60" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">General compliance</text>
+          <line x1="60" y1="144" x2="310" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="168">High-risk AI must comply</text>
+            <text x="60" y="186">with Articles 9–15.</text>
+            <text x="60" y="204">Compliance is the provider's</text>
+            <text x="60" y="222">responsibility throughout</text>
+            <text x="60" y="240">the lifecycle.</text>
+          </g>
+
+          <rect x="345" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 9</text>
+          <text x="365" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Risk Management System</text>
+          <line x1="365" y1="144" x2="615" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="168">Iterative process across</text>
+            <text x="365" y="186">whole lifecycle:</text>
+            <text x="365" y="204">— identify foreseeable risks</text>
+            <text x="365" y="222">— estimate &amp; evaluate</text>
+            <text x="365" y="240">— adopt mitigations</text>
+          </g>
+
+          <rect x="650" y="80" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 10</text>
+          <text x="670" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Data &amp; data governance</text>
+          <line x1="670" y1="144" x2="920" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="168">Training, validation, testing</text>
+            <text x="670" y="186">data must meet quality criteria:</text>
+            <text x="670" y="204">— relevant, representative</text>
+            <text x="670" y="222">— free of errors, complete</text>
+            <text x="670" y="240">— bias examined, addressed</text>
+          </g>
+
+          <rect x="955" y="80" width="285" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="106" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 11</text>
+          <text x="975" y="130" font-family="Fraunces, serif" font-size="16" font-weight="500">Technical documentation</text>
+          <line x1="975" y1="144" x2="1230" y2="144" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="168">Annex IV checklist:</text>
+            <text x="975" y="186">— description of system</text>
+            <text x="975" y="204">— design choices</text>
+            <text x="975" y="222">— training methodology</text>
+            <text x="975" y="240">— performance metrics</text>
+          </g>
+
+          <!-- Row 2 -->
+          <rect x="40" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="306" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 12</text>
+          <text x="60" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Record-keeping (logs)</text>
+          <line x1="60" y1="344" x2="310" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="368">Automatic logging of events</text>
+            <text x="60" y="386">throughout system lifecycle.</text>
+            <text x="60" y="404">Enables traceability of</text>
+            <text x="60" y="422">decisions / outputs.</text>
+            <text x="60" y="440">Retention as appropriate.</text>
+          </g>
+
+          <rect x="345" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="306" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 13</text>
+          <text x="365" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Transparency to deployers</text>
+          <line x1="365" y1="344" x2="615" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="368">Instructions for use:</text>
+            <text x="365" y="386">— intended purpose</text>
+            <text x="365" y="404">— performance &amp; limitations</text>
+            <text x="365" y="422">— risks of foreseeable misuse</text>
+            <text x="365" y="440">— specifications for input</text>
+          </g>
+
+          <rect x="650" y="280" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="306" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 14</text>
+          <text x="670" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Human oversight</text>
+          <line x1="670" y1="344" x2="920" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="368">Designed to be effectively</text>
+            <text x="670" y="386">overseen by humans:</text>
+            <text x="670" y="404">— understand capabilities</text>
+            <text x="670" y="422">— detect anomalies</text>
+            <text x="670" y="440">— interrupt or override</text>
+          </g>
+
+          <rect x="955" y="280" width="285" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="306" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 15</text>
+          <text x="975" y="330" font-family="Fraunces, serif" font-size="16" font-weight="500">Accuracy, robustness, sec.</text>
+          <line x1="975" y1="344" x2="1230" y2="344" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="368">Appropriate level of:</text>
+            <text x="975" y="386">— accuracy (declared)</text>
+            <text x="975" y="404">— robustness to errors/attacks</text>
+            <text x="975" y="422">— cybersecurity</text>
+            <text x="975" y="440">— resilience to data poisoning</text>
+          </g>
+
+          <!-- Row 3 -->
+          <rect x="40" y="480" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="506" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 16</text>
+          <text x="60" y="530" font-family="Fraunces, serif" font-size="16" font-weight="500">Provider obligations</text>
+          <line x1="60" y1="544" x2="310" y2="544" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="60" y="568">— Conformity assessment done</text>
+            <text x="60" y="586">— EU declaration drawn up</text>
+            <text x="60" y="604">— CE marking applied</text>
+            <text x="60" y="622">— EU database registration</text>
+            <text x="60" y="640">— Tech docs retained 10y</text>
+          </g>
+
+          <rect x="345" y="480" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="365" y="506" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 17</text>
+          <text x="365" y="530" font-family="Fraunces, serif" font-size="16" font-weight="500">Quality Management System</text>
+          <line x1="365" y1="544" x2="615" y2="544" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="365" y="568">Documented QMS covering:</text>
+            <text x="365" y="586">— compliance strategy</text>
+            <text x="365" y="604">— design &amp; verification procs.</text>
+            <text x="365" y="622">— data management procs.</text>
+            <text x="365" y="640">— ISO 42001 / 9001 satisfies</text>
+          </g>
+
+          <rect x="650" y="480" width="290" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="670" y="506" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 26</text>
+          <text x="670" y="530" font-family="Fraunces, serif" font-size="16" font-weight="500">Deployer obligations</text>
+          <line x1="670" y1="544" x2="920" y2="544" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="670" y="568">— Use as per instructions</text>
+            <text x="670" y="586">— Assign human oversight</text>
+            <text x="670" y="604">— Monitor operation</text>
+            <text x="670" y="622">— Inform workers if affected</text>
+            <text x="670" y="640">— Cooperate with authorities</text>
+          </g>
+
+          <rect x="955" y="480" width="285" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="975" y="506" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7a1f24">ART. 27</text>
+          <text x="975" y="530" font-family="Fraunces, serif" font-size="16" font-weight="500">FRIA — deployer assessment</text>
+          <line x1="975" y1="544" x2="1230" y2="544" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="10.5" fill="#2a3744">
+            <text x="975" y="568">Fundamental Rights Impact</text>
+            <text x="975" y="586">Assessment required for:</text>
+            <text x="975" y="604">— public-sector deployers</text>
+            <text x="975" y="622">— private bodies providing</text>
+            <text x="975" y="640">  public services</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>How the obligations actually fit together</h3>
+        <p><strong>The QMS is the spine.</strong> Article 17 requires a documented Quality Management System that ties together compliance strategy, design verification, data management, post-market monitoring, incident reporting, and recordkeeping. Crucially, <strong>compliance with ISO/IEC 9001 or ISO/IEC 42001 satisfies most QMS requirements.</strong> Organizations already pursuing 42001 certification (Volume IX) get most of the way to Article 17 conformity for free.</p>
+
+        <p><strong>The RMS (Article 9) is the governance loop.</strong> A continuous, iterative risk management system across the full lifecycle. Maps almost exactly onto NIST AI RMF's MAP/MEASURE/MANAGE functions and ISO 42001 Cl. 6.1.2 / 6.1.4. Practitioners building a single AI risk function across all three frameworks tend to use AI RMF as the methodology, 42001 as the management-system shell, and Article 9 as the legal binding obligation.</p>
+
+        <p><strong>Annex IV is the documentation menu.</strong> Article 11 references Annex IV, which lists everything technical documentation must contain: system description, design choices, computational/HW requirements, training methodology, datasets used (sources, scope, characteristics), performance metrics including bias-related metrics, validation/testing procedures, post-market monitoring plan. Annex IV is roughly 25-50 pages of disciplined documentation; the full technical-documentation file for a high-risk system typically runs 100-300 pages.</p>
+
+        <div class="pull">
+          The Act's high-risk obligations look much like ISO 42001 plus Annex IV documentation plus CE marking — but they're legally binding rather than voluntary.
+        </div>
+
+        <p><strong>The deployer obligations are often missed.</strong> Article 26 places real duties on deployers — assign human oversight, follow instructions for use, monitor operation, inform workers and other affected persons, cooperate with authorities, retain logs. Article 27 adds FRIA (Fundamental Rights Impact Assessment) for public-sector deployers and certain private deployers providing public services. Many enterprises deploying third-party AI think they're off the hook because someone else is the provider — they're not.</p>
+
+        <p><strong>Conformity assessment is the audit step.</strong> Most Annex III high-risk systems use Annex VI internal conformity assessment — the provider self-assesses against the requirements, drafts the EU declaration, applies CE marking. Only Annex III §1 (biometric ID) requires Annex VII third-party assessment by a notified body. This is lighter than expected for most providers. The catch: the provider remains fully liable; misclassification or substandard self-assessment surfaces during market surveillance investigations or after incidents, with penalties applied retrospectively.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Annex IV documentation</h3>
+        <p>What the technical documentation file must include:</p>
+        <ol>
+          <li>General description of system</li>
+          <li>Detailed development description</li>
+          <li>Information on monitoring + functioning</li>
+          <li>Performance metrics</li>
+          <li>Risk Management System</li>
+          <li>Lifecycle changes</li>
+          <li>Standards applied</li>
+          <li>EU declaration of conformity</li>
+          <li>Post-market monitoring plan</li>
+        </ol>
+        <h3 style="margin-top:24px;">Records retention</h3>
+        <p><strong>Tech documentation:</strong> 10 years post placement on market</p>
+        <p><strong>Logs (Art. 12):</strong> "appropriate" — not less than 6 months</p>
+        <p><strong>QMS records:</strong> 10 years</p>
+        <p><strong>Conformity declaration:</strong> 10 years</p>
+        <h3 style="margin-top:24px;">Critical reading</h3>
+        <p>Article 9 (RMS), Article 10 (data), Article 14 (human oversight), Article 17 (QMS), Annex IV are the most-cited and most-tested sections. Read them in full before launching a high-risk AI program.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 4 -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>EU AI Act in a multi-framework AI program</h2>
+      </div>
+      <div class="ref">Mapping to ISO 42001, NIST AI RMF<br>+ existing security frameworks</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:14%">EU AI Act</th>
+          <th>ISO 42001:2023</th>
+          <th>NIST AI RMF 1.0</th>
+          <th>ISO 27001:2022</th>
+          <th>SOC 2 (TSC)</th>
+          <th>NIST CSF 2.0</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">Art. 5 — Prohibited</td>
+          <td><code>A.5</code> AIIA</td>
+          <td><code>MAP 5.1</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Use-case classification register, prohibition screening, AIIA</td></tr>
+        <tr><td class="dom">Art. 6 + Annex III — High-risk class</td>
+          <td><code>Cl. 6.1.4</code> AIIA</td>
+          <td><code>MAP 1</code> · <code>MAP 5</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">AI system inventory, classification rationale, Annex III mapping</td></tr>
+        <tr><td class="dom">Art. 9 — RMS (high-risk)</td>
+          <td><code>Cl. 6.1</code></td>
+          <td><code>MAP</code> · <code>MEASURE</code> · <code>MANAGE</code></td>
+          <td><code>Cl. 6.1</code></td>
+          <td><code>CC3.1</code> – <code>CC3.4</code></td>
+          <td><code>GV.RM</code> · <code>ID.RA</code></td>
+          <td><code>03.b</code></td>
+          <td class="shared">Risk register, methodology, treatment plan, lifecycle integration</td></tr>
+        <tr><td class="dom">Art. 10 — Data governance</td>
+          <td><code>A.7</code></td>
+          <td><code>MAP 4</code> · <code>MEASURE 4</code></td>
+          <td><code>A.5.12</code></td>
+          <td><code>C1.1</code></td>
+          <td><code>PR.DS-01</code></td>
+          <td><code>06.c</code></td>
+          <td class="shared">Datasheets, lineage docs, bias analysis, data quality reports</td></tr>
+        <tr><td class="dom">Art. 11 + Annex IV — Tech docs</td>
+          <td><code>A.5.4</code> · <code>A.6.2.5</code></td>
+          <td><code>GOVERN 5</code> · <code>MAP 1.6</code></td>
+          <td><code>A.5.34</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td><code>10.b</code></td>
+          <td class="shared">Tech doc file, model cards, datasheets, performance reports</td></tr>
+        <tr><td class="dom">Art. 12 — Logging</td>
+          <td><code>A.6.2.6</code></td>
+          <td><code>MEASURE 3</code></td>
+          <td><code>A.8.15</code></td>
+          <td><code>CC7.1</code></td>
+          <td><code>DE.CM-01</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">Event logs, retention policy, traceability mappings</td></tr>
+        <tr><td class="dom">Art. 13 — Transparency to deployer</td>
+          <td><code>A.8</code></td>
+          <td><code>GOVERN 5</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Instructions for use, model cards, capability/limitation docs</td></tr>
+        <tr><td class="dom">Art. 14 — Human oversight</td>
+          <td><code>A.4.6</code> · <code>A.6.2.7</code></td>
+          <td><code>MANAGE 1</code> · <code>MANAGE 2</code></td>
+          <td>—</td>
+          <td><code>CC4.1</code></td>
+          <td>—</td>
+          <td><code>02.a</code></td>
+          <td class="shared">Oversight design docs, override procedures, training records</td></tr>
+        <tr><td class="dom">Art. 15 — Acc., robust., security</td>
+          <td><code>A.6.2.8</code></td>
+          <td><code>MEASURE 2</code> · <code>MEASURE 3</code></td>
+          <td><code>A.8.7</code> · <code>A.8.8</code></td>
+          <td><code>CC7.2</code></td>
+          <td><code>PR.DS-01</code></td>
+          <td><code>09.j</code></td>
+          <td class="shared">Eval reports, robustness tests, security tests, red-team</td></tr>
+        <tr><td class="dom">Art. 17 — QMS</td>
+          <td><code>Cl. 4–10</code> (full)</td>
+          <td><code>GOVERN</code></td>
+          <td><code>Cl. 4–10</code></td>
+          <td><code>CC1.1</code> – <code>CC9.2</code></td>
+          <td><code>GV.OC</code> · <code>GV.PO</code></td>
+          <td><code>00.a</code> · <code>04.a</code></td>
+          <td class="shared">QMS manual, policies, internal audit, mgmt review</td></tr>
+        <tr><td class="dom">Art. 26 — Deployer use</td>
+          <td><code>A.9</code></td>
+          <td><code>MANAGE 1</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Instructions adherence, deployment controls, ongoing monitoring</td></tr>
+        <tr><td class="dom">Art. 27 — FRIA (deployer)</td>
+          <td><code>Cl. 6.1.4</code> AIIA</td>
+          <td><code>MAP 5</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">FRIA per system, affected-rights analysis, mitigation register</td></tr>
+        <tr><td class="dom">Art. 50 — Transparency</td>
+          <td><code>A.8</code></td>
+          <td><code>GOVERN 5</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">User-facing disclosures, AI labels, deepfake markers, chatbot notice</td></tr>
+        <tr><td class="dom">Art. 53–55 — GPAI</td>
+          <td><code>A.10.3</code></td>
+          <td><code>GOVERN 6</code></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="shared">Tech doc, training summary, copyright policy, eval results</td></tr>
+        <tr><td class="dom">Art. 72 — Post-market monitoring</td>
+          <td><code>Cl. 9.1</code></td>
+          <td><code>MEASURE 3</code></td>
+          <td><code>Cl. 9.1</code></td>
+          <td><code>CC4.1</code></td>
+          <td><code>DE.CM</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">Monitoring plan, drift metrics, fairness metrics, dashboards</td></tr>
+        <tr><td class="dom">Art. 73 — Serious incidents</td>
+          <td><code>Cl. 10.2</code></td>
+          <td><code>MANAGE 4</code></td>
+          <td><code>A.5.24</code> – <code>A.5.27</code></td>
+          <td><code>CC7.3</code></td>
+          <td><code>RS.MA</code></td>
+          <td><code>11</code></td>
+          <td class="shared">Incident log, RCA, corrective actions, MSA reports</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>How the EU AI Act sits relative to everything else</h3>
+        <p>The Act is <strong>regulatory layer</strong>, sitting on top of existing standards rather than replacing them. ISO 42001 is the management-system layer that satisfies Article 17 (QMS) and provides the structural shell. NIST AI RMF is the methodology layer that satisfies Article 9 (RMS) and informs MAP/MEASURE/MANAGE practices. ISO 27001 is the security layer that satisfies Article 15's cybersecurity requirement. SOC 2 / HITRUST add commercial assurance.</p>
+
+        <p>The dual-cert pattern emerging in 2025-2026 is <strong>ISO 42001 + EU AI Act conformity</strong>. Organizations pursuing both run unified evidence collection — every artifact serving 42001 also serves the Act, with FRIA being the only Act-specific net-new artifact. Add ISO 27001 for the security layer (Article 15), and the three frameworks together cover almost everything.</p>
+
+        <p><strong>The crosswalk gaps tell the story.</strong> Many EU AI Act articles have no equivalent in older frameworks (SOC 2, ISO 27001, NIST CSF, PCI, HIPAA, HITRUST) — particularly the AI-specific ones (Art. 10 data, Art. 14 oversight, Art. 27 FRIA, Art. 50 transparency, Art. 73 incident reporting). This isn't a flaw in the older frameworks; it's a sign that AI governance is genuinely new content that the older frameworks couldn't have anticipated. Programs running only those older frameworks will discover the gaps the moment they engage with the Act.</p>
+
+        <div class="pull">
+          The Act is binding. ISO 42001 is voluntary. NIST AI RMF is suggestive. They cooperate.
+        </div>
+
+        <p><strong>For non-EU organizations the Act still applies.</strong> Like GDPR, extraterritorial scope catches anyone whose AI is placed on the EU market or whose output is used in the EU. A U.S.-based SaaS deploying an AI hiring tool used by an EU customer's HR team is, as a provider, subject to the Act for that system. The Authorized Representative requirement (Art. 22) means non-EU providers must designate an in-EU contact. Compliance planning starts with classification, not geography.</p>
+
+        <p><strong>The convergence trajectory is clear.</strong> EU AI Act → ISO 42001 + NIST AI RMF mappings are being formalized through 2026. Standardization bodies are publishing harmonized standards (CEN/CENELEC) under Article 40 to provide presumption of conformity. The Code of Practice for GPAI is operational. Member states are designating notifying and market-surveillance authorities. By late 2026, the early scramble will be replaced by routine compliance procedures — though Annex III will continue to expand and harmonized standards will continue to evolve.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Pre-Aug 2026 priorities</h3>
+        <ol>
+          <li>AI system inventory (full, current)</li>
+          <li>Classify every system against Art. 5/6 + Annex III</li>
+          <li>For high-risk: scope Articles 8–17 work</li>
+          <li>QMS architecture (use ISO 42001 if available)</li>
+          <li>Authorized representative designation if non-EU</li>
+          <li>Article 50 transparency review</li>
+          <li>FRIA process if public sector / essential services</li>
+        </ol>
+        <h3 style="margin-top:24px;">If you have ISO 42001</h3>
+        <p>You have the QMS spine. Add:</p>
+        <ul>
+          <li>EU-specific classification</li>
+          <li>Annex IV doc structure</li>
+          <li>EU declaration mechanics</li>
+          <li>CE marking process</li>
+          <li>EU database registration</li>
+          <li>FRIA where applicable</li>
+        </ul>
+        <h3 style="margin-top:24px;">Watch list</h3>
+        <p><strong>Digital AI Omnibus</strong> — possible deferral of high-risk obligations</p>
+        <p><strong>Harmonized standards (CEN/CENELEC)</strong> — when published, provide presumption of conformity</p>
+        <p><strong>EU AI Office guidance</strong> — clarifications on Art. 6(3), GPAI thresholds, etc.</p>
+        <p><strong>National authority designation</strong> — required by Aug 2026; check status per market</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume X · EU AI Act<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>Regulation (EU) 2024/1689 · EU AI Office · NCAs</div>
+    <div><strong>Next</strong><br>Volume XI — NIST AI RMF<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>

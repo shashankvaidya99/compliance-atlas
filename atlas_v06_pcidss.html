@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume VI: PCI DSS v4.0.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+    --shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb a:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; transition:background .2s; position:relative; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:var(--shadow); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker{ color:var(--oxblood); font-family:"JetBrains Mono",monospace; }
+  .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:13%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:24px; }
+    nav.layers{ grid-template-columns:repeat(2,1fr); }
+    nav.layers button{ border-bottom:1px solid var(--ink); }
+    .twocol{ grid-template-columns:1fr; }
+    footer.colophon{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume VI</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume VI · PCI DSS v4.0.1 · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      PCI DSS v4.0.1 (June 2024)<br>
+      PCI SSC ROC Template v4.0.1
+    </div>
+  </header>
+
+  <section class="strap">
+    <p class="lede">
+      PCI DSS is the most prescriptive framework in the Atlas — and the only one whose audit outcome turns on a definition. Get the <em>Cardholder Data Environment</em> right and the assessment is bounded; get it wrong and the boundary swallows your whole network. Every PCI strategy is, at its heart, a scoping strategy.
+    </p>
+    <div class="legend">
+      <h4>Reading the Atlas</h4>
+      <span class="swatch int">Internal — merchant / service provider</span>
+      <span class="swatch ext">External — QSA / acquirer / card brand</span>
+      <span class="swatch bri">Bridge / hand-off</span>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--slate)">
+        PCI is enforced through merchant agreements, not regulation. The card brands set the rules; the acquirers enforce them; QSAs validate compliance for the largest merchants. v4.0.1 (June 2024) clarified v4.0 and the future-dated requirements became mandatory March 31, 2025.
+      </p>
+    </div>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
+      <span class="sub">RoC × SAQ paths</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Control Mindmap</span>
+      <span class="sub">12 reqs · 4 goals · approaches</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Evidence &amp; Testing</span>
+      <span class="sub">Sampling · IPE · TRA</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk</span>
+      <span class="sub">PCI → 7 frameworks</span>
+    </button>
+  </nav>
+
+  <!-- LAYER 1 -->
+  <section class="panel active" id="L1">
+    <header class="section">
+      <div class="marker">I.</div>
+      <div>
+        <div class="kicker">Layer 01 — Lifecycle</div>
+        <h2>RoC and SAQ — two assessment paths, one standard</h2>
+      </div>
+      <div class="ref">PCI DSS v4.0.1<br>RoC Template v4.0.1</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The PCI annual cycle — internal program × external assessment</h3>
+      <svg viewBox="0 0 1380 880" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2f4858"/></marker>
+          <marker id="arrE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a1f24"/></marker>
+          <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a37a1f"/></marker>
+        </defs>
+
+        <rect x="0" y="80" width="1380" height="340" fill="rgba(47,72,88,.07)" />
+        <rect x="0" y="500" width="1380" height="340" fill="rgba(122,31,36,.06)" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" letter-spacing="1.2">
+          <text x="20" y="22" font-weight="600" fill="#13212d">12-MONTH CYCLE →</text>
+          <text x="120" y="50" text-anchor="middle">Scope &amp; tier</text>
+          <text x="320" y="50" text-anchor="middle">Pre-assessment</text>
+          <text x="520" y="50" text-anchor="middle">Continuous ops</text>
+          <text x="720" y="50" text-anchor="middle">Pre-validation</text>
+          <text x="920" y="50" text-anchor="middle">Validation</text>
+          <text x="1120" y="50" text-anchor="middle">Submission</text>
+          <text x="1290" y="50" text-anchor="middle">Next cycle</text>
+        </g>
+        <line x1="20" y1="62" x2="1360" y2="62" stroke="#13212d" stroke-opacity=".25" />
+
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="2.2" font-weight="600">
+          <text x="20" y="78" fill="#2f4858">INTERNAL — MERCHANT / SERVICE PROVIDER</text>
+          <text x="20" y="498" fill="#7a1f24">EXTERNAL — QSA · ACQUIRER · CARD BRANDS</text>
+        </g>
+
+        <!-- INTERNAL nodes -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="120" y="120" text-anchor="middle" font-weight="600">Determine merchant level</text>
+          <text x="120" y="135" text-anchor="middle" font-size="10">L1 / L2 / L3 / L4</text>
+          <text x="120" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">by tx volume + brand</text>
+
+          <rect x="220" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="300" y="120" text-anchor="middle" font-weight="600">Define CDE scope</text>
+          <text x="300" y="135" text-anchor="middle" font-size="10">people · process · system</text>
+          <text x="300" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">CHD storage · processing · trans.</text>
+
+          <rect x="400" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="480" y="120" text-anchor="middle" font-weight="600">Segmentation strategy</text>
+          <text x="480" y="135" text-anchor="middle" font-size="10">tokenization · isolation</text>
+          <text x="480" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">reduce CDE = reduce cost</text>
+
+          <rect x="580" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="660" y="120" text-anchor="middle" font-weight="600">Approach selection</text>
+          <text x="660" y="135" text-anchor="middle" font-size="10">Defined or Customized</text>
+          <text x="660" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">v4.0+ option</text>
+
+          <rect x="760" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="840" y="120" text-anchor="middle" font-weight="600">Continuous compliance</text>
+          <text x="840" y="135" text-anchor="middle" font-size="10">12 reqs operating</text>
+          <text x="840" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">"PCI is not a project"</text>
+
+          <rect x="940" y="100" width="160" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1020" y="120" text-anchor="middle" font-weight="600">Evidence binder</text>
+          <text x="1020" y="135" text-anchor="middle" font-size="10">PBC · IPE · samples</text>
+          <text x="1020" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">organized by req</text>
+
+          <rect x="1140" y="100" width="200" height="60" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.5"/>
+          <text x="1240" y="120" text-anchor="middle" font-weight="600">AOC + RoC submitted</text>
+          <text x="1240" y="135" text-anchor="middle" font-size="10">to acquirer / brand</text>
+          <text x="1240" y="151" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">renewal annual</text>
+
+          <rect x="40" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="220" text-anchor="middle" font-weight="600">Define entity type</text>
+          <text x="120" y="235" text-anchor="middle" font-size="10">merchant vs SP</text>
+          <text x="120" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">SP requirements stricter</text>
+
+          <rect x="220" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="220" text-anchor="middle" font-weight="600">Quarterly ASV scans</text>
+          <text x="300" y="235" text-anchor="middle" font-size="10">external vuln scan</text>
+          <text x="300" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">ASV-approved vendor</text>
+
+          <rect x="400" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="220" text-anchor="middle" font-weight="600">TRA for customized</text>
+          <text x="480" y="235" text-anchor="middle" font-size="10">Targeted Risk Analysis</text>
+          <text x="480" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">required if not Defined</text>
+
+          <rect x="580" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="220" text-anchor="middle" font-weight="600">Internal pen test</text>
+          <text x="660" y="235" text-anchor="middle" font-size="10">at least annually</text>
+          <text x="660" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">+ after major changes</text>
+
+          <rect x="760" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="220" text-anchor="middle" font-weight="600">Segmentation testing</text>
+          <text x="840" y="235" text-anchor="middle" font-size="10">required ≥ annually</text>
+          <text x="840" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">SPs every 6 mo</text>
+
+          <rect x="940" y="200" width="160" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="220" text-anchor="middle" font-weight="600">SAQ self-assess</text>
+          <text x="1020" y="235" text-anchor="middle" font-size="10">L2-L4 path</text>
+          <text x="1020" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">A · A-EP · B · C · D</text>
+
+          <rect x="1140" y="200" width="200" height="60" fill="#fff8e8" stroke="#2f4858" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="220" text-anchor="middle" font-weight="600">Breach response</text>
+          <text x="1240" y="235" text-anchor="middle" font-size="10">forensics &amp; PFI</text>
+          <text x="1240" y="251" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">if compromised</text>
+
+          <g stroke="#2f4858" stroke-width="1.4" fill="none" marker-end="url(#arrI)">
+            <line x1="200" y1="130" x2="218" y2="130"/>
+            <line x1="380" y1="130" x2="398" y2="130"/>
+            <line x1="560" y1="130" x2="578" y2="130"/>
+            <line x1="740" y1="130" x2="758" y2="130"/>
+            <line x1="920" y1="130" x2="938" y2="130"/>
+            <line x1="1100" y1="130" x2="1138" y2="130"/>
+            <line x1="120" y1="160" x2="120" y2="198"/>
+            <line x1="300" y1="160" x2="300" y2="198"/>
+            <line x1="480" y1="160" x2="480" y2="198"/>
+            <line x1="660" y1="160" x2="660" y2="198"/>
+            <line x1="840" y1="160" x2="840" y2="198"/>
+            <line x1="1020" y1="160" x2="1020" y2="198"/>
+            <line x1="1240" y1="160" x2="1240" y2="198"/>
+          </g>
+        </g>
+
+        <!-- EXTERNAL nodes -->
+        <g font-size="10.5" fill="#13212d">
+          <rect x="40" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="120" y="540" text-anchor="middle" font-weight="600">QSA selection</text>
+          <text x="120" y="555" text-anchor="middle" font-size="10">PCI SSC roster</text>
+          <text x="120" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">L1 only</text>
+
+          <rect x="220" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="300" y="540" text-anchor="middle" font-weight="600">Engagement letter</text>
+          <text x="300" y="555" text-anchor="middle" font-size="10">scope · timeline · fees</text>
+          <text x="300" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">QSA company SOW</text>
+
+          <rect x="400" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="480" y="540" text-anchor="middle" font-weight="600">Scope confirmation</text>
+          <text x="480" y="555" text-anchor="middle" font-size="10">QSA validates CDE</text>
+          <text x="480" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">network diagrams · flows</text>
+
+          <rect x="580" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="660" y="540" text-anchor="middle" font-weight="600">Onsite assessment</text>
+          <text x="660" y="555" text-anchor="middle" font-size="10">walkthroughs · interviews</text>
+          <text x="660" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">configs · evidence review</text>
+
+          <rect x="760" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="840" y="540" text-anchor="middle" font-weight="600">Testing procedures</text>
+          <text x="840" y="555" text-anchor="middle" font-size="10">300+ in v4.0.1</text>
+          <text x="840" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">per req in RoC template</text>
+
+          <rect x="940" y="520" width="160" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1020" y="540" text-anchor="middle" font-weight="600">RoC drafted</text>
+          <text x="1020" y="555" text-anchor="middle" font-size="10">~300 page document</text>
+          <text x="1020" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">In Place / Not / N/A</text>
+
+          <rect x="1140" y="520" width="200" height="60" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.5"/>
+          <text x="1240" y="540" text-anchor="middle" font-weight="600">AOC signed</text>
+          <text x="1240" y="555" text-anchor="middle" font-size="10">Attestation of Compliance</text>
+          <text x="1240" y="571" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">QSA + entity sign</text>
+
+          <rect x="40" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="120" y="640" text-anchor="middle" font-weight="600">QSA QA review</text>
+          <text x="120" y="655" text-anchor="middle" font-size="10">QSAC internal</text>
+          <text x="120" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">PCI SSC reviews QSACs</text>
+
+          <rect x="220" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="300" y="640" text-anchor="middle" font-weight="600">Independence check</text>
+          <text x="300" y="655" text-anchor="middle" font-size="10">no design + assess</text>
+          <text x="300" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">QSA cannot consult</text>
+
+          <rect x="400" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="480" y="640" text-anchor="middle" font-weight="600">Sample population</text>
+          <text x="480" y="655" text-anchor="middle" font-size="10">QSA-determined</text>
+          <text x="480" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">per testing procedure</text>
+
+          <rect x="580" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="660" y="640" text-anchor="middle" font-weight="600">Customized review</text>
+          <text x="660" y="655" text-anchor="middle" font-size="10">if Customized Approach</text>
+          <text x="660" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">QSA evaluates TRA + ctrls</text>
+
+          <rect x="760" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="840" y="640" text-anchor="middle" font-weight="600">Compensating controls</text>
+          <text x="840" y="655" text-anchor="middle" font-size="10">documented in App. C</text>
+          <text x="840" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">narrowed in v4 vs v3.2.1</text>
+
+          <rect x="940" y="620" width="160" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1020" y="640" text-anchor="middle" font-weight="600">Acquirer review</text>
+          <text x="1020" y="655" text-anchor="middle" font-size="10">acquiring bank</text>
+          <text x="1020" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">enforcement starts here</text>
+
+          <rect x="1140" y="620" width="200" height="60" fill="#fff8e8" stroke="#7a1f24" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="1240" y="640" text-anchor="middle" font-weight="600">Card brand reporting</text>
+          <text x="1240" y="655" text-anchor="middle" font-size="10">Visa · MC · AmEx</text>
+          <text x="1240" y="671" text-anchor="middle" font-size="9" fill="#4a5b6c" font-family="JetBrains Mono, monospace">Discover · JCB</text>
+
+          <rect x="540" y="730" width="300" height="50" fill="#13212d" stroke="#13212d"/>
+          <text x="690" y="750" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">CARD BRAND ENFORCEMENT</text>
+          <text x="690" y="765" text-anchor="middle" fill="#f3ecdd" font-size="11">Non-compliance → fines from acquirer (passed from card brands)</text>
+
+          <g stroke="#7a1f24" stroke-width="1.4" fill="none" marker-end="url(#arrE)">
+            <line x1="200" y1="550" x2="218" y2="550"/>
+            <line x1="380" y1="550" x2="398" y2="550"/>
+            <line x1="560" y1="550" x2="578" y2="550"/>
+            <line x1="740" y1="550" x2="758" y2="550"/>
+            <line x1="920" y1="550" x2="938" y2="550"/>
+            <line x1="1100" y1="550" x2="1138" y2="550"/>
+            <line x1="120" y1="580" x2="120" y2="618"/>
+            <line x1="300" y1="580" x2="300" y2="618"/>
+            <line x1="480" y1="580" x2="480" y2="618"/>
+            <line x1="660" y1="580" x2="660" y2="618"/>
+            <line x1="840" y1="580" x2="840" y2="618"/>
+            <line x1="1020" y1="580" x2="1020" y2="618"/>
+            <line x1="1240" y1="580" x2="1240" y2="618"/>
+          </g>
+        </g>
+
+        <!-- bridges -->
+        <g stroke="#a37a1f" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)">
+          <line x1="300" y1="260" x2="480" y2="518"/>
+          <line x1="480" y1="260" x2="660" y2="618"/>
+          <line x1="840" y1="260" x2="840" y2="518"/>
+          <line x1="1240" y1="260" x2="1020" y2="618"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#a37a1f">
+          <text x="306" y="370">CDE definition →</text>
+          <text x="306" y="383">QSA validates scope</text>
+          <text x="486" y="370">TRA →</text>
+          <text x="486" y="383">customized review</text>
+          <text x="846" y="370">segmentation evidence →</text>
+          <text x="846" y="383">testing procedures</text>
+          <text x="1026" y="450">AOC submitted →</text>
+          <text x="1026" y="463">acquirer reviews</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Path comparison: RoC vs SAQ -->
+    <div class="diagram">
+      <h3 class="subtitle">RoC vs SAQ — two paths, very different rigor</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="600" height="380" fill="#f3ecdd" stroke="#7a1f24" stroke-width="2.5"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">PATH 1 · REPORT ON COMPLIANCE</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="32" font-weight="600" fill="#7a1f24">RoC</text>
+        <text x="60" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">QSA-led, full validation, ~300 page report</text>
+        <line x1="60" y1="146" x2="620" y2="146" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="12" fill="#2a3744">
+          <text x="60" y="172">Required for: <tspan font-weight="600">Level 1 merchants</tspan> (~6M+ tx/yr or after breach)</text>
+          <text x="60" y="194">Required for: <tspan font-weight="600">All Level 1 service providers</tspan> (~300k+ tx/yr)</text>
+          <text x="60" y="216">Period: <tspan font-weight="600">12-month coverage</tspan></text>
+          <text x="60" y="238">Effort: <tspan font-weight="600">3–6 months</tspan> for QSA assessment alone</text>
+          <text x="60" y="260">Cost: <tspan font-weight="600">$50k–$300k+</tspan> (size-dependent)</text>
+        </g>
+        <line x1="60" y1="280" x2="620" y2="280" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="60" y="304" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">DELIVERABLES</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="60" y="324">— RoC: ~300 pp · narrative + testing per requirement</text>
+          <text x="60" y="342">— AOC: signed by QSA + entity</text>
+          <text x="60" y="360">— ASV scan attestations (quarterly)</text>
+          <text x="60" y="378">— Pen test reports + segmentation tests</text>
+          <text x="60" y="396">— Submitted to acquirer + card brands</text>
+        </g>
+
+        <rect x="660" y="40" width="580" height="380" fill="#f3ecdd" stroke="#3f5337" stroke-width="2"/>
+        <text x="680" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#3f5337" font-weight="600">PATH 2 · SELF-ASSESSMENT QUESTIONNAIRE</text>
+        <text x="680" y="106" font-family="Fraunces, serif" font-size="32" font-weight="600" fill="#3f5337">SAQ</text>
+        <text x="680" y="134" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">merchant-completed, eight types, scope-narrowed</text>
+        <line x1="680" y1="146" x2="1220" y2="146" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="12" fill="#2a3744">
+          <text x="680" y="172">Available for: <tspan font-weight="600">Levels 2–4</tspan> (varies by brand)</text>
+          <text x="680" y="194">Type: <tspan font-weight="600">SAQ A</tspan> (fully outsourced) → <tspan font-weight="600">D</tspan> (everything else)</text>
+          <text x="680" y="216">Period: <tspan font-weight="600">point-in-time annual attestation</tspan></text>
+          <text x="680" y="238">Effort: <tspan font-weight="600">days to weeks</tspan> internal-only</text>
+          <text x="680" y="260">Cost: <tspan font-weight="600">staff time</tspan> + ASV scan ($200-2k/yr)</text>
+        </g>
+        <line x1="680" y1="280" x2="1220" y2="280" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="680" y="304" font-family="JetBrains Mono, monospace" font-size="10" fill="#3f5337" font-weight="600">SAQ TYPES (KEY ONES)</text>
+        <g font-size="11" fill="#2a3744">
+          <text x="680" y="324">— <tspan font-family="JetBrains Mono, monospace">SAQ A</tspan> · card-not-present, fully outsourced (~22 ctrls)</text>
+          <text x="680" y="342">— <tspan font-family="JetBrains Mono, monospace">SAQ A-EP</tspan> · e-commerce w/ partial outsourcing</text>
+          <text x="680" y="360">— <tspan font-family="JetBrains Mono, monospace">SAQ B</tspan> · imprint or standalone terminals</text>
+          <text x="680" y="378">— <tspan font-family="JetBrains Mono, monospace">SAQ C</tspan> · payment app on internet-connected POS</text>
+          <text x="680" y="396">— <tspan font-family="JetBrains Mono, monospace">SAQ D</tspan> · merchants storing CHD electronically</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why scoping is everything in PCI</h3>
+        <p><strong>The CDE is a contagion.</strong> Once a system stores, processes, or transmits cardholder data, it's in scope. Worse — any system <em>connected</em> to that system is also in scope unless segmentation is in place. A poorly designed network can pull half the corporate environment into the CDE, doubling assessment cost and quadrupling remediation burden. Mature programs invest more in segmentation than in any other control category.</p>
+
+        <p><strong>Tokenization is the cheat code.</strong> If you can replace cardholder data with a token early in your processing flow and never store, process, or transmit the original, you collapse most of your CDE. Stripe, Adyen, and Braintree have built billion-dollar businesses around this principle. The tradeoff: you depend on their PCI compliance and their tokenization architecture's correctness.</p>
+
+        <p><strong>Service providers face stricter requirements than merchants.</strong> If you process payments on behalf of others (PSPs, acquirers, ISO/MSPs, hosting providers handling CHD), you must comply with additional requirements specifically for service providers — including more frequent segmentation testing (every 6 months vs annually), executive accountability for the program, and Service Provider AOC.</p>
+
+        <div class="pull">
+          You don't pass PCI by passing controls. You pass by shrinking the CDE until passing controls becomes feasible.
+        </div>
+
+        <p><strong>v4.0.1 made the future-dated requirements real.</strong> Released March 2024, mandatory March 2025: customized passwords (12+ chars), MFA on all CDE access (not just admin), authenticated vulnerability scanning, automated log review, anti-phishing controls (Req 5.4.1), payment page integrity monitoring (Req 6.4.3 + 11.6.1), and TRA documentation for many security controls. Programs still on v3.2.1 muscle memory are now non-compliant.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Merchant levels (Visa)</h3>
+        <p><strong>L1:</strong> 6M+ tx/yr (or breached) — RoC required</p>
+        <p><strong>L2:</strong> 1–6M tx/yr — SAQ + ASV (QSA at brand discretion)</p>
+        <p><strong>L3:</strong> 20k–1M e-commerce tx/yr — SAQ + ASV</p>
+        <p><strong>L4:</strong> &lt;20k e-commerce tx/yr or &lt;1M total — SAQ + ASV</p>
+        <p style="margin-top:12px;font-style:italic;">MasterCard and AmEx use slightly different thresholds.</p>
+        <h3 style="margin-top:24px;">Service provider levels</h3>
+        <p><strong>L1:</strong> 300k+ tx/yr — RoC required, all SPs validated yearly</p>
+        <p><strong>L2:</strong> &lt;300k — SAQ D-SP</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 2 — control mindmap -->
+  <section class="panel" id="L2">
+    <header class="section">
+      <div class="marker">II.</div>
+      <div>
+        <div class="kicker">Layer 02 — Control universe</div>
+        <h2>Twelve requirements, four goals, two approaches</h2>
+      </div>
+      <div class="ref">PCI DSS v4.0.1<br>12 Requirements</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The four goals — protecting cardholder data front to back</h3>
+      <svg viewBox="0 0 1280 740" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <!-- Top: 4 goals -->
+        <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">4 GOALS · 6 CONTROL OBJECTIVES · 12 REQUIREMENTS</text>
+
+        <!-- 4 goal columns -->
+        <g>
+          <!-- Goal 1: Build & Maintain Secure Network -->
+          <rect x="40" y="80" width="290" height="120" fill="#7a1f24"/>
+          <text x="60" y="106" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">GOAL 1</text>
+          <text x="60" y="138" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Build &amp; Maintain</text>
+          <text x="60" y="160" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">a Secure Network</text>
+          <text x="60" y="184" fill="#f3ecdd" font-size="11">Reqs 1 + 2</text>
+
+          <!-- Goal 2 -->
+          <rect x="345" y="80" width="290" height="120" fill="#3f5337"/>
+          <text x="365" y="106" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">GOAL 2</text>
+          <text x="365" y="138" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Protect</text>
+          <text x="365" y="160" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Account Data</text>
+          <text x="365" y="184" fill="#f3ecdd" font-size="11">Reqs 3 + 4</text>
+
+          <!-- Goal 3 -->
+          <rect x="650" y="80" width="290" height="120" fill="#a37a1f"/>
+          <text x="670" y="106" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">GOAL 3</text>
+          <text x="670" y="138" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Maintain Vuln</text>
+          <text x="670" y="160" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Mgmt Program</text>
+          <text x="670" y="184" fill="#f3ecdd" font-size="11">Reqs 5 + 6</text>
+
+          <!-- Goal 4 (combines 4 goals into space, splits 4-6 logically) -->
+          <rect x="955" y="80" width="285" height="120" fill="#2f4858"/>
+          <text x="975" y="106" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">GOALS 4–6</text>
+          <text x="975" y="138" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">Access · Monitor</text>
+          <text x="975" y="160" fill="#f3ecdd" font-family="Fraunces, serif" font-size="22" font-weight="500">· Policy</text>
+          <text x="975" y="184" fill="#f3ecdd" font-size="11">Reqs 7–12</text>
+        </g>
+
+        <!-- 12 requirements detail -->
+        <g font-size="11" fill="#13212d">
+          <!-- Req 1 -->
+          <rect x="40" y="220" width="142" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="60" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 1</text>
+          <text x="60" y="262" font-size="10.5" fill="#4a5b6c">Network security</text>
+          <text x="60" y="276" font-size="10.5" fill="#4a5b6c">controls</text>
+          <line x1="60" y1="286" x2="172" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="60" y="304">Firewalls, routers,</text>
+            <text x="60" y="318">network segmentation,</text>
+            <text x="60" y="332">DMZ, default deny,</text>
+            <text x="60" y="346">change control on rules</text>
+            <text x="60" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~16 sub-reqs</text>
+          </g>
+
+          <!-- Req 2 -->
+          <rect x="190" y="220" width="142" height="180" fill="#f3ecdd" stroke="#7a1f24" stroke-width="1.2"/>
+          <text x="210" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 2</text>
+          <text x="210" y="262" font-size="10.5" fill="#4a5b6c">Secure config</text>
+          <text x="210" y="276" font-size="10.5" fill="#4a5b6c">all components</text>
+          <line x1="210" y1="286" x2="322" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="210" y="304">Vendor defaults removed,</text>
+            <text x="210" y="318">hardening standards,</text>
+            <text x="210" y="332">CIS / NIST baselines,</text>
+            <text x="210" y="346">non-console admin enc.</text>
+            <text x="210" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~7 sub-reqs</text>
+          </g>
+
+          <!-- Req 3 -->
+          <rect x="345" y="220" width="142" height="180" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.2"/>
+          <text x="365" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 3</text>
+          <text x="365" y="262" font-size="10.5" fill="#4a5b6c">Protect stored</text>
+          <text x="365" y="276" font-size="10.5" fill="#4a5b6c">account data</text>
+          <line x1="365" y1="286" x2="477" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="365" y="304">Minimize CHD storage,</text>
+            <text x="365" y="318">PAN encryption (AES),</text>
+            <text x="365" y="332">key mgmt lifecycle,</text>
+            <text x="365" y="346">SAD never stored post-auth</text>
+            <text x="365" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~10 sub-reqs</text>
+          </g>
+
+          <!-- Req 4 -->
+          <rect x="495" y="220" width="142" height="180" fill="#f3ecdd" stroke="#3f5337" stroke-width="1.2"/>
+          <text x="515" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 4</text>
+          <text x="515" y="262" font-size="10.5" fill="#4a5b6c">Encrypt transmission</text>
+          <text x="515" y="276" font-size="10.5" fill="#4a5b6c">over public networks</text>
+          <line x1="515" y1="286" x2="627" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="515" y="304">TLS 1.2+ in transit,</text>
+            <text x="515" y="318">cert validation,</text>
+            <text x="515" y="332">cipher strength current,</text>
+            <text x="515" y="346">no PAN over messaging</text>
+            <text x="515" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~3 sub-reqs</text>
+          </g>
+
+          <!-- Req 5 -->
+          <rect x="650" y="220" width="142" height="180" fill="#f3ecdd" stroke="#a37a1f" stroke-width="1.2"/>
+          <text x="670" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 5</text>
+          <text x="670" y="262" font-size="10.5" fill="#4a5b6c">Anti-malware</text>
+          <text x="670" y="276" font-size="10.5" fill="#4a5b6c">protection</text>
+          <line x1="670" y1="286" x2="782" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="670" y="304">EDR/AV deployed,</text>
+            <text x="670" y="318">phishing protections (5.4.1),</text>
+            <text x="670" y="332">log all malware events,</text>
+            <text x="670" y="346">integrity-monitoring</text>
+            <text x="670" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~6 sub-reqs</text>
+          </g>
+
+          <!-- Req 6 -->
+          <rect x="800" y="220" width="142" height="180" fill="#f3ecdd" stroke="#a37a1f" stroke-width="1.2"/>
+          <text x="820" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 6</text>
+          <text x="820" y="262" font-size="10.5" fill="#4a5b6c">Develop &amp; maintain</text>
+          <text x="820" y="276" font-size="10.5" fill="#4a5b6c">secure systems</text>
+          <line x1="820" y1="286" x2="932" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="820" y="304">Patch SLAs (critical 30d),</text>
+            <text x="820" y="318">code review,</text>
+            <text x="820" y="332">SDLC + threat modeling,</text>
+            <text x="820" y="346">payment page integrity</text>
+            <text x="820" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~9 sub-reqs</text>
+          </g>
+
+          <!-- Req 7 -->
+          <rect x="955" y="220" width="142" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="975" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 7</text>
+          <text x="975" y="262" font-size="10.5" fill="#4a5b6c">Restrict access</text>
+          <text x="975" y="276" font-size="10.5" fill="#4a5b6c">by need-to-know</text>
+          <line x1="975" y1="286" x2="1087" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="975" y="304">Default deny,</text>
+            <text x="975" y="318">role-based access,</text>
+            <text x="975" y="332">least privilege,</text>
+            <text x="975" y="346">access provisioning controls</text>
+            <text x="975" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~3 sub-reqs</text>
+          </g>
+
+          <!-- Req 8 -->
+          <rect x="1105" y="220" width="135" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="1125" y="244" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 8</text>
+          <text x="1125" y="262" font-size="10.5" fill="#4a5b6c">Identify users</text>
+          <text x="1125" y="276" font-size="10.5" fill="#4a5b6c">authenticate access</text>
+          <line x1="1125" y1="286" x2="1230" y2="286" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="1125" y="304">Unique IDs,</text>
+            <text x="1125" y="318">12+ char passwords,</text>
+            <text x="1125" y="332">MFA on ALL CDE access,</text>
+            <text x="1125" y="346">session timeout</text>
+            <text x="1125" y="368" font-family="JetBrains Mono, monospace" fill="#a37a1f">~6 sub-reqs</text>
+          </g>
+
+          <!-- Req 9-12 in second row -->
+          <rect x="40" y="420" width="285" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="60" y="444" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 9</text>
+          <text x="60" y="462" font-size="10.5" fill="#4a5b6c">Restrict physical access</text>
+          <line x1="60" y1="476" x2="315" y2="476" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="60" y="494">Badge / visitor logs,</text>
+            <text x="60" y="508">media controls,</text>
+            <text x="60" y="522">device tampering checks (POI),</text>
+            <text x="60" y="536">backup site security,</text>
+            <text x="60" y="550">media disposal procedures</text>
+            <text x="60" y="572" font-family="JetBrains Mono, monospace" fill="#a37a1f">~5 sub-reqs</text>
+          </g>
+
+          <rect x="335" y="420" width="285" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="355" y="444" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 10</text>
+          <text x="355" y="462" font-size="10.5" fill="#4a5b6c">Log + monitor everything</text>
+          <line x1="355" y1="476" x2="610" y2="476" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="355" y="494">Audit logs all CDE activity,</text>
+            <text x="355" y="508">log integrity (FIM),</text>
+            <text x="355" y="522">365-day retention (90 immediate),</text>
+            <text x="355" y="536">automated log reviews (10.4.1.1),</text>
+            <text x="355" y="550">time synchronization</text>
+            <text x="355" y="572" font-family="JetBrains Mono, monospace" fill="#a37a1f">~7 sub-reqs</text>
+          </g>
+
+          <rect x="630" y="420" width="285" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="650" y="444" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 11</text>
+          <text x="650" y="462" font-size="10.5" fill="#4a5b6c">Test security regularly</text>
+          <line x1="650" y1="476" x2="905" y2="476" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="650" y="494">Quarterly ASV scans (external),</text>
+            <text x="650" y="508">internal vuln scans,</text>
+            <text x="650" y="522">annual pen test + segmentation,</text>
+            <text x="650" y="536">payment page integrity (11.6.1),</text>
+            <text x="650" y="550">IDS/IPS</text>
+            <text x="650" y="572" font-family="JetBrains Mono, monospace" fill="#a37a1f">~6 sub-reqs</text>
+          </g>
+
+          <rect x="925" y="420" width="315" height="180" fill="#f3ecdd" stroke="#2f4858" stroke-width="1.2"/>
+          <text x="945" y="444" font-family="Fraunces, serif" font-size="18" font-weight="600">Req 12</text>
+          <text x="945" y="462" font-size="10.5" fill="#4a5b6c">Information security policy</text>
+          <line x1="945" y1="476" x2="1230" y2="476" stroke="#13212d" stroke-opacity=".25"/>
+          <g font-size="9.5" fill="#2a3744">
+            <text x="945" y="494">Annual policy review,</text>
+            <text x="945" y="508">risk assessment + TRA documentation,</text>
+            <text x="945" y="522">awareness training,</text>
+            <text x="945" y="536">incident response plan,</text>
+            <text x="945" y="550">vendor mgmt (12.8 + 12.9),</text>
+            <text x="945" y="564">SP executive accountability (12.4.2)</text>
+            <text x="945" y="586" font-family="JetBrains Mono, monospace" fill="#a37a1f">~10 sub-reqs · largest</text>
+          </g>
+        </g>
+
+        <!-- bottom: Defined vs Customized -->
+        <rect x="40" y="620" width="1200" height="100" fill="#13212d"/>
+        <text x="60" y="650" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2.5">v4.0+ INTRODUCES TWO APPROACHES</text>
+        <g fill="#f3ecdd" font-size="11.5">
+          <text x="60" y="676"><tspan font-weight="600" fill="#f1d77a">Defined Approach</tspan> — meet the requirement exactly as written. The traditional path. Easy to validate, easy to fail by-the-letter.</text>
+          <text x="60" y="694"><tspan font-weight="600" fill="#f1d77a">Customized Approach</tspan> — meet the requirement's <em>objective</em> via alternative controls. Requires Targeted Risk Analysis (TRA).</text>
+          <text x="60" y="712">QSA evaluates whether the alternative meets intent. Compensating Controls (App. C) still exist but are narrower in v4.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why PCI feels different from every other framework</h3>
+        <p><strong>The prescription is the point.</strong> Where SOC 2 says "the entity restricts logical access" (CC6.1), PCI says "MFA must be implemented for all non-console administrative access into the CDE" (Req 8.4.1) and "MFA must be implemented for all access into the CDE" (Req 8.4.2 — added in v4.0). The shift from principle to specification is unmistakable. Defined Approach controls leave no room for interpretation; you either do exactly what's stated or you don't.</p>
+
+        <p><strong>Customized Approach is genuinely new.</strong> Until v4.0, alternative controls only existed via Compensating Controls (Appendix C) — which required a documented business or technical reason why the requirement couldn't be met as written. Customized Approach is different: you can voluntarily design a different control that meets the same security objective. This unlocks innovation but adds documentation burden — every Customized Approach control requires its own Targeted Risk Analysis (TRA).</p>
+
+        <div class="pull">
+          PCI is the framework that tells you exactly what to do. v4 quietly admits that "exactly" wasn't always the right answer.
+        </div>
+
+        <p><strong>Requirement 12 is the largest and most-failed.</strong> Despite being labeled "information security policy," Req 12 covers risk assessment, TRA documentation, awareness training, incident response, vendor management, executive accountability, and several other governance topics. It's the requirement most likely to surface program-wide weaknesses during a QSA visit. Treat Req 12 as a meta-requirement that examines whether everything else is being managed.</p>
+
+        <p><strong>The 2024–2025 transition reshaped programs.</strong> Future-dated requirements that became mandatory March 31, 2025 changed the day-to-day program for most merchants: MFA for <em>all</em> CDE access (not just admin), 12-character passwords (was 7), authenticated vulnerability scanning, automated log review (Req 10.4.1.1), payment page integrity monitoring (Req 6.4.3 + 11.6.1), and TRA documentation requirements throughout. Programs that "passed v3.2.1 with ease" are now finding v4.0.1 considerably harder.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Defined Approach — when</h3>
+        <p>— Initial implementation</p>
+        <p>— Standard infrastructure</p>
+        <p>— No unusual technology constraints</p>
+        <p>— Want simplest QSA validation</p>
+        <h3 style="margin-top:24px;">Customized Approach — when</h3>
+        <p>— Modern architecture (containers, serverless) where Defined controls don't fit</p>
+        <p>— Mature security program with measurable controls</p>
+        <p>— Willing to invest in TRA documentation</p>
+        <p>— Long-term: builds organizational risk muscle</p>
+        <h3 style="margin-top:24px;">Compensating Controls (App. C)</h3>
+        <p>Still exists. Used when a specific Defined Approach control cannot be met for legitimate business or technical reasons. Narrower in v4 — most reviewers expect Customized Approach as the modern alternative.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 3 — evidence -->
+  <section class="panel" id="L3">
+    <header class="section">
+      <div class="marker">III.</div>
+      <div>
+        <div class="kicker">Layer 03 — Evidence</div>
+        <h2>QSA testing — examine, observe, interview</h2>
+      </div>
+      <div class="ref">PCI DSS v4.0.1 Testing Procedures<br>QSA Evidence Requirements</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">QSA testing methods — three procedures, applied per requirement</h3>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="40" y="40" width="380" height="380" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="60" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">METHOD 1 · EXAMINE</text>
+        <text x="60" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Examine</text>
+        <text x="60" y="128" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">documents · configs · records</text>
+        <line x1="60" y1="142" x2="400" y2="142" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="60" y="170">— Policies and procedures</text>
+          <text x="60" y="192">— System configurations</text>
+          <text x="60" y="214">— Logs and reports</text>
+          <text x="60" y="236">— Network diagrams</text>
+          <text x="60" y="258">— Change tickets</text>
+          <text x="60" y="280">— ASV / pen test reports</text>
+        </g>
+        <line x1="60" y1="304" x2="400" y2="304" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="60" y="328" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">QSA RECORDS</text>
+        <text x="60" y="350" font-size="11" fill="#2a3744">— What was examined</text>
+        <text x="60" y="368" font-size="11" fill="#2a3744">— Date observed</text>
+        <text x="60" y="386" font-size="11" fill="#2a3744">— Reference number / hash</text>
+
+        <rect x="450" y="40" width="380" height="380" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="470" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">METHOD 2 · OBSERVE</text>
+        <text x="470" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Observe</text>
+        <text x="470" y="128" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">processes in action</text>
+        <line x1="470" y1="142" x2="810" y2="142" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="470" y="170">— User authentication flow</text>
+          <text x="470" y="192">— Provisioning / deprovisioning</text>
+          <text x="470" y="214">— Backup process</text>
+          <text x="470" y="236">— Incident response simulation</text>
+          <text x="470" y="258">— Physical security walks</text>
+          <text x="470" y="280">— POI device inspection</text>
+        </g>
+        <line x1="470" y1="304" x2="810" y2="304" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="470" y="328" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">QSA RECORDS</text>
+        <text x="470" y="350" font-size="11" fill="#2a3744">— Process observed step-by-step</text>
+        <text x="470" y="368" font-size="11" fill="#2a3744">— Personnel involved</text>
+        <text x="470" y="386" font-size="11" fill="#2a3744">— Date and location</text>
+
+        <rect x="860" y="40" width="380" height="380" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="880" y="74" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">METHOD 3 · INTERVIEW</text>
+        <text x="880" y="106" font-family="Fraunces, serif" font-size="22" font-weight="500">Interview</text>
+        <text x="880" y="128" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">verifying knowledge &amp; practice</text>
+        <line x1="880" y1="142" x2="1220" y2="142" stroke="#13212d" stroke-opacity=".3"/>
+        <g font-size="11.5" fill="#2a3744">
+          <text x="880" y="170">— System administrators</text>
+          <text x="880" y="192">— Application developers</text>
+          <text x="880" y="214">— Security operations staff</text>
+          <text x="880" y="236">— Incident responders</text>
+          <text x="880" y="258">— Vendor managers</text>
+          <text x="880" y="280">— Executive sponsor (Req 12.4)</text>
+        </g>
+        <line x1="880" y1="304" x2="1220" y2="304" stroke="#13212d" stroke-opacity=".3"/>
+        <text x="880" y="328" font-family="JetBrains Mono, monospace" font-size="10" fill="#7a1f24" font-weight="600">QSA RECORDS</text>
+        <text x="880" y="350" font-size="11" fill="#2a3744">— Who was interviewed (role)</text>
+        <text x="880" y="368" font-size="11" fill="#2a3744">— Topics covered</text>
+        <text x="880" y="386" font-size="11" fill="#2a3744">— Knowledge gaps surfaced</text>
+
+        <rect x="40" y="450" width="1200" height="60" fill="#13212d"/>
+        <text x="60" y="476" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">EVERY TESTING PROCEDURE COMBINES THESE</text>
+        <text x="60" y="498" fill="#f3ecdd" font-size="11.5">For every sub-requirement, the RoC Template specifies which method(s) the QSA must use. Most use 2–3 methods together — Examine + Observe, or Interview + Examine — to triangulate. Single-method evidence is rarely accepted for high-risk controls.</text>
+      </svg>
+    </div>
+
+    <!-- TRA documentation -->
+    <div class="diagram">
+      <h3 class="subtitle">Targeted Risk Analysis — the v4 documentation requirement</h3>
+      <svg viewBox="0 0 1280 380" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="arrT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#13212d"/>
+          </marker>
+        </defs>
+
+        <rect x="40" y="40" width="220" height="80" fill="#13212d"/>
+        <text x="150" y="68" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="17">Control with</text>
+        <text x="150" y="88" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="17">flexible cadence</text>
+        <text x="150" y="108" text-anchor="middle" fill="#f1d77a" font-size="10" font-family="JetBrains Mono, monospace">e.g., scan freq, log review</text>
+
+        <line x1="260" y1="80" x2="310" y2="80" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrT)"/>
+
+        <rect x="320" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="430" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Identify the asset</text>
+        <text x="430" y="80" text-anchor="middle" font-size="11" fill="#4a5b6c">what's being protected</text>
+        <text x="430" y="98" text-anchor="middle" font-size="11" fill="#4a5b6c">data, system, control</text>
+
+        <line x1="540" y1="80" x2="590" y2="80" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrT)"/>
+
+        <rect x="600" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="710" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Identify the threat</text>
+        <text x="710" y="80" text-anchor="middle" font-size="11" fill="#4a5b6c">what could happen</text>
+        <text x="710" y="98" text-anchor="middle" font-size="11" fill="#4a5b6c">if control fails</text>
+
+        <line x1="820" y1="80" x2="870" y2="80" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrT)"/>
+
+        <rect x="880" y="40" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="990" y="64" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Define frequency</text>
+        <text x="990" y="80" text-anchor="middle" font-size="11" fill="#4a5b6c">based on risk magnitude</text>
+        <text x="990" y="98" text-anchor="middle" font-size="11" fill="#4a5b6c">+ business impact</text>
+
+        <rect x="40" y="170" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="150" y="194" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Document review</text>
+        <text x="150" y="210" text-anchor="middle" font-size="11" fill="#4a5b6c">cadence (annually or</text>
+        <text x="150" y="228" text-anchor="middle" font-size="11" fill="#4a5b6c">on significant change)</text>
+
+        <line x1="260" y1="210" x2="310" y2="210" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrT)"/>
+
+        <rect x="320" y="170" width="220" height="80" fill="#f3ecdd" stroke="#13212d" stroke-width="1.5"/>
+        <text x="430" y="194" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Approval &amp; ownership</text>
+        <text x="430" y="210" text-anchor="middle" font-size="11" fill="#4a5b6c">accountable executive,</text>
+        <text x="430" y="228" text-anchor="middle" font-size="11" fill="#4a5b6c">documented signoff</text>
+
+        <line x1="540" y1="210" x2="590" y2="210" stroke="#13212d" stroke-width="1.5" marker-end="url(#arrT)"/>
+
+        <rect x="600" y="170" width="500" height="80" fill="#13212d"/>
+        <text x="850" y="194" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">QSA SCRUTINIZES TRA QUALITY</text>
+        <text x="850" y="216" text-anchor="middle" fill="#f3ecdd" font-size="11.5">Generic / boilerplate TRAs fail; documented TRAs that match actual decisions pass.</text>
+        <text x="850" y="234" text-anchor="middle" fill="#f3ecdd" font-size="11.5">v4.0.1 added explicit TRA requirements to ~25 sub-requirements.</text>
+
+        <rect x="40" y="290" width="1200" height="60" fill="#7a1f24"/>
+        <text x="640" y="316" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">REAL EXAMPLES OF TRA-DRIVEN CONTROLS</text>
+        <text x="640" y="338" text-anchor="middle" fill="#f3ecdd" font-size="11">Frequency of POI device inspection · Frequency of review of access privileges · Frequency of pen test scope · Frequency of vendor security review</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Where PCI evidence work goes wrong</h3>
+        <p><strong>Sample sizes are negotiable but bounded.</strong> Unlike SOX's prescribed sample sizes, PCI's testing procedures specify "examine a sample" or "observe processes" without numeric floors. QSAs use professional judgment — but firm policies and PCI SSC guidance establish typical floors: 25 for most population-based tests, 10–15 for less risky controls, and 100% for critical controls (e.g., privileged users, all firewall rules). Negotiate sample size at engagement start, not at draft RoC review.</p>
+
+        <p><strong>IPE testing is mandatory but often skipped.</strong> Reports used as evidence — vulnerability scan reports, log review records, access matrices — must themselves be tested for completeness and accuracy. The QSA confirms how the report was generated, what filters or parameters were used, and whether the data matches the source system. Programs that submit "the screenshot from the dashboard" as evidence without provenance routinely fail this step.</p>
+
+        <p><strong>TRA documentation became a separate work product in v4.0.1.</strong> Many sub-requirements that previously specified a fixed cadence ("monthly review of audit logs") now allow risk-based cadence ("at a frequency defined by the entity's TRA"). Each such control needs its own documented TRA: identifying the asset, threat, likelihood, impact, and resulting control frequency. Generic "we reviewed and decided weekly" TRAs are flagged. Real ones reference specific assets, specific threats, and the analytical reasoning.</p>
+
+        <div class="pull">
+          PCI's prescription was always "do this." v4 added "document why doing this is enough."
+        </div>
+
+        <p><strong>Compensating Controls (Appendix C) are not the easy way out.</strong> A Compensating Control requires (a) a documented business or technical reason why the requirement can't be met as written, (b) an alternative that meets the same security objective, (c) a TRA showing the alternative is at least as effective, and (d) QSA validation. Most attempts at Compensating Controls fail because the "business reason" is actually "we didn't want to" — a reason QSAs reject. v4 narrowed this further; Customized Approach is now the preferred path for genuine alternatives.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Typical QSA sample sizes</h3>
+        <p><strong>Firewall rules:</strong> 100% reviewed</p>
+        <p><strong>Privileged users:</strong> 100% sampled</p>
+        <p><strong>System configs:</strong> 25 systems per type</p>
+        <p><strong>Change tickets:</strong> 25 per quarter</p>
+        <p><strong>Onboarding tickets:</strong> 25 per period</p>
+        <p><strong>Termination tickets:</strong> 25 per period</p>
+        <p><strong>Vendor SOC 2 reviews:</strong> all in-scope vendors</p>
+        <h3 style="margin-top:24px;">Documentation footprint</h3>
+        <p>A complete v4.0.1 RoC for a Level 1 service provider typically runs 250–400 pages, with another 100–200 pages of supporting documentation (network diagrams, scoping memos, TRAs, ASV reports, pen test reports, segmentation test results).</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LAYER 4 — crosswalk -->
+  <section class="panel" id="L4">
+    <header class="section">
+      <div class="marker">IV.</div>
+      <div>
+        <div class="kicker">Layer 04 — Cross-framework</div>
+        <h2>PCI DSS as the prescriptive baseline</h2>
+      </div>
+      <div class="ref">PCI v4.0.1 maps cleanly to others;<br>scope is the differentiator</div>
+    </header>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th style="width:13%">PCI requirement</th>
+          <th>SOX</th>
+          <th>SOC 2 (TSC)</th>
+          <th>ISO 27001:2022</th>
+          <th>NIST CSF 2.0</th>
+          <th>HIPAA</th>
+          <th>HITRUST v11</th>
+          <th class="shared">Shared evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dom">Req 1 — Network Sec</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.6</code></td>
+          <td><code>A.8.20</code> · <code>A.8.22</code></td>
+          <td><code>PR.IR-01</code></td>
+          <td><code>§164.312(e)(1)</code></td>
+          <td><code>09.m</code></td>
+          <td class="shared">Firewall config, network diagram, segmentation tests</td></tr>
+        <tr><td class="dom">Req 2 — Secure Config</td>
+          <td><code>ITGC — Change</code></td>
+          <td><code>CC6.6</code> · <code>CC6.8</code></td>
+          <td><code>A.8.9</code></td>
+          <td><code>PR.PS-01</code></td>
+          <td><code>§164.312(a)(1)</code></td>
+          <td><code>09.h</code> · <code>10.b</code></td>
+          <td class="shared">CIS benchmarks, hardening guides, drift detection</td></tr>
+        <tr><td class="dom">Req 3 — Stored Data</td>
+          <td><code>ITGC + BPC</code></td>
+          <td><code>C1.1</code> · <code>CC6.1</code></td>
+          <td><code>A.8.10</code> · <code>A.8.11</code> · <code>A.8.24</code></td>
+          <td><code>PR.DS-01</code></td>
+          <td><code>§164.312(a)(2)(iv)</code></td>
+          <td><code>06.c</code> · <code>10.f</code></td>
+          <td class="shared">KMS config, encryption inventory, key rotation logs</td></tr>
+        <tr><td class="dom">Req 4 — Transmission</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.7</code></td>
+          <td><code>A.8.24</code></td>
+          <td><code>PR.DS-02</code></td>
+          <td><code>§164.312(e)(2)(ii)</code></td>
+          <td><code>09.s</code></td>
+          <td class="shared">TLS scan, cert inventory, VPN config</td></tr>
+        <tr><td class="dom">Req 5 — Anti-malware</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.8</code></td>
+          <td><code>A.8.7</code></td>
+          <td><code>PR.PS-05</code></td>
+          <td><code>§164.308(a)(5)(ii)(B)</code></td>
+          <td><code>09.j</code></td>
+          <td class="shared">EDR/AV deployment, scan logs, IOC alerts</td></tr>
+        <tr><td class="dom">Req 6 — Secure Dev</td>
+          <td><code>ITGC — SDLC</code></td>
+          <td><code>CC8.1</code></td>
+          <td><code>A.8.25</code> – <code>A.8.32</code></td>
+          <td><code>PR.PS-06</code></td>
+          <td>—</td>
+          <td><code>10.a</code> · <code>10.b</code></td>
+          <td class="shared">SAST/DAST, code review, change tickets, pen test</td></tr>
+        <tr><td class="dom">Req 7 — Need-to-know</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> · <code>CC6.3</code></td>
+          <td><code>A.5.15</code> · <code>A.8.2</code> · <code>A.8.3</code></td>
+          <td><code>PR.AA-05</code></td>
+          <td><code>§164.308(a)(4)</code></td>
+          <td><code>01.b</code> · <code>01.v</code></td>
+          <td class="shared">RBAC config, role definitions, access tickets</td></tr>
+        <tr><td class="dom">Req 8 — Authentication</td>
+          <td><code>ITGC — Access</code></td>
+          <td><code>CC6.1</code> · <code>CC6.2</code></td>
+          <td><code>A.5.16</code> · <code>A.5.17</code></td>
+          <td><code>PR.AA-01</code> · <code>PR.AA-03</code></td>
+          <td><code>§164.308(a)(3)</code> · <code>§164.312(a)(2)(i)</code></td>
+          <td><code>01.b</code> · <code>01.d</code></td>
+          <td class="shared">MFA enforcement, password policy, IAM logs</td></tr>
+        <tr><td class="dom">Req 9 — Physical Access</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC6.4</code></td>
+          <td><code>A.7.1</code> – <code>A.7.14</code></td>
+          <td><code>PR.AA-06</code></td>
+          <td><code>§164.310</code></td>
+          <td><code>08.b</code> · <code>08.j</code></td>
+          <td class="shared">Badge logs, CCTV, visitor records, POI inspections</td></tr>
+        <tr><td class="dom">Req 10 — Logging</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code> · <code>CC7.2</code></td>
+          <td><code>A.8.15</code> · <code>A.8.16</code></td>
+          <td><code>DE.CM-01</code></td>
+          <td><code>§164.312(b)</code></td>
+          <td><code>09.aa</code></td>
+          <td class="shared">SIEM rules, log retention, automated review</td></tr>
+        <tr><td class="dom">Req 11 — Security Testing</td>
+          <td><code>ITGC — Operations</code></td>
+          <td><code>CC7.1</code></td>
+          <td><code>A.8.8</code></td>
+          <td><code>ID.RA-01</code></td>
+          <td><code>§164.308(a)(1)(ii)(B)</code></td>
+          <td><code>10.k</code> · <code>10.m</code></td>
+          <td class="shared">ASV scans, internal scans, pen test, segmentation test</td></tr>
+        <tr><td class="dom">Req 12 — Policy &amp; Program</td>
+          <td><code>ELC</code> · governance</td>
+          <td><code>CC1.1</code> – <code>CC9.2</code></td>
+          <td><code>Cl. 5</code> · <code>A.5.1</code> · <code>A.6.3</code></td>
+          <td><code>GV.PO</code> · <code>GV.RR</code></td>
+          <td><code>§164.308(a)(1)</code> – <code>(8)</code></td>
+          <td><code>02</code> · <code>03</code> · <code>05.k</code></td>
+          <td class="shared">Policies, training records, IR plan, vendor mgmt, TRAs</td></tr>
+      </tbody>
+    </table>
+
+    <div class="twocol" style="margin-top:32px;">
+      <div class="notes">
+        <h3>What PCI gives the rest of the program</h3>
+        <p><strong>PCI is the most prescriptive framework in the Atlas, which means evidence built for PCI satisfies the others by default.</strong> If your firewall rules pass Req 1, they pass SOC 2 CC6.6 and ISO A.8.20. If your encryption passes Req 3, it passes HIPAA §164.312(a)(2)(iv) and ISO A.8.24. The crosswalk above shows clean one-to-many mappings — every PCI requirement maps to multiple controls in every other framework, and the PCI-level rigor exceeds what most other frameworks demand.</p>
+
+        <p>The asymmetry: PCI requires <em>specific</em> things (TLS 1.2+, AES-256, 12-character passwords, MFA on all CDE access). The other frameworks require <em>that</em> things — they care that encryption exists, not that it's AES-256. So PCI evidence over-satisfies, but you must explicitly document that fact in your other frameworks' work papers. Don't assume the SOC 2 auditor will infer your PCI controls cover their CC6.x.</p>
+
+        <div class="pull">
+          PCI is the floor. If you pass PCI, the rest of your security crosswalks fall into place. The reverse is rarely true.
+        </div>
+
+        <p><strong>The scope difference is the trap.</strong> SOX scopes to financial systems; SOC 2 to systems supporting the service description; HIPAA to systems handling ePHI; PCI to systems handling cardholder data. If your CDE is a small subset of your larger environment (which is the goal — that's the whole tokenization strategy), then PCI evidence covers only that subset. The CDE-only evidence does not satisfy the rest of your environment for SOC 2 or ISO 27001. You'll need to document scope deltas explicitly — and consider running broader controls programs that cover both CDE and non-CDE consistently.</p>
+      </div>
+      <aside class="notes" style="border-left:1px solid var(--rule); padding-left:28px;">
+        <h3>Multi-framework strategy</h3>
+        <p><strong>If you have PCI obligations:</strong> Make PCI's specific controls (encryption, MFA, network segmentation) the floor for all systems, not just the CDE. The marginal cost is low; the multi-framework benefit is high.</p>
+        <p><strong>If you have ISO 27001 + PCI:</strong> Use ISO's SoA as the master register and tag each Annex A control with its PCI requirement(s). Reuse evidence collection.</p>
+        <p><strong>If you have SOC 2 + PCI:</strong> Run a SOC 2+ examination that includes PCI mapping. CPAs do this routinely.</p>
+        <p><strong>If you have HITRUST + PCI:</strong> HITRUST's Authoritative Sources already include PCI. One assessment, both reports.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>The Compliance Atlas</strong><br>Volume VI · PCI DSS v4.0.1<br>Edition 2026.1</div>
+    <div><strong>Method</strong><br>Authoritative sources only:<br>PCI DSS v4.0.1 · RoC Template v4.0.1</div>
+    <div><strong>Next</strong><br>Volume VII — HIPAA Security Rule<br><a href="index.html" style="color:var(--oxblood);">Back to Atlas index →</a></div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.layers button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true');
+      const target = t.dataset.target;
+      panels.forEach(p=>p.classList.toggle('active', p.id===target));
+      window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
