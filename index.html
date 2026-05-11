@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — 11 frameworks · one map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --p1:#7a1f24; --p2:#3f5337; --p3:#a37a1f;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 18px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,72px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 em{ font-style:italic; color:var(--oxblood); }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+
+  .strap{ margin:20px 0 56px; padding-bottom:28px; border-bottom:1px solid var(--rule); display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  .strap .tag{ font-family:"Fraunces",serif; font-size:24px; line-height:1.35; font-weight:400; color:var(--ink); }
+  .strap .tag em{ color:var(--oxblood); font-style:italic; }
+  .strap .intro{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); }
+
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:24px; border-bottom:1px solid var(--rule); padding-bottom:10px; margin:48px 0 24px; }
+  .section-head .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .section-head h2{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:32px; margin:0; line-height:1; flex:1; padding-left:24px; }
+  .section-head .sub{ font-size:13px; color:var(--slate); font-style:italic; font-family:"Fraunces",serif; }
+
+  /* Spectrum container */
+  .spectrum{ background:var(--paper-2); border:1px solid var(--ink); padding:36px 28px 28px; box-shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25); overflow-x:auto; }
+  .spectrum svg{ display:block; width:100%; height:auto; min-width:1100px; }
+
+  /* Tier-strip legend below spectrum */
+  .spec-legend{ margin-top:18px; padding-top:14px; border-top:1px dashed rgba(19,33,45,.25); display:flex; gap:28px; flex-wrap:wrap; font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); }
+  .spec-legend .sw{ display:inline-flex; align-items:center; gap:8px; }
+  .spec-legend .sw::before{ content:""; width:14px; height:14px; border-radius:50%; border:1.5px solid var(--ink); }
+  .spec-legend .sw.p1::before{ background:var(--p1); }
+  .spec-legend .sw.p2::before{ background:var(--p2); }
+  .spec-legend .sw.p3::before{ background:var(--p3); }
+  .spec-legend .note{ margin-left:auto; font-style:italic; color:var(--slate); }
+
+  /* Metadata table */
+  .meta-table{ margin-top:48px; background:var(--paper-2); border:1px solid var(--ink); overflow-x:auto; }
+  .meta-table table{ width:100%; border-collapse:collapse; font-size:12px; min-width:1100px; }
+  .meta-table thead th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono", monospace; font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; padding:12px 10px; text-align:left; font-weight:500; }
+  .meta-table tbody td{ padding:14px 12px; border-bottom:1px solid rgba(19,33,45,.12); border-right:1px solid rgba(19,33,45,.12); vertical-align:top; }
+  .meta-table tbody td:last-child{ border-right:none; }
+  .meta-table tbody tr:last-child td{ border-bottom:none; }
+  .meta-table tbody tr:hover td{ background:rgba(163,122,31,.07); }
+  .meta-table .rom-cell{ font-family:"Fraunces",serif; font-style:italic; font-size:22px; line-height:1; width:60px; }
+  .meta-table .rom-cell.p1{ color:var(--p1); }
+  .meta-table .rom-cell.p2{ color:var(--p2); }
+  .meta-table .rom-cell.p3{ color:var(--p3); }
+  .meta-table .fw-cell{ width:170px; }
+  .meta-table .fw-cell .name{ font-family:"Fraunces",serif; font-weight:500; font-size:15px; line-height:1.15; }
+  .meta-table .fw-cell .sub{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.05em; color:var(--slate); margin-top:3px; }
+  .meta-table .fw-cell a{ color:inherit; text-decoration:none; }
+  .meta-table .fw-cell a:hover .name{ color:var(--oxblood); }
+  .meta-table .data{ font-family:"JetBrains Mono",monospace; font-size:11px; line-height:1.4; color:var(--ink-soft); }
+  .meta-table .data strong{ color:var(--ink); font-weight:600; font-family:"IBM Plex Sans", sans-serif; font-size:12.5px; display:block; margin-bottom:2px; }
+  .meta-table .effort.low{ color:var(--moss); }
+  .meta-table .effort.med{ color:var(--gold); }
+  .meta-table .effort.hi{ color:var(--oxblood); }
+  .meta-table .insight{ font-family:"Fraunces",serif; font-style:italic; font-size:12.5px; line-height:1.4; color:var(--ink); }
+  .meta-table .read-cell{ width:90px; }
+  .meta-table .read-cell a{ font-family:"JetBrains Mono", monospace; font-size:10px; color:var(--oxblood); text-decoration:none; letter-spacing:.05em; }
+  .meta-table .read-cell a:hover{ text-decoration:underline; }
+
+  /* Pick-your-path block */
+  .paths{ margin-top:48px; display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; }
+  .path-card{ background:var(--paper-2); border:1px solid var(--ink); padding:24px; }
+  .path-card .label{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--oxblood); margin-bottom:8px; }
+  .path-card h4{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:20px; margin:0 0 12px; line-height:1.15; }
+  .path-card p{ font-size:13px; line-height:1.55; color:var(--ink-soft); margin:0 0 12px; }
+  .path-card .ladder{ display:flex; gap:6px; flex-wrap:wrap; }
+  .path-card .ladder a{ font-family:"JetBrains Mono",monospace; font-size:10.5px; padding:6px 10px; background:var(--ink); color:var(--paper); text-decoration:none; letter-spacing:.05em; }
+  .path-card .ladder a:hover{ background:var(--oxblood); }
+
+  footer{ margin-top:88px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:2fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer strong{ color:var(--ink); }
+  footer a{ color:var(--oxblood); text-decoration:none; }
+
+  @media (max-width: 760px){
+    .wrap{ padding:24px 18px 80px; }
+    .strap{ grid-template-columns:1fr; gap:18px; }
+    .paths{ grid-template-columns:1fr; }
+    footer{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div><div class="vol">The Compliance Atlas · Edition 2026.1</div></div>
+    <h1>The <em>spectrum</em></h1>
+    <div class="meta"><strong>11 frameworks</strong><br>One axis<br>Every metric that matters</div>
+  </header>
+
+  <section class="strap">
+    <div class="tag">A <em>practitioner's decision tool</em> — every framework, every metric, one screen.</div>
+    <div class="intro">
+      Plotted on a single axis from voluntary methodology to binding regulation. Each badge carries its weight — the output it produces, the controls it covers, the audit cadence, the typical effort and cost. Below the spectrum, the same data as a comparison table for hard side-by-side decisions. Below that, three pre-built reading paths for common situations.
+    </div>
+  </section>
+
+  <!-- ─── SECTION 1: THE SPECTRUM ─── -->
+  <div class="section-head">
+    <span class="num">§ 01</span>
+    <h2>The spectrum</h2>
+    <span class="sub">voluntary methodology on the left · binding regulation on the right · click any badge to open the volume</span>
+  </div>
+
+  <div class="spectrum">
+    <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+      <!-- Axis -->
+      <line x1="80" y1="280" x2="1200" y2="280" stroke="#13212d" stroke-width="2"/>
+      <line x1="80" y1="272" x2="80" y2="288" stroke="#13212d" stroke-width="2"/>
+      <line x1="1200" y1="272" x2="1200" y2="288" stroke="#13212d" stroke-width="2"/>
+
+      <!-- Axis labels -->
+      <text x="80" y="312" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" letter-spacing="2.5" fill="#13212d">VOLUNTARY</text>
+      <text x="80" y="328" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">methodology · adopt freely</text>
+
+      <text x="1200" y="312" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" letter-spacing="2.5" fill="#13212d">BINDING</text>
+      <text x="1200" y="328" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#4a5b6c" font-style="italic">law or mandate · enforced</text>
+
+      <!-- Mid-spectrum labels -->
+      <g font-family="JetBrains Mono, monospace" font-size="10" fill="#4a5b6c" letter-spacing="1.2">
+        <line x1="350" y1="276" x2="350" y2="284" stroke="#4a5b6c" stroke-width="1"/>
+        <line x1="350" y1="475" x2="350" y2="495" stroke="#4a5b6c" stroke-width="0.5" stroke-dasharray="2 3" opacity=".6"/>
+        <text x="350" y="510" text-anchor="middle">MARKET-DRIVEN</text>
+        <text x="350" y="524" text-anchor="middle" font-style="italic" fill="#4a5b6c">customer-demanded</text>
+
+        <line x1="780" y1="276" x2="780" y2="284" stroke="#4a5b6c" stroke-width="1"/>
+        <line x1="780" y1="475" x2="780" y2="495" stroke="#4a5b6c" stroke-width="0.5" stroke-dasharray="2 3" opacity=".6"/>
+        <text x="780" y="510" text-anchor="middle">CONTRACTUAL</text>
+        <text x="780" y="524" text-anchor="middle" font-style="italic" fill="#4a5b6c">via business relationship</text>
+      </g>
+
+      <!-- Framework badges ABOVE the line -->
+      <!-- IV · NIST CSF 2.0 -->
+      <a href="atlas_v04_nist.html">
+        <circle cx="140" cy="200" r="36" fill="#3f5337" stroke="#13212d" stroke-width="2"/>
+        <text x="140" y="210" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">IV</text>
+        <text x="140" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">NIST CSF 2.0</text>
+        <text x="140" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">PROFILE</text>
+        <line x1="140" y1="236" x2="140" y2="278" stroke="#3f5337" stroke-width="1.2"/>
+      </a>
+
+      <!-- XI · NIST AI RMF -->
+      <a href="atlas_v11_nist_ai_rmf.html">
+        <circle cx="220" cy="200" r="32" fill="#a37a1f" stroke="#13212d" stroke-width="2"/>
+        <text x="220" y="209" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">XI</text>
+        <text x="220" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">NIST AI RMF</text>
+        <text x="220" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">PROFILE</text>
+        <line x1="220" y1="232" x2="220" y2="278" stroke="#a37a1f" stroke-width="1.2"/>
+      </a>
+
+      <!-- BELOW the line: II · SOC 2 -->
+      <a href="atlas_v02_soc2.html">
+        <circle cx="350" cy="380" r="36" fill="#7a1f24" stroke="#13212d" stroke-width="2"/>
+        <text x="350" y="390" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">II</text>
+        <text x="350" y="434" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">SOC 2</text>
+        <text x="350" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">CPA ATTESTATION</text>
+        <line x1="350" y1="344" x2="350" y2="282" stroke="#7a1f24" stroke-width="1.2"/>
+      </a>
+
+      <!-- III · ISO 27001 ABOVE -->
+      <a href="atlas_v03_iso27001.html">
+        <circle cx="450" cy="200" r="36" fill="#7a1f24" stroke="#13212d" stroke-width="2"/>
+        <text x="450" y="210" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">III</text>
+        <text x="450" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">ISO 27001:2022</text>
+        <text x="450" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">CERTIFICATE</text>
+        <line x1="450" y1="236" x2="450" y2="278" stroke="#7a1f24" stroke-width="1.2"/>
+      </a>
+
+      <!-- IX · ISO 42001 BELOW -->
+      <a href="atlas_v09_iso42001.html">
+        <circle cx="540" cy="380" r="32" fill="#a37a1f" stroke="#13212d" stroke-width="2"/>
+        <text x="540" y="389" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">IX</text>
+        <text x="540" y="434" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">ISO 42001</text>
+        <text x="540" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">CERTIFICATE</text>
+        <line x1="540" y1="348" x2="540" y2="282" stroke="#a37a1f" stroke-width="1.2"/>
+      </a>
+
+      <!-- V · HITRUST ABOVE -->
+      <a href="atlas_v05_hitrust.html">
+        <circle cx="650" cy="200" r="32" fill="#3f5337" stroke="#13212d" stroke-width="2"/>
+        <text x="650" y="209" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">V</text>
+        <text x="650" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">HITRUST v11</text>
+        <text x="650" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">CERTIFICATION</text>
+        <line x1="650" y1="232" x2="650" y2="278" stroke="#3f5337" stroke-width="1.2"/>
+      </a>
+
+      <!-- VI · PCI DSS BELOW (contractual zone) -->
+      <a href="atlas_v06_pcidss.html">
+        <circle cx="780" cy="380" r="36" fill="#3f5337" stroke="#13212d" stroke-width="2"/>
+        <text x="780" y="390" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">VI</text>
+        <text x="780" y="434" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">PCI DSS v4.0.1</text>
+        <text x="780" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#4a5b6c">RoC + AOC</text>
+        <line x1="780" y1="344" x2="780" y2="282" stroke="#3f5337" stroke-width="1.2"/>
+      </a>
+
+      <!-- VIII · FedRAMP ABOVE (contractual/regulatory mix) -->
+      <a href="atlas_v08_fedramp.html">
+        <circle cx="920" cy="200" r="38" fill="#3f5337" stroke="#13212d" stroke-width="2.5"/>
+        <text x="920" y="210" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">VIII</text>
+        <text x="920" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">FedRAMP</text>
+        <text x="920" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7a1f24">ATO</text>
+        <line x1="920" y1="238" x2="920" y2="278" stroke="#3f5337" stroke-width="1.2"/>
+      </a>
+
+      <!-- VII · HIPAA BELOW -->
+      <a href="atlas_v07_hipaa.html">
+        <circle cx="1010" cy="380" r="32" fill="#3f5337" stroke="#13212d" stroke-width="2"/>
+        <text x="1010" y="389" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="22" font-weight="500">VII</text>
+        <text x="1010" y="434" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">HIPAA</text>
+        <text x="1010" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7a1f24">NO NATIVE CERT</text>
+        <line x1="1010" y1="348" x2="1010" y2="282" stroke="#3f5337" stroke-width="1.2"/>
+      </a>
+
+      <!-- I · SOX ABOVE -->
+      <a href="atlas_v01_sox.html">
+        <circle cx="1100" cy="200" r="38" fill="#7a1f24" stroke="#13212d" stroke-width="2.5"/>
+        <text x="1100" y="210" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">I</text>
+        <text x="1100" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">Sarbanes-Oxley</text>
+        <text x="1100" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7a1f24">OPINION</text>
+        <line x1="1100" y1="238" x2="1100" y2="278" stroke="#7a1f24" stroke-width="1.2"/>
+      </a>
+
+      <!-- X · EU AI Act BELOW -->
+      <a href="atlas_v10_eu_ai_act.html">
+        <circle cx="1180" cy="380" r="38" fill="#a37a1f" stroke="#13212d" stroke-width="2.5"/>
+        <text x="1180" y="390" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="24" font-weight="500">X</text>
+        <text x="1180" y="434" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#13212d">EU AI Act</text>
+        <text x="1180" y="448" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7a1f24">CE MARKING</text>
+        <line x1="1180" y1="342" x2="1180" y2="282" stroke="#a37a1f" stroke-width="1.2"/>
+      </a>
+
+      <!-- Big quadrant labels on edges of axis -->
+      <text x="640" y="30" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#4a5b6c">badges ABOVE the line carry highlight context · BELOW shows complement</text>
+    </svg>
+
+    <div class="spec-legend">
+      <span class="sw p1">Part 1 — Financial &amp; Assurance</span>
+      <span class="sw p2">Part 2 — Cybersecurity &amp; Industry</span>
+      <span class="sw p3">Part 3 — AI Governance</span>
+      <span class="note">badge size hints at effort &amp; cost · click any to open</span>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 2: METADATA TABLE ─── -->
+  <div class="section-head">
+    <span class="num">§ 02</span>
+    <h2>The hard numbers</h2>
+    <span class="sub">same data, table form · sort by what you need to compare</span>
+  </div>
+
+  <div class="meta-table">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Framework</th>
+          <th>Output</th>
+          <th>Controls / Scope</th>
+          <th>Who Audits</th>
+          <th>Cadence</th>
+          <th>Effort &amp; Cost</th>
+          <th>Signature Insight</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rom-cell p1">I</td>
+          <td class="fw-cell"><a href="atlas_v01_sox.html"><div class="name">Sarbanes-Oxley</div><div class="sub">FINANCIAL · 2002</div></a></td>
+          <td class="data"><strong>Auditor opinion</strong>integrated audit · attestation</td>
+          <td class="data"><strong>5 control types</strong>ELC, ITGC, ITAC, BPC, IPE</td>
+          <td class="data"><strong>External auditor</strong>(PCAOB-registered)</td>
+          <td class="data"><strong>Annual</strong>continuous testing</td>
+          <td class="data effort hi"><strong>High</strong>$500K-$5M+/yr</td>
+          <td class="insight">Deficiency severity (CD/SD/MW) is the entire ballgame.</td>
+          <td class="read-cell"><a href="atlas_v01_sox.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p1">II</td>
+          <td class="fw-cell"><a href="atlas_v02_soc2.html"><div class="name">SOC 2</div><div class="sub">ATTESTATION · TSP-100</div></a></td>
+          <td class="data"><strong>CPA report</strong>Type 1 / Type 2</td>
+          <td class="data"><strong>5 TSCs</strong>33 Common Criteria</td>
+          <td class="data"><strong>Licensed CPA</strong>SSAE 18</td>
+          <td class="data"><strong>Annual</strong>Type 2 = 6–12 mo period</td>
+          <td class="data effort med"><strong>Medium</strong>$30K-$150K</td>
+          <td class="insight">CUEC chain-of-trust is the most-overlooked mechanic.</td>
+          <td class="read-cell"><a href="atlas_v02_soc2.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p1">III</td>
+          <td class="fw-cell"><a href="atlas_v03_iso27001.html"><div class="name">ISO 27001:2022</div><div class="sub">ISMS · CERTIFIABLE</div></a></td>
+          <td class="data"><strong>Certificate</strong>3-year validity</td>
+          <td class="data"><strong>93 controls</strong>4 themes Annex A</td>
+          <td class="data"><strong>Cert body</strong>UKAS / ANAB accredited</td>
+          <td class="data"><strong>3-yr cycle</strong>+ annual surveillance</td>
+          <td class="data effort med"><strong>Medium</strong>$30K-$120K initial</td>
+          <td class="insight">Statement of Applicability is a living document.</td>
+          <td class="read-cell"><a href="atlas_v03_iso27001.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p2">IV</td>
+          <td class="fw-cell"><a href="atlas_v04_nist.html"><div class="name">NIST CSF 2.0</div><div class="sub">FRAMEWORK · 2024</div></a></td>
+          <td class="data"><strong>Profile</strong>no native cert</td>
+          <td class="data"><strong>6 functions</strong>22 categories · 106 subs</td>
+          <td class="data"><strong>None native</strong>folded into SOC 2+</td>
+          <td class="data"><strong>Continuous</strong>self-assessed</td>
+          <td class="data effort low"><strong>Low</strong>internal effort only</td>
+          <td class="insight">Read by everyone, audited via other frameworks.</td>
+          <td class="read-cell"><a href="atlas_v04_nist.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p2">V</td>
+          <td class="fw-cell"><a href="atlas_v05_hitrust.html"><div class="name">HITRUST v11</div><div class="sub">HEALTHCARE STD · e1/i1/r2</div></a></td>
+          <td class="data"><strong>Certification</strong>HITRUST Alliance</td>
+          <td class="data"><strong>Tiered</strong>e1 (44) → r2 (200+)</td>
+          <td class="data"><strong>AEA + QA</strong>two-party validation</td>
+          <td class="data"><strong>e1: 1yr</strong>i1: 1yr · r2: 2yr</td>
+          <td class="data effort med"><strong>Medium-High</strong>$50K-$300K+</td>
+          <td class="insight">Healthcare's only credible cert path.</td>
+          <td class="read-cell"><a href="atlas_v05_hitrust.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p2">VI</td>
+          <td class="fw-cell"><a href="atlas_v06_pcidss.html"><div class="name">PCI DSS v4.0.1</div><div class="sub">PAYMENTS · CARD BRANDS</div></a></td>
+          <td class="data"><strong>RoC or SAQ</strong>+ AOC attestation</td>
+          <td class="data"><strong>12 reqs</strong>64 sub-requirements</td>
+          <td class="data"><strong>QSA</strong>(L1) or self (L2-L4)</td>
+          <td class="data"><strong>Annual</strong>RoC every year</td>
+          <td class="data effort med"><strong>L1 High</strong>$50K-$300K+ RoC</td>
+          <td class="insight">Scope (CDE) is the entire game.</td>
+          <td class="read-cell"><a href="atlas_v06_pcidss.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p2">VII</td>
+          <td class="fw-cell"><a href="atlas_v07_hipaa.html"><div class="name">HIPAA Security Rule</div><div class="sub">HEALTHCARE · 45 CFR 164</div></a></td>
+          <td class="data"><strong>No native cert</strong>SOC 2+ / HITRUST / 3rd-party</td>
+          <td class="data"><strong>3 safeguards</strong>Admin · Phys · Tech</td>
+          <td class="data"><strong>OCR</strong>(reactive)</td>
+          <td class="data"><strong>Episodic</strong>breach- or complaint-driven</td>
+          <td class="data effort low"><strong>Low-Med</strong>SRA-driven</td>
+          <td class="insight">"Addressable" ≠ optional — the most-misread term.</td>
+          <td class="read-cell"><a href="atlas_v07_hipaa.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p2">VIII</td>
+          <td class="fw-cell"><a href="atlas_v08_fedramp.html"><div class="name">FedRAMP</div><div class="sub">FEDERAL CLOUD · 800-53</div></a></td>
+          <td class="data"><strong>ATO</strong>P-ATO (JAB) or Agency</td>
+          <td class="data"><strong>Low: ~156</strong>Mod: ~325 · High: ~410</td>
+          <td class="data"><strong>3PAO</strong>+ FedRAMP PMO + AO</td>
+          <td class="data"><strong>3-yr re-auth</strong>monthly ConMon</td>
+          <td class="data effort hi"><strong>Very High</strong>Mod $500K-$1M · High $1-2M+</td>
+          <td class="insight">An ATO is a federal officer's signature on your risk.</td>
+          <td class="read-cell"><a href="atlas_v08_fedramp.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p3">IX</td>
+          <td class="fw-cell"><a href="atlas_v09_iso42001.html"><div class="name">ISO/IEC 42001</div><div class="sub">AI MGMT SYSTEM · 2023</div></a></td>
+          <td class="data"><strong>Certificate</strong>3-year validity</td>
+          <td class="data"><strong>38 controls</strong>10 control objectives</td>
+          <td class="data"><strong>Cert body</strong>UKAS / ANAB accredited</td>
+          <td class="data"><strong>3-yr cycle</strong>+ annual surveillance</td>
+          <td class="data effort med"><strong>Medium</strong>~30-50% more vs 27001</td>
+          <td class="insight">Same shape as 27001 — different evidence universe.</td>
+          <td class="read-cell"><a href="atlas_v09_iso42001.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p3">X</td>
+          <td class="fw-cell"><a href="atlas_v10_eu_ai_act.html"><div class="name">EU AI Act</div><div class="sub">EU REGULATION · 2024</div></a></td>
+          <td class="data"><strong>CE marking</strong>+ EU declaration</td>
+          <td class="data"><strong>Risk-tiered</strong>prohibited/high/limited/min.</td>
+          <td class="data"><strong>NB or self</strong>Annex VI vs VII · MSA</td>
+          <td class="data"><strong>Post-market</strong>Art. 72 monitoring</td>
+          <td class="data effort hi"><strong>High</strong>€35M / 7% turnover max penalty</td>
+          <td class="insight">High-risk obligations apply Aug 2, 2026.</td>
+          <td class="read-cell"><a href="atlas_v10_eu_ai_act.html">Read →</a></td>
+        </tr>
+        <tr>
+          <td class="rom-cell p3">XI</td>
+          <td class="fw-cell"><a href="atlas_v11_nist_ai_rmf.html"><div class="name">NIST AI RMF</div><div class="sub">AI METHODOLOGY · 2023</div></a></td>
+          <td class="data"><strong>Profile</strong>voluntary self-attest</td>
+          <td class="data"><strong>4 functions</strong>19 cat · 72 subs · 12 GenAI risks</td>
+          <td class="data"><strong>None native</strong>folded into 42001 / EU AI Act</td>
+          <td class="data"><strong>Continuous</strong>self-assessed</td>
+          <td class="data effort low"><strong>Low</strong>internal effort only</td>
+          <td class="insight">The vocabulary every other AI framework uses.</td>
+          <td class="read-cell"><a href="atlas_v11_nist_ai_rmf.html">Read →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ─── SECTION 3: PRE-BUILT PATHS ─── -->
+  <div class="section-head">
+    <span class="num">§ 03</span>
+    <h2>Pick your path</h2>
+    <span class="sub">three common situations · which volumes to read in which order</span>
+  </div>
+
+  <div class="paths">
+
+    <div class="path-card">
+      <div class="label">Path 01 · The startup</div>
+      <h4>You're scaling a SaaS and customers are starting to ask for compliance proof</h4>
+      <p>You need SOC 2 yesterday and ISO 27001 within 18 months. NIST CSF gives you the vocabulary. HIPAA and PCI come into play if your customer base is health or payments.</p>
+      <div class="ladder">
+        <a href="atlas_v04_nist.html">IV · CSF</a>
+        <a href="atlas_v02_soc2.html">II · SOC 2</a>
+        <a href="atlas_v03_iso27001.html">III · ISO 27001</a>
+        <a href="atlas_v07_hipaa.html">VII · HIPAA</a>
+        <a href="atlas_v06_pcidss.html">VI · PCI</a>
+      </div>
+    </div>
+
+    <div class="path-card">
+      <div class="label">Path 02 · The federal play</div>
+      <h4>You're targeting the U.S. federal market or selling AI into the EU</h4>
+      <p>FedRAMP is non-negotiable for federal cloud sales. EU AI Act enforcement begins August 2, 2026. Both rest on prerequisite layers — 800-53 for FedRAMP, ISO 42001 for the EU.</p>
+      <div class="ladder">
+        <a href="atlas_v04_nist.html">IV · CSF</a>
+        <a href="atlas_v08_fedramp.html">VIII · FedRAMP</a>
+        <a href="atlas_v11_nist_ai_rmf.html">XI · AI RMF</a>
+        <a href="atlas_v09_iso42001.html">IX · ISO 42001</a>
+        <a href="atlas_v10_eu_ai_act.html">X · EU AI Act</a>
+      </div>
+    </div>
+
+    <div class="path-card">
+      <div class="label">Path 03 · The financial enterprise</div>
+      <h4>You're a public company or finance-adjacent and need the full stack</h4>
+      <p>SOX is your annual baseline. Add SOC 2 and ISO 27001 to satisfy customer and vendor expectations. HITRUST if you touch healthcare. The AI volumes apply to your AI use cases — and they're growing fast.</p>
+      <div class="ladder">
+        <a href="atlas_v01_sox.html">I · SOX</a>
+        <a href="atlas_v02_soc2.html">II · SOC 2</a>
+        <a href="atlas_v03_iso27001.html">III · ISO 27001</a>
+        <a href="atlas_v05_hitrust.html">V · HITRUST</a>
+        <a href="atlas_v11_nist_ai_rmf.html">XI · AI RMF</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div>
+      <strong>The Compliance Atlas</strong><br>
+      Edition 2026.1 — eleven volumes shipped<br>
+      Built by Shashank Vaidya · <a href="https://www.linkedin.com/in/shashankvaidya99">LinkedIn</a> · <a href="https://github.com/shashankvaidya99/compliance-atlas">GitHub</a>
+    </div>
+    <div>
+      <strong>Reading order</strong><br>
+      Volumes are self-contained.<br>
+      Pick a path above or browse all 11.
+    </div>
+    <div>
+      <strong>Alternative view</strong><br>
+      <a href="directory.html">Browse all volumes as a directory →</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
