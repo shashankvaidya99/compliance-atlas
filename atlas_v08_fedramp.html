@@ -104,8 +104,7 @@
     <div class="meta">
       <strong>Authoritative refs</strong><br>
       FedRAMP PMO (GSA) · FedRAMP Rev 5<br>
-      NIST SP 800-53 Rev 5 · OMB M-24-15
-    </div>
+      NIST SP 800-53 Rev 5 · OMB M-24-15<br><span style="color:var(--gold);">Verified May 12, 2026</span></div>
   </header>
 
   <section class="strap">
@@ -481,7 +480,7 @@
       <h3 class="subtitle">The control families and their FedRAMP baseline counts</h3>
       <svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
         <rect x="40" y="20" width="1200" height="40" fill="#13212d"/>
-        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">20 CONTROL FAMILIES · LOW ~156 · MOD ~325 · HIGH ~410</text>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">20 CONTROL FAMILIES · LOW 156 · MOD 323 · HIGH 410</text>
 
         <!-- Header row -->
         <g font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" fill="#7a1f24" font-weight="600">
@@ -694,7 +693,7 @@
     <div class="twocol">
       <div class="notes">
         <h3>What 800-53 actually demands</h3>
-        <p><strong>The control catalog is the engine.</strong> 800-53 Rev 5 contains ~1,189 controls plus enhancements across 20 families. FedRAMP doesn't add new controls — it selects subsets via baseline tailoring. Low picks ~156 controls, Moderate ~325, High ~410. Each baseline includes specific enhancements that strengthen the parent control. "We implement AC-2" isn't enough; FedRAMP Moderate requires AC-2(1) account management automation, AC-2(2) automated temporary/emergency accounts, AC-2(3) automated disable, etc.</p>
+        <p><strong>The control catalog is the engine.</strong> 800-53 Rev 5 contains ~1,189 controls plus enhancements across 20 families. FedRAMP doesn't add new controls — it selects subsets via baseline tailoring. Low picks 156 controls, Moderate 323, High 410. Each baseline includes specific enhancements that strengthen the parent control. "We implement AC-2" isn't enough; FedRAMP Moderate requires AC-2(1) account management automation, AC-2(2) automated temporary/emergency accounts, AC-2(3) automated disable, etc.</p>
 
         <p><strong>Parameter values are FedRAMP-specific.</strong> 800-53 leaves many control parameters open ("[Assignment: organization-defined frequency]"). FedRAMP fills these in with prescribed values. The most-cited example is AC-2(3): "automatically disable accounts" — FedRAMP Moderate requires 35 days; High requires 35 days; not the more flexible "organization-defined." A SAR finding doesn't say "your 90-day disable is reasonable"; it says "your 90-day disable doesn't meet FedRAMP's 35-day parameter." There is no compensating control logic.</p>
 
@@ -718,7 +717,7 @@
         </ul>
         <p>System impact = highest of the three. Drives baseline selection (Low / Moderate / High).</p>
         <h3 style="margin-top:24px;">LI-SaaS tailored baseline</h3>
-        <p>For Low-Impact SaaS handling no PII / no sensitive data, FedRAMP offers a tailored Low baseline of ~125 controls — fewer than full Low's 156. Faster path for narrow-scope SaaS.</p>
+        <p>For Low-Impact SaaS handling no PII / no sensitive data, FedRAMP offers a tailored Low baseline of 156 controls under the Rev 5 hybrid attestation model — 66 controls independently tested by a 3PAO plus 90 controls satisfied through CSP attestation. Faster path for narrow-scope SaaS.</p>
         <h3 style="margin-top:24px;">800-53 vs 800-53A</h3>
         <p>800-53 = control catalog (what to do). 800-53A = assessment procedures (how to test what was done). Both are normative for FedRAMP.</p>
       </aside>
