@@ -102,9 +102,9 @@
     <h1>The Compliance <em>Atlas</em></h1>
     <div class="meta">
       <strong>Authoritative refs</strong><br>
-      PCAOB AS 2201 · AS 2315 · AS 1215<br>
-      SEC §302 / §404 rules<br>
-      COSO 2013 · COBIT 2019<br><span style="color:var(--gold);">Verified May 12, 2026</span></div>
+      PCAOB AS 2201 · AS 2315 · AS 1215 · QC 1000<br>
+      SEC §302 / §404 rules · Item 106 cyber<br>
+      COSO 2013 + Feb 2026 GenAI · COBIT 2019<br><span style="color:var(--gold);">Verified May 12, 2026</span></div>
   </header>
 
   <section class="strap">
@@ -508,6 +508,15 @@
         <p>The SEC's <strong>2023 cybersecurity disclosure rules</strong> (Item 106 of Regulation S-K, effective December 2023) increasingly intersect with SOX programs — requiring disclosure of material cyber incidents within 4 business days, plus annual disclosure of cybersecurity risk management, strategy, and governance. Where cyber controls affect ICFR-relevant systems, the SOX ITGC scope and SEC cyber disclosure scope overlap meaningfully. Expect external auditors to ask how the two are coordinated.</p>
         <h3 style="margin-top:24px; color:var(--gold);">⚡ New guidance: GenAI in ICFR</h3>
         <p>On <strong>February 23, 2026</strong>, COSO released <em>Achieving Effective Internal Control Over Generative AI (GenAI)</em> — the first formal guidance applying COSO's ICIF five components and 17 principles to generative AI use cases in financial reporting. It introduces a <strong>capability-first taxonomy</strong> (eight groups including data ingestion, automated reconciliation, workflow orchestration, judgment/forecasting), a <strong>six-step implementation roadmap</strong> (govern → inventory → assess → design → implement → monitor), and the concept of <strong>"AI reliance"</strong> — when management treats GenAI output as evidence supporting a control. Any issuer using GenAI in ICFR-relevant processes should expect external auditors to reference this guidance. It does not replace COSO 2013; it builds on it.</p>
+
+        <h3 style="margin-top:24px; color:var(--oxblood);">⚠ PCAOB QC 1000 — new firm-side rigor</h3>
+        <p>The PCAOB's new firm-level quality control standard, <strong>QC 1000</strong>, took effect for engagements with periods commencing on or after <strong>December 15, 2025</strong>. It restructures how audit firms manage engagement quality, with a heightened expectation that <strong>professional judgments are documented contemporaneously</strong> — at the time they're made, not assembled at archival. For SOX leads working alongside external audit, this means: expect more workpaper-level scrutiny during the audit, not just at year-end. The 45-day archival window (AS 1215, from report release date) is unchanged, but the rigor inside the window has materially tightened.</p>
+
+        <h3 style="margin-top:24px; color:var(--moss);">⊡ §302 covers two things, not one</h3>
+        <p>SOX §302 requires CEO/CFO certification of <strong>both</strong> ICFR <em>and</em> Disclosure Controls and Procedures (DCP) — not just ICFR. The distinction matters because the SEC's 2023 cyber disclosure rules, the Form 8-K material-incident reporting requirement, and most non-financial regulatory disclosures live in <em>DCP-land</em>, not ICFR-land. If an issuer's cyber incident is "siloed in IT" and never escalates to the disclosure committee on time, that is a <strong>DCP failure</strong>, often pointing to an ELC weakness — even if the underlying financial controls operated correctly. SOX programs that focus only on ICFR miss half the §302 surface area.</p>
+
+        <h3 style="margin-top:24px; color:var(--gold);">⚡ Prompt governance — the new ITGC frontier</h3>
+        <p>Where GenAI is in scope for ICFR, the system prompts, model parameters, and retrieval configurations that shape an agent's behavior are <strong>configurable settings under change control</strong> — meaning they fall inside the same ITGC framework that governs application configurations and SQL queries. A prompt change is a change-management event. If it isn't ticketed (Jira / ServiceNow / equivalent), reviewed, and approved before deployment, the ITGC fails — regardless of whether the AI output happened to be correct. Treat the prompt the way you'd treat a stored procedure: code in motion, governed accordingly.</p>
       </aside>
     </div>
   </section>
@@ -600,28 +609,36 @@
           <text x="840" y="662" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a37a1f">Caveat: ITGC failure invalidates the ITAC reliance</text>
         </g>
 
-        <!-- ITGC sub-pillars (4 circles around the right side) -->
+        <!-- ITGC sub-pillars (4 circles in diamond around the right side, centered ~385) -->
         <g font-family="JetBrains Mono, monospace">
-          <circle cx="1130" cy="320" r="42" fill="#7a1f24"/>
-          <text x="1130" y="316" text-anchor="middle" fill="#f3ecdd" font-size="12" font-weight="700">ACCESS</text>
-          <text x="1130" y="332" text-anchor="middle" fill="#f3ecdd" font-size="9">JML · UAR · SoD · PAM</text>
+          <!-- ACCESS (top of diamond) -->
+          <circle cx="1120" cy="320" r="38" fill="#7a1f24"/>
+          <text x="1120" y="318" text-anchor="middle" fill="#f3ecdd" font-size="11" font-weight="700">ACCESS</text>
+          <text x="1120" y="333" text-anchor="middle" fill="#f3ecdd" font-size="8">JML · UAR · SoD</text>
 
-          <circle cx="1190" cy="400" r="42" fill="#3f5337"/>
-          <text x="1190" y="396" text-anchor="middle" fill="#f3ecdd" font-size="12" font-weight="700">CHANGE</text>
-          <text x="1190" y="412" text-anchor="middle" fill="#f3ecdd" font-size="9">CAB · UAT · prod-segr</text>
+          <!-- SDLC (left of diamond) -->
+          <circle cx="1010" cy="385" r="38" fill="#2f4858"/>
+          <text x="1010" y="383" text-anchor="middle" fill="#f3ecdd" font-size="11" font-weight="700">SDLC</text>
+          <text x="1010" y="398" text-anchor="middle" fill="#f3ecdd" font-size="8">design · deploy</text>
 
-          <circle cx="1130" cy="475" r="42" fill="#a37a1f"/>
-          <text x="1130" y="471" text-anchor="middle" fill="#f3ecdd" font-size="11" font-weight="700">OPERATIONS</text>
-          <text x="1130" y="487" text-anchor="middle" fill="#f3ecdd" font-size="9">backup · jobs · DR</text>
+          <!-- CHANGE (right of diamond) -->
+          <circle cx="1230" cy="385" r="38" fill="#3f5337"/>
+          <text x="1230" y="383" text-anchor="middle" fill="#f3ecdd" font-size="11" font-weight="700">CHANGE</text>
+          <text x="1230" y="398" text-anchor="middle" fill="#f3ecdd" font-size="8">CAB · UAT · prod</text>
 
-          <circle cx="1040" cy="400" r="42" fill="#2f4858"/>
-          <text x="1040" y="396" text-anchor="middle" fill="#f3ecdd" font-size="12" font-weight="700">SDLC</text>
-          <text x="1040" y="412" text-anchor="middle" fill="#f3ecdd" font-size="9">design · deploy</text>
+          <!-- OPERATIONS (bottom of diamond) -->
+          <circle cx="1120" cy="450" r="38" fill="#a37a1f"/>
+          <text x="1120" y="448" text-anchor="middle" fill="#f3ecdd" font-size="10" font-weight="700">OPERATIONS</text>
+          <text x="1120" y="463" text-anchor="middle" fill="#f3ecdd" font-size="8">backup · jobs · DR</text>
 
-          <line x1="1010" y1="280" x2="1100" y2="290" stroke="#13212d" stroke-opacity=".4"/>
-          <line x1="1100" y1="280" x2="1180" y2="370" stroke="#13212d" stroke-opacity=".4"/>
-          <line x1="1100" y1="280" x2="1100" y2="445" stroke="#13212d" stroke-opacity=".4"/>
-          <line x1="1010" y1="280" x2="1010" y2="370" stroke="#13212d" stroke-opacity=".4"/>
+          <!-- Single clean spoke from ITGC family box down to the cluster -->
+          <line x1="1010" y1="280" x2="1095" y2="298" stroke="#13212d" stroke-width="1" stroke-opacity=".35"/>
+
+          <!-- Diamond connectors between adjacent pillars (subtle) -->
+          <line x1="1093" y1="343" x2="1037" y2="362" stroke="#13212d" stroke-width="0.8" stroke-opacity=".25"/>
+          <line x1="1147" y1="343" x2="1203" y2="362" stroke="#13212d" stroke-width="0.8" stroke-opacity=".25"/>
+          <line x1="1037" y1="408" x2="1093" y2="427" stroke="#13212d" stroke-width="0.8" stroke-opacity=".25"/>
+          <line x1="1203" y1="408" x2="1147" y2="427" stroke="#13212d" stroke-width="0.8" stroke-opacity=".25"/>
         </g>
       </svg>
     </div>
