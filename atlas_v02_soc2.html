@@ -161,7 +161,33 @@
     </div>
   </section>
 
-  <nav class="layers" role="tablist">
+  <!-- ─── SOC REPORT FAMILY CONTEXT ─── -->
+  <section style="margin:0 0 36px; padding:24px 28px; background:rgba(122,31,36,.05); border:1px solid var(--ink); border-left:6px solid var(--oxblood);">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--oxblood); margin-bottom:12px; font-weight:600;">The SOC family · before we go deep on SOC 2</div>
+    <p style="font-family:'Fraunces',serif; font-size:17px; line-height:1.4; color:var(--ink); margin:0 0 18px; font-weight:400;">
+      <strong>SOC reports are not one thing.</strong> The AICPA's SOC framework has three siblings, each examining a different aspect of a service organization. This volume covers SOC 2 — but the family context matters.
+    </p>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; font-size:13px; line-height:1.55;">
+      <div style="padding:16px; background:var(--paper); border:1px solid var(--ink);">
+        <div style="font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:22px; color:var(--oxblood); margin-bottom:4px;">SOC 1</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.1em; color:var(--slate); margin-bottom:8px;">SSAE 18 · AT-C 320</div>
+        <p style="margin:0; color:var(--ink-soft);">Controls relevant to <strong>internal control over financial reporting (ICFR)</strong>. Your customer's external auditor relies on it to scope <em>their</em> SOX audit. Examines transaction-processing controls, IPE, calculations. Customer = SOX-reporting entity.</p>
+      </div>
+      <div style="padding:16px; background:var(--paper); border:2px solid var(--oxblood);">
+        <div style="font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:22px; color:var(--oxblood); margin-bottom:4px;">SOC 2 <span style="font-size:10px; font-style:normal; background:var(--oxblood); color:var(--paper); padding:2px 6px; vertical-align:middle; letter-spacing:.1em;">THIS VOLUME</span></div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.1em; color:var(--slate); margin-bottom:8px;">AT-C 205 · TSP-100</div>
+        <p style="margin:0; color:var(--ink-soft);">Controls relevant to <strong>Trust Services Criteria</strong>: Security (mandatory), Availability, Confidentiality, Processing Integrity, Privacy. Your customer's vendor risk / security team uses it to assess <em>your</em> security posture. The dominant SOC report for B2B SaaS.</p>
+      </div>
+      <div style="padding:16px; background:var(--paper); border:1px solid var(--ink);">
+        <div style="font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:22px; color:var(--oxblood); margin-bottom:4px;">SOC 3</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.1em; color:var(--slate); margin-bottom:8px;">AT-C 205 · public-use</div>
+        <p style="margin:0; color:var(--ink-soft);">A <strong>general-use, public-facing summary of a SOC 2</strong>. No system description detail, no control test results — just the auditor's opinion plus management's assertion. Hosted on your trust page. Marketing-grade, not audit-grade.</p>
+      </div>
+    </div>
+    <p style="margin:18px 0 0; font-size:13px; line-height:1.55; color:var(--ink-soft);">
+      <strong>Type 1 vs Type 2</strong> applies to <em>both</em> SOC 1 and SOC 2. Type 1 = controls suitably designed at a point in time. Type 2 = controls suitably designed <em>and</em> operating effectively over a period (typically 3–12 months). Type 2 is the buyer's default ask. SOC 3 is implicitly Type 2 in practice. Detailed comparison in Layer 02 below.
+    </p>
+  </section>
     <button role="tab" aria-selected="true"  data-target="L1">
       <span class="num">Layer 01</span><span class="ttl">Lifecycle Flow</span>
       <span class="sub">readiness × examination</span>

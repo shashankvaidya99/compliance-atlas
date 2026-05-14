@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Compliance Atlas — Volume XII: AIUC-1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#ece3cf;
+    --ink:#13212d; --ink-soft:#2a3744;
+    --rule:#1a2733; --oxblood:#7a1f24; --moss:#3f5337; --gold:#a37a1f;
+    --slate:#4a5b6c; --highlight:#f1d77a;
+    --internal:#2f4858; --external:#7a1f24; --bridge:#a37a1f;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(163,122,31,.08), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,31,36,.06), transparent 50%); }
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); z-index:1; }
+  .wrap{ position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:48px 56px 120px; }
+  .breadcrumb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:14px; }
+  .breadcrumb a{ color:var(--oxblood); text-decoration:none; }
+  .breadcrumb .sep{ margin:0 8px; opacity:.5; }
+  .mast{ border-top:6px double var(--ink); border-bottom:1px solid var(--ink); padding:22px 0 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:end; gap:24px; }
+  .mast .vol{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); }
+  .mast h1{ font-family:"Fraunces",serif; font-weight:400; font-style:italic; font-size:clamp(40px,5.4vw,76px); line-height:.95; margin:6px 0 0; letter-spacing:-.01em; }
+  .mast h1 b{ font-style:normal; font-weight:600; }
+  .mast .meta{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-align:right; color:var(--slate); line-height:1.6; }
+  .mast .meta strong{ color:var(--ink); font-weight:500; }
+  .strap{ margin:18px 0 40px; display:grid; grid-template-columns:1.2fr 2fr; gap:48px; padding-bottom:28px; border-bottom:1px solid var(--rule); }
+  .strap .lede{ font-family:"Fraunces",serif; font-size:20px; line-height:1.45; font-weight:300; color:var(--ink-soft); }
+  .strap .lede em{ color:var(--oxblood); font-style:italic; }
+  .strap .legend{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); }
+  .strap .legend h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin:0 0 8px; font-weight:500; }
+  .swatch{ display:inline-flex; align-items:center; gap:8px; margin-right:18px; font-family:"JetBrains Mono",monospace; font-size:11.5px; }
+  .swatch::before{ content:""; width:14px; height:14px; border:1px solid var(--ink); }
+  .swatch.int::before{ background:var(--internal); }
+  .swatch.ext::before{ background:var(--external); }
+  .swatch.bri::before{ background:var(--bridge); }
+  nav.layers{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); background:var(--paper-2); margin-bottom:36px; }
+  nav.layers button{ all:unset; cursor:pointer; padding:18px 22px; border-right:1px solid var(--ink); display:flex; flex-direction:column; gap:4px; }
+  nav.layers button:last-child{ border-right:none }
+  nav.layers button:hover{ background:rgba(163,122,31,.12); }
+  nav.layers button[aria-selected="true"]{ background:var(--ink); color:var(--paper); }
+  nav.layers .num{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--slate); }
+  nav.layers button[aria-selected="true"] .num{ color:var(--highlight); }
+  nav.layers .ttl{ font-family:"Fraunces",serif; font-size:21px; font-weight:500; line-height:1.1; }
+  nav.layers .sub{ font-size:12px; color:var(--slate); margin-top:2px; }
+  nav.layers button[aria-selected="true"] .sub{ color:rgba(243,236,221,.7); }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+  .panel header.section{ display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:24px; }
+  .panel header.section .marker{ font-family:"Fraunces",serif; font-size:64px; font-style:italic; font-weight:300; line-height:.85; color:var(--oxblood); }
+  .panel header.section h2{ font-family:"Fraunces",serif; font-weight:500; font-size:34px; margin:0; line-height:1.05; letter-spacing:-.005em; }
+  .panel header.section .kicker{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .panel header.section .ref{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--slate); text-align:right; line-height:1.55; }
+  .diagram{ background:var(--paper-2); border:1px solid var(--ink); padding:28px; box-shadow:0 1px 0 rgba(19,33,45,.08), 0 24px 60px -30px rgba(19,33,45,.25); overflow:auto; margin-bottom:24px; }
+  .diagram svg{ display:block; width:100%; height:auto; }
+  .diagram h3.subtitle{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; margin:0 0 14px; font-size:18px; color:var(--oxblood); }
+  .twocol{ display:grid; grid-template-columns:2.2fr 1fr; gap:36px; margin-top:28px; }
+  .twocol .notes h3{ font-family:"Fraunces",serif; font-style:italic; font-weight:500; font-size:22px; margin:0 0 10px; color:var(--oxblood); }
+  .twocol .notes p{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 14px; }
+  .twocol .notes p strong{ color:var(--ink); font-weight:600; }
+  .twocol .notes ol, .twocol .notes ul{ padding-left:18px; font-size:14px; line-height:1.6; color:var(--ink-soft); }
+  .twocol .notes ol li, .twocol .notes ul li{ margin-bottom:8px; }
+  .twocol .notes ol li::marker, .twocol .notes ul li::marker{ color:var(--oxblood); }
+  .twocol .notes aside{ background:rgba(163,122,31,.06); border-left:3px solid var(--gold); padding:14px 16px; margin:18px 0; font-size:13.5px; line-height:1.55; color:var(--ink-soft); }
+  .twocol .notes aside h4{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin:0 0 8px; font-weight:500; }
+  .pull{ border-left:3px solid var(--oxblood); padding:6px 0 6px 18px; margin:18px 0; font-family:"Fraunces",serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); }
+  table.cw{ width:100%; border-collapse:collapse; font-size:12.5px; background:var(--paper-2); border:1px solid var(--ink); }
+  table.cw th, table.cw td{ padding:9px 10px; border-bottom:1px solid rgba(19,33,45,.15); border-right:1px solid rgba(19,33,45,.15); vertical-align:top; text-align:left; }
+  table.cw th{ background:var(--ink); color:var(--paper); font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
+  table.cw tr:hover td{ background:rgba(163,122,31,.08); }
+  table.cw td.dom{ font-family:"Fraunces",serif; font-style:italic; font-size:14px; color:var(--ink); background:rgba(163,122,31,.06); width:14%; }
+  table.cw td.shared{ font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--moss); width:14%; line-height:1.45; }
+  table.cw td code{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:rgba(19,33,45,.06); padding:1px 5px; border-radius:2px; }
+  footer.colophon{ margin-top:80px; padding-top:28px; border-top:6px double var(--ink); display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--slate); line-height:1.7; }
+  footer.colophon strong{ color:var(--ink); }
+  @media (max-width: 880px){ .wrap{padding:24px 18px 80px} .strap{grid-template-columns:1fr;gap:24px} nav.layers{grid-template-columns:repeat(2,1fr)} nav.layers button{border-bottom:1px solid var(--ink)} .twocol{grid-template-columns:1fr} footer.colophon{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="breadcrumb"><a href="index.html">The Compliance Atlas</a><span class="sep">·</span>Volume XII</div>
+
+  <header class="mast">
+    <div><div class="vol">Volume XII · AIUC-1 · Edition 2026.1</div></div>
+    <h1>The Compliance <em>Atlas</em></h1>
+    <div class="meta">
+      <strong>Authoritative refs</strong><br>
+      AIUC-1 Q2 2026 (Apr 15, 2026)<br>
+      MITRE ATLAS · OWASP Top 10<br><span style="color:var(--gold);">Verified May 12, 2026</span></div>
+  </header>
+
+  <section class="strap">
+    <div class="lede">
+      The world's first compliance certification scoped specifically to <em>AI agents</em>. Where Volume IX governs the management system and Volume X governs the legal regime, AIUC-1 governs the <em>agent's actual behavior</em> — the layer the prior three AI volumes deliberately leave unaddressed. Published by the Artificial Intelligence Underwriting Company; technical contributors include MITRE, Stanford, MIT, OWASP, IBM Research, Gray Swan, Schellman, Anthropic, Google, Meta, and Microsoft. Seven companies certified as of May 2026.
+    </div>
+    <div class="legend">
+      <h4>Lanes — How to read</h4>
+      <span class="swatch int">Vendor / agent operator</span>
+      <span class="swatch ext">AIUC + accredited auditor</span>
+      <span class="swatch bri">Insurance pillar</span>
+      <p style="margin:14px 0 0; font-size:12.5px;">Two parties run the certification: the <strong>vendor</strong> implementing controls and the <strong>accredited auditor + AIUC technical testing team</strong> attesting against them. The <strong>insurance pillar</strong> is the differentiator — certification is the underwriting prerequisite for AI-agent liability cover.</p>
+    </div>
+  </section>
+
+  <!-- ─── EDITORIAL NOTE: COMMERCIAL MODEL CAVEAT ─── -->
+  <section style="margin:0 0 36px; padding:24px 28px; background:rgba(163,122,31,.06); border:1px solid var(--ink); border-left:6px solid var(--gold);">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; font-weight:600;">Editorial note · How to read this volume</div>
+    <p style="font-family:'Fraunces',serif; font-size:17px; line-height:1.4; color:var(--ink); margin:0 0 12px; font-weight:400;">
+      <strong>AIUC-1 is a first-mover commercial standard.</strong> AIUC writes the standard, runs the technical testing, accredits the auditors, and sells the insurance the certification enables. That vertical integration is the single most important caveat to surface up front — practitioners including Zack Korman (Pistachio CTO) and Lenny Zeltser (former Axonius CISO) have publicly raised concerns about the issuer-pays incentive structure. The contrary view (Phil Venables, Chris Hughes, Lena Smart) holds that the insurance liability creates a real counter-incentive against weak audits.
+    </p>
+    <p style="font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin:0;">
+      This volume covers the standard <em>as it stands</em> — what it requires, how it is audited, what evidence the auditor expects. The practitioner critiques live in <strong>Layer 03</strong> alongside the evidence detail. Read both before recommending AIUC-1 to a client.
+    </p>
+  </section>
+
+  <nav class="layers" role="tablist">
+    <button role="tab" aria-selected="true"  data-target="L1">
+      <span class="num">Layer 01</span><span class="ttl">Certification Lifecycle</span>
+      <span class="sub">scoping × technical testing × annual + quarterly</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L2">
+      <span class="num">Layer 02</span><span class="ttl">Six Risk Domains</span>
+      <span class="sub">51 active controls across A–F</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L3">
+      <span class="num">Layer 03</span><span class="ttl">Evidence & Testing</span>
+      <span class="sub">what the auditor opens · what AIUC tests</span>
+    </button>
+    <button role="tab" aria-selected="false" data-target="L4">
+      <span class="num">Layer 04</span><span class="ttl">Crosswalk to 11 Frameworks</span>
+      <span class="sub">where AIUC-1 overlaps · where it is unique</span>
+    </button>
+  </nav>
+
+  <!-- ═════════ LAYER 01 ═════════ -->
+  <section id="L1" class="panel active">
+    <header class="section">
+      <div class="marker">01</div>
+      <div>
+        <div class="kicker">Certification Lifecycle Flow</div>
+        <h2>Five stages — scoping to certificate, with mandatory quarterly retest</h2>
+      </div>
+      <div class="ref">AIUC-1 FAQ<br>Schellman audit methodology<br>Q2 2026 standard update</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">The AIUC-1 lifecycle — annual certificate, quarterly technical recurrence</h3>
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="20" y="20" width="1240" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">AIUC-1 CERTIFICATION · 12-MONTH CERT + QUARTERLY TECHNICAL RETEST · 5–10 WEEKS TYPICAL</text>
+
+        <!-- Vendor lane (top) -->
+        <rect x="20" y="80" width="1240" height="150" fill="rgba(47,72,88,.07)" stroke="#13212d" stroke-width="0.5"/>
+        <text x="40" y="105" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#2f4858" font-weight="600">VENDOR / AGENT OPERATOR</text>
+
+        <!-- Auditor lane (bottom) -->
+        <rect x="20" y="280" width="1240" height="150" fill="rgba(122,31,36,.07)" stroke="#13212d" stroke-width="0.5"/>
+        <text x="40" y="305" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#7a1f24" font-weight="600">AIUC + ACCREDITED AUDITOR (SCHELLMAN)</text>
+
+        <!-- Stage 1: Scoping -->
+        <rect x="50" y="125" width="200" height="80" fill="#2f4858" stroke="#13212d" stroke-width="1"/>
+        <text x="150" y="148" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="18">1. Scoping</text>
+        <text x="150" y="168" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">define the agent</text>
+        <text x="150" y="184" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="9">tools · models · data flows</text>
+        <text x="150" y="200" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9">vendor &amp; auditor jointly</text>
+
+        <!-- Stage 2: Gap analysis -->
+        <rect x="280" y="125" width="200" height="80" fill="#2f4858" stroke="#13212d" stroke-width="1"/>
+        <text x="380" y="148" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="18">2. Gap Analysis</text>
+        <text x="380" y="168" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">24-hour technical test</text>
+        <text x="380" y="184" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="9">policy templates · blueprints</text>
+        <text x="380" y="200" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9">remediate before audit</text>
+
+        <!-- Stage 3: Evidence collection (auditor) -->
+        <rect x="510" y="320" width="200" height="80" fill="#7a1f24" stroke="#13212d" stroke-width="1"/>
+        <text x="610" y="343" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="18">3. Evidence</text>
+        <text x="610" y="363" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">policies · runbooks · logs</text>
+        <text x="610" y="379" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="9">legal · operational</text>
+        <text x="610" y="395" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9">Schellman collects</text>
+
+        <!-- Stage 4: Technical testing (AIUC itself) -->
+        <rect x="740" y="320" width="220" height="80" fill="#7a1f24" stroke="#13212d" stroke-width="2"/>
+        <text x="850" y="343" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="18">4. Technical Testing</text>
+        <text x="850" y="363" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">2,000–5,000+ adversarial sims</text>
+        <text x="850" y="379" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="9">jailbreaks · prompt inj · tool misuse</text>
+        <text x="850" y="395" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9">AIUC runs · not the auditor</text>
+
+        <!-- Stage 5: Certificate -->
+        <rect x="990" y="125" width="220" height="80" fill="#a37a1f" stroke="#13212d" stroke-width="2"/>
+        <text x="1100" y="148" text-anchor="middle" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="18">5. Certificate</text>
+        <text x="1100" y="168" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">12-month validity</text>
+        <text x="1100" y="184" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="9">report shared under NDA</text>
+        <text x="1100" y="200" text-anchor="middle" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="9">+ AI-agent insurance eligible</text>
+
+        <!-- Quarterly retest cycle (curved arrow back) -->
+        <path d="M 1100 205 Q 1100 250 850 250 Q 600 250 600 320" fill="none" stroke="#a37a1f" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="900" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#a37a1f" font-style="italic">Quarterly technical retest · every 3 months · or cert is withdrawn</text>
+
+        <!-- Connecting arrows -->
+        <path d="M 250 165 L 280 165" stroke="#2f4858" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+        <path d="M 480 165 L 510 260 L 510 320" stroke="#13212d" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+        <path d="M 710 360 L 740 360" stroke="#7a1f24" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+        <path d="M 960 360 L 990 260 L 990 205" stroke="#13212d" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#13212d"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>How the lifecycle actually unfolds</h3>
+        <p><strong>The scoping questionnaire is where most of the assurance value is determined.</strong> AIUC-1 does not formally define "AI agent." Vendor and auditor decide which agent(s), which tools, which model versions, and which data flows fall inside the certificate. A certificate that scopes "the agent" without naming the specific deployment, model versions, and tool integrations is materially weaker than one that does. Any procurement reader receiving an AIUC-1 report should demand the scope section verbatim and verify it covers the deployment they will actually consume.</p>
+
+        <p><strong>Technical testing is what differentiates AIUC-1 from SOC 2 and ISO 42001.</strong> The accredited auditor (Schellman) collects operational, legal, and evidentiary materials and writes the formal report. <em>AIUC itself</em> runs the technical adversarial testing — typically 2,000–5,000+ scenarios per certified agent, covering prompt injection, jailbreaks, hallucination triggers, cross-customer data leakage, tool misuse, and capability-specific risks (acoustic attacks for voice; image manipulation for image generation; multi-step workflow exploits for automation agents). For ElevenLabs's first certification: 5,000+ adversarial simulations. For UiPath: 2,000+ scenarios across IXP, Agents, and Autopilot. For Intercom: Air-Canada-style hallucination scenarios specifically tested.</p>
+
+        <p><strong>Quarterly recurrence is mandatory and is the strongest mechanic in the framework.</strong> Annual certificates are familiar from SOC 2. What AIUC-1 adds: a re-test of the technical controls every three months. Models drift. Agents are retrained. Tool integrations change. The quarterly cadence is designed to keep the certificate honest between annual renewals. If a vendor fails the quarterly retest and cannot remediate, the certificate must be withdrawn.</p>
+
+        <div class="pull">5–10 weeks typical certification time for organizations with mature AI governance, per AIUC's own FAQ. Greenfield programs materially slower.</div>
+
+        <p><strong>Schellman is currently the only accredited auditor</strong> (announced February 3, 2026 in a joint Schellman/AIUC press release; Schellman had previously become the first ANAB-accredited ISO 42001 certification body in September 2024). This is normal for a first-year regime — SOC 2 launched with limited auditor plurality in 2010. But until a second accredited auditor is named, every AIUC-1 certificate in the world is being shaped by one auditor-vendor relationship.</p>
+
+        <p><strong>Auditor accreditation is by AIUC itself, not by an external accreditation body.</strong> Where ISO 42001 routes through ANAB / UKAS, SOC 2 through the AICPA, and EU AI Act notified bodies through EU-level accreditation, AIUC accredits its own auditors. This is the structural concern at the center of the practitioner critique surfaced in this volume's editorial note. HITRUST works similarly with its Assessor program — there is precedent — but it is a real departure from the ISO / regulatory model.</p>
+      </div>
+      <aside class="notes">
+        <h3>Phase deliverables</h3>
+        <ol>
+          <li><strong>Scoping</strong> — scoping questionnaire, agent inventory, tool integration map, model version log, data-flow diagram</li>
+          <li><strong>Gap analysis</strong> — 24-hour technical test report, gap-remediation plan, policy artifacts where templates were used</li>
+          <li><strong>Evidence</strong> — policy library, runbooks, logs, third-party-eval reports, risk-taxonomy documents, capability-specific testing evidence</li>
+          <li><strong>Technical testing</strong> — adversarial test plan, simulation results, vulnerability classifications (P0/P1/P2), remediation evidence</li>
+          <li><strong>Certificate</strong> — AIUC-1 certificate (12-month), full audit report under NDA, public badge, insurance eligibility</li>
+          <li><strong>Quarterly retest</strong> — re-run of technical scenarios with new attack vectors, drift detection, capability-creep check</li>
+        </ol>
+        <h4 style="margin-top:24px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;">Standard update cadence</h4>
+        <p>AIUC-1 itself updates on a published quarterly schedule: <strong>January 15, April 15, July 15, October 15</strong>. The active version as of this Atlas is the <strong>Q2 2026 update (April 15, 2026)</strong> — focused on Model Context Protocol (MCP) security, agent identity/permissions, and third-party risk management. Two Accountability controls were retired in this update. Q3 2026 is in flight with 200+ peer-review comments carried forward.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 02 ═════════ -->
+  <section id="L2" class="panel">
+    <header class="section">
+      <div class="marker">02</div>
+      <div>
+        <div class="kicker">Six Risk Domains</div>
+        <h2>51 active controls — A through F</h2>
+      </div>
+      <div class="ref">AIUC-1 standard<br>Q2 2026 update (Apr 15, 2026)<br>aiuc-1.com</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">AIUC-1 architecture — six domains, 51 active controls, 2 retired</h3>
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="20" y="20" width="1240" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">AIUC-1 · 6 RISK DOMAINS · 51 ACTIVE CONTROLS (50+ MARKETED · 2 RETIRED IN Q2 2026)</text>
+
+        <!-- A. Data & Privacy -->
+        <g>
+          <rect x="40" y="90" width="385" height="170" fill="#a37a1f" stroke="#13212d" stroke-width="1.5"/>
+          <text x="60" y="118" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">A · DATA &amp; PRIVACY</text>
+          <text x="60" y="142" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">7 controls</text>
+          <line x1="60" y1="155" x2="405" y2="155" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="60" y="180" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Input &amp; output data policy</text>
+          <text x="60" y="198" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Limit agent data access</text>
+          <text x="60" y="216" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Protect IP &amp; trade secrets</text>
+          <text x="60" y="234" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Prevent cross-customer exposure</text>
+          <text x="60" y="252" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Prevent PII leakage · Prevent IP violations</text>
+        </g>
+
+        <!-- B. Security -->
+        <g>
+          <rect x="448" y="90" width="385" height="170" fill="#7a1f24" stroke="#13212d" stroke-width="1.5"/>
+          <text x="468" y="118" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">B · SECURITY</text>
+          <text x="468" y="142" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">9 controls</text>
+          <line x1="468" y1="155" x2="813" y2="155" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="468" y="180" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Adversarial robustness testing</text>
+          <text x="468" y="198" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Detect adversarial input</text>
+          <text x="468" y="216" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Prevent unauthorized agent actions</text>
+          <text x="468" y="234" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Enforce user access privileges</text>
+          <text x="468" y="252" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Real-time input filter · Output limiting</text>
+        </g>
+
+        <!-- C. Safety (LARGEST) -->
+        <g>
+          <rect x="856" y="90" width="385" height="170" fill="#7a1f24" stroke="#13212d" stroke-width="2.5"/>
+          <text x="876" y="118" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">C · SAFETY <tspan fill="#f1d77a">★ LARGEST</tspan></text>
+          <text x="876" y="142" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">12 controls</text>
+          <line x1="876" y1="155" x2="1221" y2="155" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="876" y="180" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Define AI risk taxonomy</text>
+          <text x="876" y="198" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Pre-deployment testing</text>
+          <text x="876" y="216" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Prevent harmful / out-of-scope outputs</text>
+          <text x="876" y="234" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Customer-defined high-risk outputs</text>
+          <text x="876" y="252" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Real-time intervention · 3rd-party tests</text>
+        </g>
+
+        <!-- D. Reliability -->
+        <g>
+          <rect x="40" y="290" width="385" height="170" fill="#3f5337" stroke="#13212d" stroke-width="1.5"/>
+          <text x="60" y="318" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">D · RELIABILITY</text>
+          <text x="60" y="342" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">4 controls</text>
+          <line x1="60" y1="355" x2="405" y2="355" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="60" y="380" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Prevent hallucinated outputs</text>
+          <text x="60" y="398" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· 3rd-party hallucination testing</text>
+          <text x="60" y="416" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Restrict unsafe tool calls</text>
+          <text x="60" y="434" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· 3rd-party tool-call testing</text>
+          <text x="60" y="452" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9.5" font-style="italic">small but critical — agent-distinct</text>
+        </g>
+
+        <!-- E. Accountability (LARGEST BY VOLUME) -->
+        <g>
+          <rect x="448" y="290" width="385" height="170" fill="#2f4858" stroke="#13212d" stroke-width="2.5"/>
+          <text x="468" y="318" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">E · ACCOUNTABILITY <tspan fill="#f1d77a">★ MOST</tspan></text>
+          <text x="468" y="342" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">17 controls (2 retired)</text>
+          <line x1="468" y1="355" x2="813" y2="355" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="468" y="380" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· AI failure plans (security/harm/halluc.)</text>
+          <text x="468" y="398" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Assign accountability · Log activity</text>
+          <text x="468" y="416" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Vendor due diligence · 3rd-party access</text>
+          <text x="468" y="434" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Acceptable-use policy · QMS</text>
+          <text x="468" y="452" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10.5">· Disclosure · Transparency policy</text>
+        </g>
+
+        <!-- F. Society -->
+        <g>
+          <rect x="856" y="290" width="385" height="170" fill="#a37a1f" stroke="#13212d" stroke-width="1.5"/>
+          <text x="876" y="318" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="2">F · SOCIETY</text>
+          <text x="876" y="342" fill="#f3ecdd" font-family="Fraunces, serif" font-style="italic" font-size="20">2 controls</text>
+          <line x1="876" y1="355" x2="1221" y2="355" stroke="#f1d77a" stroke-width="0.5" opacity="0.5"/>
+          <text x="876" y="385" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11">· Prevent AI cyber misuse</text>
+          <text x="876" y="408" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11">· Prevent catastrophic misuse</text>
+          <text x="876" y="438" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9.5" font-style="italic">catastrophic-risk floor</text>
+          <text x="876" y="452" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="9.5" font-style="italic">(Stanford/CAIS contingent)</text>
+        </g>
+
+        <!-- Summary band -->
+        <rect x="40" y="500" width="1200" height="60" fill="#13212d"/>
+        <text x="60" y="528" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">TOTAL · 51 ACTIVE CONTROLS · 50+ MARKETED · 2 RETIRED IN Q2 2026</text>
+        <text x="60" y="548" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="10">Retired: "Document system change approvals" · "Share transparency reports" — both Domain E (Accountability)</text>
+
+        <!-- Capability-specific extensions -->
+        <rect x="40" y="585" width="1200" height="120" fill="rgba(163,122,31,.08)" stroke="#13212d" stroke-width="0.5"/>
+        <text x="60" y="610" fill="#a37a1f" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" font-weight="600">CAPABILITY-SPECIFIC EXTENSIONS (developed with Technical Contributors)</text>
+        <text x="60" y="635" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11">▸ Voice agents — acoustic injection · prosodic manipulation · cross-lingual transfer (Stanford · Gray Swan · ElevenLabs)</text>
+        <text x="60" y="655" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11">▸ Coding agents — supply-chain risk · privileged execution · code injection (Cognition · Lovable)</text>
+        <text x="60" y="675" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11">▸ Automation agents — workflow exploitation · privilege escalation · cross-system access (UiPath)</text>
+        <text x="60" y="695" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11">▸ Customer-service agents — hallucination on policy · misrepresentation of authority (Ada · Intercom)</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Why the agent layer needs its own framework</h3>
+        <p><strong>AIUC-1 starts from a different operational assumption than its peers.</strong> ISO 42001 asks: <em>does your organization have a management system for AI?</em> NIST AI RMF asks: <em>have you reasoned about AI risk?</em> EU AI Act asks: <em>does your AI system comply with EU law?</em> AIUC-1 asks something narrower and operationally testable: <em>what happens when a non-human actor with tool access takes autonomous action inside your business?</em></p>
+
+        <p><strong>The agent as employee-equivalent control surface.</strong> Domain A's cross-customer exposure requirement, Domain B's "prevent unauthorized agent actions," Domain D's "restrict unsafe tool calls," and Domain E's "log AI system activity" together treat the agent the way a security program treats an employee: with named permissions, audit trails, accountable owners, and incident-response procedures specifically for what happens when the agent acts inappropriately. This framing is the conceptual reason AIUC-1 exists as a separate document from ISO 42001 or SOC 2 — neither addresses the non-human principal at this resolution.</p>
+
+        <p><strong>Domain C is where most of the testing volume goes.</strong> Twelve controls; four of them require third-party adversarial testing. AIUC's published case-study testing volumes (5,000+ scenarios for ElevenLabs; 2,000+ for UiPath) reflect the depth Domain C demands. Practitioner-grade testing covers: prompt injection (direct and indirect), jailbreaks, hallucination triggers, customer-policy boundary violations, harmful-output generation, content-policy regressions, and capability-creep into out-of-scope behaviors.</p>
+
+        <p><strong>Domain D is small but distinct.</strong> Four controls — but two are tool-call-specific. ISO 42001 has no comparable control. NIST AI RMF mentions tool use only in passing in the GenAI Profile. AIUC-1 makes tool-call governance a first-class testable requirement because that is where multi-step agent workflows go wrong.</p>
+
+        <p><strong>Domain E carries the largest control count and the most retirement turnover.</strong> Seventeen controls with two retired in Q2 2026. The retired controls — "Document system change approvals" and "Share transparency reports" — were judged either redundant with adjacent management-system frameworks or insufficiently testable. The retirement itself is a meaningful signal: AIUC-1 is not a frozen standard. Auditors using AIUC-1 should monitor the changelog at every quarterly update.</p>
+
+        <p><strong>Domain F is judgment-heavy.</strong> Two controls covering cyber misuse and catastrophic misuse. The Stanford / Center for AI Safety contingent of the consortium pushed for explicit floor coverage. Critics (Zeltser) note this is where documentation alone can satisfy requirements — what counts as sufficient mitigation for "catastrophic misuse" is fundamentally judgment-based, and auditors competing for repeat business may apply softer scrutiny over time.</p>
+      </div>
+      <aside class="notes">
+        <h3>Domain counts</h3>
+        <ul>
+          <li><strong>A · Data &amp; Privacy:</strong> 7</li>
+          <li><strong>B · Security:</strong> 9</li>
+          <li><strong>C · Safety:</strong> 12 ★</li>
+          <li><strong>D · Reliability:</strong> 4</li>
+          <li><strong>E · Accountability:</strong> 15 active + 2 retired = 17 ★</li>
+          <li><strong>F · Society:</strong> 2</li>
+        </ul>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--slate); margin-top:14px;"><strong>Active total: 51</strong> (across A–F, excluding 2 retired E-domain controls). AIUC markets "50+" controls.</p>
+        <h4 style="margin-top:24px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;">Scoping note</h4>
+        <p>Capability-based scoping means not every control applies to every agent. An internal text-only assistant scopes fewer controls than an externally facing voice agent with tool access and customer data exposure. The scoping questionnaire decides which controls are in-scope; the published certificate should always include this detail.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 03 ═════════ -->
+  <section id="L3" class="panel">
+    <header class="section">
+      <div class="marker">03</div>
+      <div>
+        <div class="kicker">Evidence &amp; Testing</div>
+        <h2>What the auditor opens — and what AIUC tests</h2>
+      </div>
+      <div class="ref">aiuc-1.com/evidence<br>Schellman methodology<br>Q2 2026 update notes</div>
+    </header>
+
+    <div class="diagram">
+      <h3 class="subtitle">Evidence categories — operational, legal, technical, capability-specific</h3>
+      <svg viewBox="0 0 1280 520" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <rect x="20" y="20" width="1240" height="40" fill="#13212d"/>
+        <text x="640" y="45" text-anchor="middle" fill="#f1d77a" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2.5">EVIDENCE MODEL · COLLECTED BY ACCREDITED AUDITOR · TESTED BY AIUC</text>
+
+        <!-- Operational column -->
+        <rect x="40" y="90" width="290" height="380" fill="rgba(47,72,88,.07)" stroke="#2f4858" stroke-width="1"/>
+        <rect x="40" y="90" width="290" height="40" fill="#2f4858"/>
+        <text x="185" y="115" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" font-weight="600">OPERATIONAL</text>
+        <text x="60" y="155" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Policies</text>
+        <text x="60" y="173" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· AI acceptable-use policy</text>
+        <text x="60" y="189" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Input/output data policy</text>
+        <text x="60" y="205" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Risk taxonomy</text>
+        <text x="60" y="221" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Transparency policy</text>
+        <text x="60" y="252" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Runbooks</text>
+        <text x="60" y="270" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Security-breach playbook</text>
+        <text x="60" y="286" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Harmful-output response</text>
+        <text x="60" y="302" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Hallucination playbook</text>
+        <text x="60" y="333" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Logs</text>
+        <text x="60" y="351" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Agent activity logs</text>
+        <text x="60" y="367" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Tool-call audit trail</text>
+        <text x="60" y="383" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Intervention records</text>
+        <text x="60" y="414" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">QMS</text>
+        <text x="60" y="432" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Change-control records</text>
+        <text x="60" y="448" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Performance review</text>
+
+        <!-- Legal column -->
+        <rect x="350" y="90" width="290" height="380" fill="rgba(122,31,36,.07)" stroke="#7a1f24" stroke-width="1"/>
+        <rect x="350" y="90" width="290" height="40" fill="#7a1f24"/>
+        <text x="495" y="115" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" font-weight="600">LEGAL</text>
+        <text x="370" y="155" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Accountability</text>
+        <text x="370" y="173" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Named accountable officer</text>
+        <text x="370" y="189" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Decision-rights mapping</text>
+        <text x="370" y="220" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Disclosures</text>
+        <text x="370" y="238" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· AI-use customer notice</text>
+        <text x="370" y="254" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Marketing claims review</text>
+        <text x="370" y="270" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Regulatory filings (where required)</text>
+        <text x="370" y="301" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Vendor / 3rd party</text>
+        <text x="370" y="319" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Due diligence records</text>
+        <text x="370" y="335" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Sub-processor agreements</text>
+        <text x="370" y="351" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· DPAs / model-supplier terms</text>
+        <text x="370" y="382" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Data &amp; IP</text>
+        <text x="370" y="400" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Training-data provenance</text>
+        <text x="370" y="416" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· IP-violation safeguards</text>
+        <text x="370" y="432" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Cross-customer isolation</text>
+
+        <!-- Technical column -->
+        <rect x="660" y="90" width="290" height="380" fill="rgba(163,122,31,.08)" stroke="#a37a1f" stroke-width="1"/>
+        <rect x="660" y="90" width="290" height="40" fill="#a37a1f"/>
+        <text x="805" y="115" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" font-weight="600">TECHNICAL · AIUC-RUN</text>
+        <text x="680" y="155" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Adversarial sims</text>
+        <text x="680" y="173" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Prompt injection (direct)</text>
+        <text x="680" y="189" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Prompt injection (indirect)</text>
+        <text x="680" y="205" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Jailbreak attempts</text>
+        <text x="680" y="221" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Adversarial input filtering</text>
+        <text x="680" y="252" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Behavioral</text>
+        <text x="680" y="270" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Hallucination triggers</text>
+        <text x="680" y="286" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Customer-policy boundary</text>
+        <text x="680" y="302" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Out-of-scope behavior</text>
+        <text x="680" y="333" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Tool / chain</text>
+        <text x="680" y="351" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Unsafe tool-call detection</text>
+        <text x="680" y="367" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Multi-step workflow exploit</text>
+        <text x="680" y="383" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Cross-system access abuse</text>
+        <text x="680" y="414" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Data leakage</text>
+        <text x="680" y="432" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· PII extraction attacks</text>
+        <text x="680" y="448" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Cross-customer probing</text>
+
+        <!-- Capability-specific column -->
+        <rect x="970" y="90" width="270" height="380" fill="rgba(63,83,55,.07)" stroke="#3f5337" stroke-width="1"/>
+        <rect x="970" y="90" width="270" height="40" fill="#3f5337"/>
+        <text x="1105" y="115" text-anchor="middle" fill="#f3ecdd" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" font-weight="600">CAPABILITY-SPECIFIC</text>
+        <text x="990" y="155" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Voice</text>
+        <text x="990" y="173" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Acoustic injection</text>
+        <text x="990" y="189" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Prosodic manipulation</text>
+        <text x="990" y="205" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Cross-lingual transfer</text>
+        <text x="990" y="236" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Code</text>
+        <text x="990" y="254" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Supply-chain risk</text>
+        <text x="990" y="270" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Privileged execution</text>
+        <text x="990" y="286" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Code injection</text>
+        <text x="990" y="317" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Automation</text>
+        <text x="990" y="335" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Workflow exploitation</text>
+        <text x="990" y="351" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Privilege escalation</text>
+        <text x="990" y="367" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Cross-system access</text>
+        <text x="990" y="398" fill="#13212d" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Customer service</text>
+        <text x="990" y="416" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Policy hallucination</text>
+        <text x="990" y="432" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Authority misrepresentation</text>
+        <text x="990" y="448" fill="#2a3744" font-family="JetBrains Mono, monospace" font-size="10">· Customer-data exposure</text>
+
+        <!-- Footer note -->
+        <text x="640" y="498" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-style="italic" fill="#7a1f24">Per-cert volume typical: 2,000–5,000+ adversarial scenarios. ElevenLabs ≈5,000+. UiPath ≈2,000+. Intercom ran Air-Canada-style hallucination simulations.</text>
+      </svg>
+    </div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Common audit findings</h3>
+        <p>AIUC's published case-study commentary and practitioner explainers (360 Advanced, CompliancePoint, SecureCoders) converge on a recurring pattern of audit findings:</p>
+        <ul>
+          <li><strong>Insufficient cross-customer isolation at the agent-context level (Domain A).</strong> SOC 2 addresses isolation at the infrastructure layer; AIUC-1 demands isolation at the agent-reasoning layer — that an agent serving Customer A cannot, under adversarial prompting, surface information learned while serving Customer B.</li>
+          <li><strong>Under-defined customer-specific "high-risk output" taxonomies (Domain C).</strong> Vendors often define harmful outputs generically. AIUC-1 demands customer-defined high-risk categories — what a healthcare customer considers high-risk differs from what a financial services customer considers high-risk.</li>
+          <li><strong>Missing failure-plan playbooks for hallucination-driven harms (Domain E).</strong> Security-incident playbooks are mature; hallucination-incident playbooks are not. The Air Canada precedent (court-ordered enforcement of a hallucinated refund policy) is the canonical scenario.</li>
+          <li><strong>Weak logging of agent tool-call sequences (Domain E).</strong> Application logs typically capture API calls; agent audit trails need to capture the <em>reasoning</em> — which tool was called, why, with what authority, against what data, with what outcome.</li>
+          <li><strong>Voice-agent–specific findings.</strong> Acoustic injection (audio modulated to inject prompts) and prosodic manipulation (emotion-driven manipulation) are novel attack classes most teams have no prior testing for. Articulated in the AIUC/Stanford/Gray Swan/ElevenLabs voice-extension paper.</li>
+        </ul>
+
+        <div class="pull">A certificate is evidence, not warranty. AIUC's own FAQ: "No standard can eliminate all risks inherent in deploying AI systems, and certification represents a point-in-time assessment of controls, not a warranty of future performance or outcomes."</div>
+
+        <h3>The practitioner critique — both sides</h3>
+        <p><strong>Korman (Pistachio CTO, May 2026):</strong> characterized AIUC-1 as "pure rent seeking" on LinkedIn, pointing to the structural conflict that AIUC writes the standard, runs technical testing, accredits the auditors, and sells insurance to certified vendors. Korman's affiliation with a competing AI-security firm is worth disclosing alongside the critique.</p>
+        <p><strong>Zeltser (former Axonius CISO, April 22, 2026 blog at zeltser.com/aiuc-1-cert):</strong> extended Korman's critique with the issuer-pays credit-rating analogy: "AIUC itself accredits AIUC-1's auditors. Describing the framework as a 'standard,' therefore, rests on AIUC's own authority rather than an external accreditation body." Zeltser comes from a less commercially conflicted position.</p>
+        <p><strong>AIUC's counter-argument:</strong> the insurance business creates a counter-incentive, because losses on certified agents hit AIUC's balance sheet directly. Phil Venables (former Google Cloud CISO), Lena Smart, Chris Hughes (Resilient Cyber), and the Schellman team all publicly endorse the framework.</p>
+        <p><strong>Read both before recommending AIUC-1 to a client.</strong> The fair editorial reading: AIUC-1 is technically the most agent-specific compliance regime in existence, has unusually high-quality technical contributors, and is operationally useful for procurement teams. It is also a first-mover commercial standard from a venture-backed startup, with self-accreditation and a built-in conflict-of-interest profile that mature compliance regimes were specifically designed to avoid. Both are true.</p>
+      </div>
+      <aside class="notes">
+        <h3>Certified companies (May 2026)</h3>
+        <ol>
+          <li><strong>ElevenLabs</strong> — voice AI · first certified · Feb 11, 2026 · also first AIUC-1-backed insurance policy · 5,000+ sims</li>
+          <li><strong>Intercom</strong> — Fin agent · Feb 2026 · founding technical contributor · already held ISO 42001</li>
+          <li><strong>Ada</strong> — customer service · early 2026 · founding technical contributor</li>
+          <li><strong>Recraft</strong> — image generation · Q1 2026 · first image-gen company certified</li>
+          <li><strong>Alpharun</strong> — AI recruiter · early 2026 · verified candidate-discrimination compliance</li>
+          <li><strong>UiPath</strong> — IXP + Agents + Autopilot · Mar 9, 2026 · first enterprise automation · 2,000+ sims</li>
+          <li><strong>Fieldguide</strong> — Field Agents · May 6, 2026 · first audit/advisory platform · also holds ISO 42001 + SOC 2 Type 2</li>
+        </ol>
+        <h4 style="margin-top:24px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;">Accredited auditors</h4>
+        <p><strong>Schellman — sole accredited auditor as of May 12, 2026.</strong> Named February 3, 2026. Schellman is also the first ANAB-accredited ISO 42001 certification body (September 2024). Avani Desai leads engagement; Danny Manimbo is AI Practice Leader.</p>
+        <h4 style="margin-top:24px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;">IBM partnership</h4>
+        <p><strong>March 12, 2026:</strong> AIUC-1 integrated into IBM Research's AI Risk Atlas Nexus (public on Hugging Face + GitHub). Deeper integration with commercial watsonx.governance underway. IBM Research is now a Technical Contributor.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═════════ LAYER 04 ═════════ -->
+  <section id="L4" class="panel">
+    <header class="section">
+      <div class="marker">04</div>
+      <div>
+        <div class="kicker">Crosswalk to the 11 Atlas Frameworks</div>
+        <h2>Where AIUC-1 overlaps — and where it is genuinely unique</h2>
+      </div>
+      <div class="ref">9 published AIUC-1 crosswalks<br>aiuc-1.com/research</div>
+    </header>
+
+    <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0 0 20px;">AIUC-1 publishes nine formal crosswalks: <strong>EU AI Act, ISO 42001, MITRE ATLAS, NIST AI RMF, OWASP Top 10 for LLM Applications, OWASP AIVSS, IBM AI Risk Atlas, Cisco AI Security & Safety Framework, CSA AICM</strong>. Plus regional crosswalks for New York City, Colorado, and California (2026). Each Atlas volume below shows the closest AIUC-1 domains and the shared evidence — but the <strong>tool-call and adversarial-testing controls (Domains B/D) have no clean equivalent in any other framework</strong>. That is where AIUC-1 is structurally additive, not redundant.</p>
+
+    <table class="cw">
+      <thead>
+        <tr>
+          <th>Atlas Volume</th>
+          <th>Closest AIUC-1 Domains</th>
+          <th>Strongest Overlap</th>
+          <th>What AIUC-1 Adds</th>
+          <th>Shared Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dom">I · SOX</td>
+          <td><code>E · Accountability</code></td>
+          <td>Logging, change control, segregation of duties for agent-impacted ICFR processes</td>
+          <td>If an agent touches financial reporting flow, SOX needs the agent's activity log AS-1215-archivable</td>
+          <td class="shared">Agent activity logs · accountable officer · change-control records</td>
+        </tr>
+        <tr>
+          <td class="dom">II · SOC 2</td>
+          <td><code>A, B, E</code></td>
+          <td>Common Criteria overlap — access control (CC6), system operations (CC7), risk mitigation (CC9)</td>
+          <td>Adversarial testing, hallucination governance, tool-call restrictions — none addressed by Trust Services Criteria</td>
+          <td class="shared">Access policy · activity logs · vendor due-diligence · incident response</td>
+        </tr>
+        <tr>
+          <td class="dom">III · ISO 27001</td>
+          <td><code>A, B</code></td>
+          <td>A.5/A.8 control families — cryptography, access management, monitoring</td>
+          <td>Annex A is asset/info focused; AIUC-1 is agent-behavior focused — different unit of analysis</td>
+          <td class="shared">Access controls · monitoring · cryptography · supplier security</td>
+        </tr>
+        <tr>
+          <td class="dom">IV · NIST CSF 2.0</td>
+          <td><code>B, E, F</code></td>
+          <td>GV.SC (supply chain) and PR.IR (infra resilience) align with AIUC-1 third-party + agent isolation</td>
+          <td>CSF is general cybersecurity; AIUC-1 specifically addresses non-human principals with tool access</td>
+          <td class="shared">Supply-chain risk · access privileges · monitoring · incident response</td>
+        </tr>
+        <tr>
+          <td class="dom">V · HITRUST</td>
+          <td><code>A, B, E</code></td>
+          <td>HITRUST AI Security Certification (announced 2024) covers similar territory at the management layer</td>
+          <td>AIUC-1 is behavior-centric; HITRUST AI is healthcare-regulated-industry-centric and ISO-style</td>
+          <td class="shared">Risk assessment · access controls · vendor risk · monitoring</td>
+        </tr>
+        <tr>
+          <td class="dom">VI · PCI DSS</td>
+          <td><code>A, B</code></td>
+          <td>If an agent touches CDE, PCI requires the same isolation AIUC-1 demands at the agent layer</td>
+          <td>PCI is data-centric (CHD); AIUC-1 is behavior-centric — both apply when an agent is in CDE</td>
+          <td class="shared">Access controls · cryptography · monitoring · segmentation</td>
+        </tr>
+        <tr>
+          <td class="dom">VII · HIPAA</td>
+          <td><code>A, E</code></td>
+          <td>§164.308 risk management + §164.312 access controls extend to agent-mediated ePHI access</td>
+          <td>HIPAA pre-dates agents; AIUC-1 explicitly governs how an agent accesses, processes, and exposes PHI</td>
+          <td class="shared">Risk analysis · access management · audit controls · BAA</td>
+        </tr>
+        <tr>
+          <td class="dom">VIII · FedRAMP</td>
+          <td><code>A, B, E</code></td>
+          <td>Rev 5 800-53 controls map heavily — AC, AU, IR, SC, SI families</td>
+          <td>FedRAMP has no specific agent guidance yet; AIUC-1 fills the gap for federal cloud AI agents</td>
+          <td class="shared">800-53 control implementation · continuous monitoring · POA&amp;M</td>
+        </tr>
+        <tr>
+          <td class="dom">IX · ISO 42001</td>
+          <td><code>All six (mgmt-system overlay)</code></td>
+          <td>ISO 42001 = management system; AIUC-1 = agent behavior. Complementary, adoption order doesn't matter</td>
+          <td>ISO 42001 is process-and-system focused; AIUC-1 demands technical adversarial testing of the agent</td>
+          <td class="shared">AIMS · risk treatment · supplier mgmt · monitoring · accountability</td>
+        </tr>
+        <tr>
+          <td class="dom">X · EU AI Act</td>
+          <td><code>A, B, C, E</code></td>
+          <td>Articles 9–15 (high-risk systems): risk mgmt, data governance, technical documentation, transparency, accuracy/robustness, human oversight</td>
+          <td>EU AI Act is legal-regime-by-risk-tier; AIUC-1 is testable-controls-by-agent-behavior. Both can apply</td>
+          <td class="shared">Risk mgmt · data governance · technical docs · transparency · post-market monitoring</td>
+        </tr>
+        <tr>
+          <td class="dom">XI · NIST AI RMF</td>
+          <td><code>All six (functional overlay)</code></td>
+          <td>GOVERN → AIUC E · MAP → AIUC scoping · MEASURE → AIUC technical testing · MANAGE → AIUC quarterly retest</td>
+          <td>NIST AI RMF supplies the conceptual scaffolding; AIUC-1 operationalizes it into testable controls</td>
+          <td class="shared">Risk taxonomy · measurement · management · governance · trustworthy-AI characteristics</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pull" style="margin-top:30px;">The trap is treating the mappings as identities. They are overlaps, not equivalencies. AIUC-1's tool-call and adversarial-testing requirements have no clean equivalent in any other framework — which is exactly why it exists.</div>
+
+    <div class="twocol">
+      <div class="notes">
+        <h3>Where AIUC-1 is structurally additive</h3>
+        <p><strong>(i) Mandatory third-party adversarial testing tied to a market-readable certificate.</strong> SOC 2 has no testing requirement. ISO 42001 doesn't require technical adversarial work. NIST AI RMF is guidance. The EU AI Act requires conformity assessment for high-risk systems but doesn't prescribe adversarial test volume or cadence. AIUC-1 is the only framework where the certificate explicitly attests to thousands of completed adversarial scenarios.</p>
+
+        <p><strong>(ii) Insurance-pairing.</strong> AIUC-1 certification is the underwriting prerequisite for AI-agent liability insurance distributed through AIUC. ElevenLabs's policy went live February 11, 2026. This is the only AI compliance framework directly paired with insurance, and it is where AIUC argues its quality counter-incentive comes from — losses on certified agents hit AIUC's balance sheet, so AIUC has reason to keep the certification rigorous. (Whether this incentive actually constrains audit quality is the open question Korman and Zeltser raise.)</p>
+
+        <p><strong>(iii) Quarterly recurrence.</strong> Every other framework is annual or longer. AIUC-1's three-month technical retest mechanic addresses model drift, agent retraining, tool integration changes, and capability creep. This is the strongest pure-mechanism advantage in the framework.</p>
+
+        <p><strong>(iv) The non-human principal as control surface.</strong> No prior framework explicitly treats the AI agent as an employee-equivalent with identity, permissions, audit logs, and incident-response procedures. AIUC-1 is the first to do so at requirement-level resolution.</p>
+
+        <p><strong>Where AIUC-1 is weakest:</strong> the legal-regime layer (EU AI Act), the long-term operational management layer (ISO 42001), and the broad sectoral coverage (HIPAA, SOX, PCI). AIUC-1 should be adopted <em>with</em> these frameworks, not instead of them.</p>
+
+        <h3>Emerging alternatives to watch</h3>
+        <ul>
+          <li><strong>HITRUST AI Security Certification</strong> — announced 2024; regulated-industry-centric; ISO-style accreditation</li>
+          <li><strong>CSA AICM</strong> — Cloud Security Alliance AI Controls Matrix; evolving toward STAR-style attestation</li>
+          <li><strong>NIST IR 8596</strong> — Cyber AI Profile (draft 2025); guidance form, not certification</li>
+          <li><strong>EU AI Act conformity assessment</strong> — by 2027 mandatory for high-risk systems; will likely either reference or compete with private standards</li>
+        </ul>
+        <p>None has a deployed cohort comparable to AIUC-1's seven certifications as of May 2026, but the space is moving fast. An auditor's library should track all four.</p>
+      </div>
+      <aside class="notes">
+        <h3>Auditor recommendations</h3>
+        <p><strong>Stage 1 (now):</strong> Add AIUC-1 to your AI-vendor due-diligence template alongside (not instead of) ISO 42001 / SOC 2 / GDPR. Demand the scope section verbatim on any AIUC-1 report you receive.</p>
+        <p><strong>Stage 2 (≥2 accredited auditors named):</strong> Re-evaluate concentration risk. Single-auditor period is the weakest period in any new compliance regime's life cycle.</p>
+        <p><strong>Stage 3 (ANAB/UKAS accreditation or regulator reference):</strong> Move from "AIUC-1 may help" to "AIUC-1 is the de facto baseline."</p>
+        <p><strong>Stage 4 (post first high-profile incident):</strong> Watch the insurance carrier-of-record performance and public certificate handling. The framework either earns its credibility here or loses it.</p>
+        <h4 style="margin-top:24px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;">Currency check</h4>
+        <p>AIUC-1 updates Jan 15 / Apr 15 / Jul 15 / Oct 15. Always consult aiuc-1.com/changelog before relying on this volume. Q3 2026 update (Jul 15) is in flight with 200+ peer-review comments.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>Volume XII · AIUC-1</strong><br>The Compliance Atlas<br>Edition 2026.1 · Verified May 12, 2026</div>
+    <div><strong>Next</strong><br><a href="index.html" style="color:var(--oxblood); text-decoration:none;">← Back to Atlas index</a></div>
+    <div><strong>Authoritative sources</strong><br>aiuc-1.com · aiuc.com · Q2 2026 standard update<br>Schellman audit methodology · IBM AI Risk Atlas Nexus<br>Practitioner critique: zeltser.com/aiuc-1-cert</div>
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll('nav.layers button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('nav.layers button').forEach(b => b.setAttribute('aria-selected', 'false'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
