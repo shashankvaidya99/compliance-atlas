@@ -112,17 +112,6 @@
     </div>
   </section>
 
-  <!-- ─── EDITORIAL NOTE: COMMERCIAL MODEL CAVEAT ─── -->
-  <section style="margin:0 0 36px; padding:24px 28px; background:rgba(163,122,31,.06); border:1px solid var(--ink); border-left:6px solid var(--gold);">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; font-weight:600;">Editorial note · How to read this volume</div>
-    <p style="font-family:'Fraunces',serif; font-size:17px; line-height:1.4; color:var(--ink); margin:0 0 12px; font-weight:400;">
-      <strong>AIUC-1 is a first-mover commercial standard.</strong> AIUC writes the standard, runs the technical testing, accredits the auditors, and sells the insurance the certification enables. That vertical integration is the single most important caveat to surface up front — practitioners including Zack Korman (Pistachio CTO) and Lenny Zeltser (former Axonius CISO) have publicly raised concerns about the issuer-pays incentive structure. The contrary view (Phil Venables, Chris Hughes, Lena Smart) holds that the insurance liability creates a real counter-incentive against weak audits.
-    </p>
-    <p style="font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin:0;">
-      This volume covers the standard <em>as it stands</em> — what it requires, how it is audited, what evidence the auditor expects. The practitioner critiques live in <strong>Layer 03</strong> alongside the evidence detail. Read both before recommending AIUC-1 to a client.
-    </p>
-  </section>
-
   <nav class="layers" role="tablist">
     <button role="tab" aria-selected="true"  data-target="L1">
       <span class="num">Layer 01</span><span class="ttl">Certification Lifecycle</span>
@@ -233,7 +222,7 @@
 
         <p><strong>Schellman is currently the only accredited auditor</strong> (announced February 3, 2026 in a joint Schellman/AIUC press release; Schellman had previously become the first ANAB-accredited ISO 42001 certification body in September 2024). This is normal for a first-year regime — SOC 2 launched with limited auditor plurality in 2010. But until a second accredited auditor is named, every AIUC-1 certificate in the world is being shaped by one auditor-vendor relationship.</p>
 
-        <p><strong>Auditor accreditation is by AIUC itself, not by an external accreditation body.</strong> Where ISO 42001 routes through ANAB / UKAS, SOC 2 through the AICPA, and EU AI Act notified bodies through EU-level accreditation, AIUC accredits its own auditors. This is the structural concern at the center of the practitioner critique surfaced in this volume's editorial note. HITRUST works similarly with its Assessor program — there is precedent — but it is a real departure from the ISO / regulatory model.</p>
+        <p><strong>Auditor accreditation is by AIUC itself, not by an external accreditation body.</strong> Where ISO 42001 routes through ANAB / UKAS, SOC 2 through the AICPA, and EU AI Act notified bodies through EU-level accreditation, AIUC accredits its own auditors. This is a real departure from the ISO and regulatory accreditation model; HITRUST works similarly with its Assessor program, so there is precedent. As AIUC-1 matures, the accreditation model is one of the mechanics most likely to evolve.</p>
       </div>
       <aside class="notes">
         <h3>Phase deliverables</h3>
@@ -373,7 +362,7 @@
 
         <p><strong>Domain E carries the largest control count and the most retirement turnover.</strong> Seventeen controls with two retired in Q2 2026. The retired controls — "Document system change approvals" and "Share transparency reports" — were judged either redundant with adjacent management-system frameworks or insufficiently testable. The retirement itself is a meaningful signal: AIUC-1 is not a frozen standard. Auditors using AIUC-1 should monitor the changelog at every quarterly update.</p>
 
-        <p><strong>Domain F is judgment-heavy.</strong> Two controls covering cyber misuse and catastrophic misuse. The Stanford / Center for AI Safety contingent of the consortium pushed for explicit floor coverage. Critics (Zeltser) note this is where documentation alone can satisfy requirements — what counts as sufficient mitigation for "catastrophic misuse" is fundamentally judgment-based, and auditors competing for repeat business may apply softer scrutiny over time.</p>
+        <p><strong>Domain F is judgment-heavy.</strong> Two controls covering cyber misuse and catastrophic misuse. The Stanford / Center for AI Safety contingent of the consortium pushed for explicit floor coverage. These are areas where what counts as sufficient mitigation is fundamentally judgment-based — a structural feature of any catastrophic-risk control regime, not unique to AIUC-1.</p>
       </div>
       <aside class="notes">
         <h3>Domain counts</h3>
@@ -511,11 +500,8 @@
 
         <div class="pull">A certificate is evidence, not warranty. AIUC's own FAQ: "No standard can eliminate all risks inherent in deploying AI systems, and certification represents a point-in-time assessment of controls, not a warranty of future performance or outcomes."</div>
 
-        <h3>The practitioner critique — both sides</h3>
-        <p><strong>Korman (Pistachio CTO, May 2026):</strong> characterized AIUC-1 as "pure rent seeking" on LinkedIn, pointing to the structural conflict that AIUC writes the standard, runs technical testing, accredits the auditors, and sells insurance to certified vendors. Korman's affiliation with a competing AI-security firm is worth disclosing alongside the critique.</p>
-        <p><strong>Zeltser (former Axonius CISO, April 22, 2026 blog at zeltser.com/aiuc-1-cert):</strong> extended Korman's critique with the issuer-pays credit-rating analogy: "AIUC itself accredits AIUC-1's auditors. Describing the framework as a 'standard,' therefore, rests on AIUC's own authority rather than an external accreditation body." Zeltser comes from a less commercially conflicted position.</p>
-        <p><strong>AIUC's counter-argument:</strong> the insurance business creates a counter-incentive, because losses on certified agents hit AIUC's balance sheet directly. Phil Venables (former Google Cloud CISO), Lena Smart, Chris Hughes (Resilient Cyber), and the Schellman team all publicly endorse the framework.</p>
-        <p><strong>Read both before recommending AIUC-1 to a client.</strong> The fair editorial reading: AIUC-1 is technically the most agent-specific compliance regime in existence, has unusually high-quality technical contributors, and is operationally useful for procurement teams. It is also a first-mover commercial standard from a venture-backed startup, with self-accreditation and a built-in conflict-of-interest profile that mature compliance regimes were specifically designed to avoid. Both are true.</p>
+        <h3>What to know as a first-mover standard</h3>
+        <p>AIUC-1 is the first agent-specific compliance certification in market. The cohort is growing — seven certified companies in the first quarter of 2026 — and the standard itself updates quarterly. <strong>The auditor accreditation model and the technical testing cadence are still being established in practice.</strong> Auditors and adopters should monitor the published changelog at every quarterly update (January 15, April 15, July 15, October 15) and treat the framework as one whose mechanics will evolve. Early certified companies (ElevenLabs, Intercom, UiPath, Ada, Recraft, Alpharun, Fieldguide) are the working library of "what good looks like" for AIUC-1 implementation; their published case studies are the most useful learning material currently available.</p>
       </div>
       <aside class="notes">
         <h3>Certified companies (May 2026)</h3>
@@ -647,7 +633,7 @@
         <h3>Where AIUC-1 is structurally additive</h3>
         <p><strong>(i) Mandatory third-party adversarial testing tied to a market-readable certificate.</strong> SOC 2 has no testing requirement. ISO 42001 doesn't require technical adversarial work. NIST AI RMF is guidance. The EU AI Act requires conformity assessment for high-risk systems but doesn't prescribe adversarial test volume or cadence. AIUC-1 is the only framework where the certificate explicitly attests to thousands of completed adversarial scenarios.</p>
 
-        <p><strong>(ii) Insurance-pairing.</strong> AIUC-1 certification is the underwriting prerequisite for AI-agent liability insurance distributed through AIUC. ElevenLabs's policy went live February 11, 2026. This is the only AI compliance framework directly paired with insurance, and it is where AIUC argues its quality counter-incentive comes from — losses on certified agents hit AIUC's balance sheet, so AIUC has reason to keep the certification rigorous. (Whether this incentive actually constrains audit quality is the open question Korman and Zeltser raise.)</p>
+        <p><strong>(ii) Insurance-pairing.</strong> AIUC-1 certification is the underwriting prerequisite for AI-agent liability insurance distributed through AIUC. ElevenLabs's policy went live February 11, 2026. This is the only AI compliance framework directly paired with insurance, and AIUC's stated rationale is that the insurance liability creates a quality counter-incentive — losses on certified agents hit AIUC's balance sheet, so the certification has to stay rigorous to be commercially sustainable.</p>
 
         <p><strong>(iii) Quarterly recurrence.</strong> Every other framework is annual or longer. AIUC-1's three-month technical retest mechanic addresses model drift, agent retraining, tool integration changes, and capability creep. This is the strongest pure-mechanism advantage in the framework.</p>
 
@@ -679,7 +665,7 @@
   <footer class="colophon">
     <div><strong>Volume XII · AIUC-1</strong><br>The Compliance Atlas<br>Edition 2026.1 · Verified May 12, 2026</div>
     <div><strong>Next</strong><br><a href="index.html" style="color:var(--oxblood); text-decoration:none;">← Back to Atlas index</a></div>
-    <div><strong>Authoritative sources</strong><br>aiuc-1.com · aiuc.com · Q2 2026 standard update<br>Schellman audit methodology · IBM AI Risk Atlas Nexus<br>Practitioner critique: zeltser.com/aiuc-1-cert</div>
+    <div><strong>Authoritative sources</strong><br>aiuc-1.com · aiuc.com · Q2 2026 standard update<br>Schellman audit methodology · IBM AI Risk Atlas Nexus<br>Certified company case studies on aiuc.com</div>
   </footer>
 </div>
 
